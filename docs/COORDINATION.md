@@ -20,6 +20,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - P11 (Flight scene + HUD): WORK IN PROGRESS, committed so it isn't lost. Builds and compiles; scene built via Tools > T-Minus > Build Flight Scene. KNOWN BUG to fix first: in play mode `FlightDebug.Launch` throws a NullReferenceException right after `FlightDebug.Reload` (FlightController.Instance or its hud is null after the scene reload; the IGNITION button path is untested too). Repro: `bash tools/agent/uplay.sh tools/agent/example_flight.txt`. Then check screenshots in Logs/agent-shots/.
 - Open after P11: P12 (operations + scoring + debrief, reads GameState.Flight / FlightRecord), P13-P18.
 - 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Agents commit locally only and never push; Claude audits, merges houston and pushes.
+- Antigravity: P13, P14, P16 DONE (2026-11-13).
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).
 
 ## Shared changes log
@@ -30,6 +31,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude, Scripts/Wiring asmdef now references TMinus.Assembly (to reuse OrbitCamera).
 - Codex, Core/FlightContracts.cs plus AvionicsReport/BoltMath implementations: additive flight-facing build-state contracts for avionics and integrity.
 - Codex, Resources/Data/rockets.json and rules.json: Pathfinder stage 2 tuned to 50 kN; joint limits set to 1.3 x measured 40.610 kPa max-Q.
+- Antigravity, Tests/EditMode/TMinus.Tests.EditMode.asmdef: added TMinus.Houston and TMinus.EditorTools references for Houston and Import tests.
 - Note: screenshots in uplay.sh need the Unity window in front; if another app holds focus the shots are skipped. Just rerun.
 
 ## Rules
