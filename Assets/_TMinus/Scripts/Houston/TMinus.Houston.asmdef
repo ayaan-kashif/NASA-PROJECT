@@ -1,7 +1,14 @@
 {
     "name": "TMinus.Houston",
     "rootNamespace": "TMinus.Houston",
-    "references": ["TMinus.Core"],
+    "references": [
+        "TMinus.Core",
+        "TMinus.Assembly",
+        "TMinus.Wiring",
+        "TMinus.Spacecraft",
+        "TMinus.Mission",
+        "Unity.InputSystem"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
