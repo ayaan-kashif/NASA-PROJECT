@@ -1,0 +1,57 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="vab-root" class="vab-root" picking-mode="Ignore">
+
+        <ui:VisualElement class="top-row" picking-mode="Ignore">
+        <ui:VisualElement name="toolbar" class="toolbar">
+            <ui:Button name="btn-menu" text="Menu" class="tool-btn" />
+            <ui:VisualElement class="tool-sep" />
+            <ui:Button name="btn-mode-assemble" text="Assemble" class="tool-btn toggle" />
+            <ui:Button name="btn-mode-inspect" text="Inspect" class="tool-btn toggle" />
+            <ui:VisualElement class="tool-sep" />
+            <ui:Button name="btn-exploded" text="Exploded view" class="tool-btn toggle" />
+            <ui:Button name="btn-xray" text="X-ray" class="tool-btn toggle" />
+            <ui:Button name="btn-reset" text="Reset camera" class="tool-btn" />
+            <ui:VisualElement class="tool-sep" />
+            <ui:Button name="btn-next" text="To launch pad  &gt;" class="tool-btn accent" />
+        </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="parts-bin-slot" class="parts-bin-slot" picking-mode="Ignore" />
+
+        <ui:VisualElement name="info-card" class="info-card hidden">
+            <ui:VisualElement class="card-header">
+                <ui:Label name="info-category" class="info-category" />
+                <ui:Button name="btn-info-close" text="x" class="close-btn" />
+            </ui:VisualElement>
+            <ui:Label name="info-title" class="info-title" />
+            <ui:Label name="info-badge" class="badge" />
+            <ui:VisualElement name="info-stats" class="info-stats" />
+            <ui:Label name="info-codex" class="info-codex" />
+            <ui:VisualElement class="card-actions">
+                <ui:Button name="btn-learn" text="Learn more" class="card-btn" />
+                <ui:Button name="btn-ask" text="Ask HOUSTON" class="card-btn accent" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="labels-layer" class="labels-layer" picking-mode="Ignore" />
+
+        <ui:VisualElement name="library" class="library">
+            <ui:Label text="ROCKET LIBRARY" class="library-title" />
+            <ui:ScrollView name="library-scroll" mode="Horizontal" class="library-scroll" />
+        </ui:VisualElement>
+
+        <ui:Label name="controls-hint" class="controls-hint" text="Right-drag: orbit  ·  Middle-drag: pan  ·  Scroll: zoom  ·  F or double-click: focus  ·  Esc: deselect" />
+        <ui:VisualElement class="toast-row" picking-mode="Ignore">
+            <ui:Label name="toast" class="toast hidden" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="codex-modal" class="modal hidden">
+            <ui:VisualElement class="modal-panel">
+                <ui:Label name="codex-title" class="modal-title" />
+                <ui:Label name="codex-body" class="modal-body" />
+                <ui:Label name="codex-source" class="modal-source" />
+                <ui:Button name="btn-codex-close" text="Close" class="card-btn accent" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

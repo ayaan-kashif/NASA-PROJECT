@@ -1,7 +1,7 @@
 {
     "name": "TMinus.Assembly",
     "rootNamespace": "TMinus.Assembly",
-    "references": ["TMinus.Core"],
+    "references": ["TMinus.Core", "Unity.InputSystem"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

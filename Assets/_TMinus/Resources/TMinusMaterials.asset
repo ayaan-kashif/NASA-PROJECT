@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 381bf0d5f9342f941afbb287825b5a86, type: 3}
+  m_Name: TMinusMaterials
+  m_EditorClassIdentifier: TMinus.Core::TMinus.Core.MaterialLibrary
+  materials:
+  - {fileID: 2100000, guid: 2037eda51c4a27847a9c042f6eeaa591, type: 2}
+  - {fileID: 2100000, guid: 9b835bcc0bae24e409ed0e7e6083c80f, type: 2}
+  - {fileID: 2100000, guid: 0cafa16a1ebebf54c9e615b396e5d37f, type: 2}
+  - {fileID: 2100000, guid: ca8f38dbc096a3e49bcc7242653aa2c2, type: 2}
+  - {fileID: 2100000, guid: f17d6d9078a2bb347a9c77000b0744b9, type: 2}
+  - {fileID: 2100000, guid: 78bb160dffd261c43be2b192edcac6f3, type: 2}
+  - {fileID: 2100000, guid: 2fc4fc9b3ddb1194cb97c0be5edbb135, type: 2}
+  - {fileID: 2100000, guid: 681ff7b650103794aaaf58b466b35522, type: 2}
+  - {fileID: 2100000, guid: a95acf41d1ef66d44b14da9733ed8dfc, type: 2}
+  - {fileID: 2100000, guid: 72165757040b5fe4c95bd119df3c53bb, type: 2}
+  - {fileID: 2100000, guid: 70f1c2f35c80a3b468a3cec4a606b483, type: 2}
+  - {fileID: 2100000, guid: f27ce12f4265d344bb608bd1b87f25b2, type: 2}

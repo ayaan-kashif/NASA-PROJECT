@@ -1,0 +1,157 @@
+/* VAB: mission-control panels over the 3D hall. Navy glass, white text, orange accent. */
+
+.vab-root { flex-grow: 1; }
+
+.hidden { display: none; }
+
+/* ---------- toolbar ---------- */
+.top-row, .toast-row {
+    position: absolute;
+    left: 0; right: 0;
+    flex-direction: row;
+    justify-content: center;
+}
+.top-row { top: 18px; }
+.toast-row { top: 80px; }
+
+.toolbar {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: rgba(8, 14, 34, 0.88);
+    border-radius: 12px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.tool-btn {
+    height: 40px;
+    margin: 0 3px;
+    padding: 0 14px;
+    font-size: 17px;
+    color: rgb(225, 232, 245);
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 0;
+    border-radius: 8px;
+}
+.tool-btn:hover { background-color: rgba(255, 255, 255, 0.14); }
+.tool-btn.on {
+    background-color: rgba(255, 122, 26, 0.25);
+    color: rgb(255, 180, 120);
+    border-width: 1px;
+    border-color: rgb(255, 122, 26);
+}
+.tool-btn.accent { background-color: rgb(255, 122, 26); color: white; -unity-font-style: bold; }
+.tool-btn.accent:hover { background-color: rgb(255, 145, 60); }
+.tool-sep { width: 1px; height: 26px; margin: 0 6px; background-color: rgba(255, 255, 255, 0.15); }
+
+/* ---------- parts bin slot (Prompt 4 fills it) ---------- */
+.parts-bin-slot { position: absolute; left: 18px; top: 90px; bottom: 230px; width: 290px; }
+
+/* ---------- info card ---------- */
+.info-card {
+    position: absolute;
+    right: 18px;
+    top: 90px;
+    width: 400px;
+    padding: 18px 20px;
+    background-color: rgba(8, 14, 34, 0.92);
+    border-radius: 14px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-width: 4px;
+    border-left-color: rgb(255, 122, 26);
+}
+.card-header { flex-direction: row; justify-content: space-between; align-items: center; }
+.info-category { font-size: 14px; color: rgb(255, 160, 90); letter-spacing: 2px; -unity-font-style: bold; padding: 0; }
+.close-btn {
+    width: 30px; height: 30px; padding: 0; margin: 0;
+    font-size: 16px; color: rgb(175, 190, 220);
+    background-color: rgba(255, 255, 255, 0.06); border-width: 0; border-radius: 15px;
+}
+.info-title { font-size: 28px; color: white; -unity-font-style: bold; white-space: normal; margin: 4px 0 6px 0; padding: 0; }
+.badge {
+    align-self: flex-start;
+    font-size: 13px; -unity-font-style: bold; letter-spacing: 1px;
+    color: rgb(8, 14, 34);
+    background-color: rgb(120, 200, 255);
+    padding: 3px 9px; border-radius: 6px; margin-bottom: 10px;
+}
+.badge.training { background-color: rgb(255, 200, 80); }
+.badge.empty { display: none; }
+.info-stats { margin-bottom: 10px; }
+.stat-row {
+    flex-direction: row; justify-content: space-between;
+    padding: 5px 0;
+    border-bottom-width: 1px; border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+.stat-key { font-size: 16px; color: rgb(160, 175, 205); padding: 0; }
+.stat-value { font-size: 16px; color: white; -unity-font-style: bold; -unity-text-align: middle-right; padding: 0; }
+.info-codex { font-size: 16px; color: rgb(205, 215, 235); white-space: normal; margin-bottom: 12px; padding: 0; }
+.card-actions { flex-direction: row; }
+.card-btn {
+    flex-grow: 1; height: 40px; margin: 0 4px 0 0;
+    font-size: 16px; color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-width: 0; border-radius: 8px;
+}
+.card-btn:hover { background-color: rgba(255, 255, 255, 0.16); }
+.card-btn.accent { background-color: rgb(255, 122, 26); -unity-font-style: bold; }
+
+/* ---------- rocket library ---------- */
+.library {
+    position: absolute;
+    left: 18px; right: 18px; bottom: 18px;
+    padding: 10px 14px 12px 14px;
+    background-color: rgba(8, 14, 34, 0.88);
+    border-radius: 14px;
+}
+.library-title { font-size: 13px; letter-spacing: 3px; color: rgb(140, 155, 190); -unity-font-style: bold; margin-bottom: 6px; padding: 0; }
+.library-scroll { height: 140px; }
+.rocket-card {
+    width: 260px; height: 128px;
+    margin-right: 12px;
+    padding: 12px 14px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-width: 2px; border-color: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+.rocket-card:hover { border-color: rgba(255, 122, 26, 0.6); }
+.rocket-card.selected { border-color: rgb(255, 122, 26); background-color: rgba(255, 122, 26, 0.12); }
+.rocket-card-top { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.rocket-name { font-size: 21px; color: white; -unity-font-style: bold; padding: 0; }
+.rocket-card .badge { margin-bottom: 0; }
+.rocket-stat { font-size: 14px; color: rgb(185, 198, 225); padding: 1px 0; -unity-text-align: middle-left; }
+
+/* ---------- exploded-view labels ---------- */
+.labels-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.part-label {
+    position: absolute;
+    font-size: 15px; color: white;
+    background-color: rgba(8, 14, 34, 0.85);
+    padding: 3px 8px; border-radius: 5px;
+    border-left-width: 3px; border-left-color: rgb(255, 122, 26);
+}
+
+/* ---------- hints, toast, modal ---------- */
+.controls-hint { position: absolute; left: 22px; bottom: 196px; font-size: 14px; color: rgba(200, 210, 235, 0.7); }
+.toast {
+    font-size: 18px; color: white;
+    background-color: rgba(255, 122, 26, 0.92);
+    padding: 10px 18px; border-radius: 10px;
+}
+.modal {
+    position: absolute; left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    align-items: center; justify-content: center;
+}
+.modal-panel {
+    width: 720px; padding: 28px 32px;
+    background-color: rgb(12, 20, 44);
+    border-radius: 16px; border-top-width: 4px; border-top-color: rgb(255, 122, 26);
+}
+.modal-title { font-size: 32px; color: white; -unity-font-style: bold; margin-bottom: 12px; padding: 0; }
+.modal-body { font-size: 19px; color: rgb(215, 225, 245); white-space: normal; margin-bottom: 14px; padding: 0; }
+.modal-source { font-size: 14px; color: rgb(140, 155, 190); white-space: normal; margin-bottom: 18px; padding: 0; }
