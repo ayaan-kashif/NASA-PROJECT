@@ -1,0 +1,85 @@
+{
+  "cableTypes": [
+    { "id": "power", "label": "Power (red/black pair)", "color": "#E53935", "pattern": "solid", "maxLengthM": 0.6, "polarized": true, "codexId": "eps",
+      "allowed": [ { "from": "PWR_OUT", "to": "PWR_IN" }, { "from": "SOLAR_OUT", "to": "SOLAR_IN" }, { "from": "BATT", "to": "BATT" } ] },
+    { "id": "data", "label": "Data (blue)", "color": "#1E88E5", "pattern": "dashed", "maxLengthM": 0.6, "polarized": false, "codexId": "data_budget",
+      "allowed": [ { "from": "DATA", "to": "DATA" } ] },
+    { "id": "rf", "label": "RF coax (grey)", "color": "#9E9E9E", "pattern": "ringed", "maxLengthM": 0.4, "polarized": false, "codexId": "downlink",
+      "allowed": [ { "from": "RF", "to": "RF" } ] },
+    { "id": "pyro", "label": "Pyro (yellow/black)", "color": "#FDD835", "pattern": "striped", "maxLengthM": 1.5, "polarized": false, "codexId": "pyro_separation",
+      "allowed": [ { "from": "PYRO_OUT", "to": "PYRO_IN" } ] }
+  ],
+
+  "forbidden": [
+    { "code": "short_circuit", "from": "PWR_OUT", "to": "PWR_OUT", "severity": "blocker", "codexId": "eps",
+      "message": "Short circuit: two power outputs wired together." },
+    { "code": "wrong_port_type", "from": "*", "to": "*", "severity": "blocker", "codexId": "eps",
+      "message": "This cable can't plug into a port of another type." }
+  ],
+
+  "warnings": [
+    { "code": "battery_bypasses_eps", "severity": "warning", "codexId": "eps",
+      "message": "Battery wired straight to a load: it bypasses the EPS's protection and charging." },
+    { "code": "rail_overload", "severity": "fault", "codexId": "eps",
+      "message": "A power output is carrying more than its rated watts." }
+  ],
+
+  "requiredConnections": [
+    { "category": "radio", "portTypes": [ "PWR_IN", "DATA", "RF" ], "message": "A radio needs power, data and an antenna cable.", "codexId": "downlink" },
+    { "category": "camera", "portTypes": [ "PWR_IN", "DATA" ], "message": "A camera needs power and a data cable to the computer.", "codexId": "gsd" },
+    { "category": "adcs", "portTypes": [ "PWR_IN", "DATA" ], "message": "ADCS needs power and data.", "codexId": "adcs" },
+    { "category": "obc", "portTypes": [ "PWR_IN" ], "message": "The flight computer needs power.", "codexId": "data_budget" },
+    { "category": "eps", "portTypes": [ "SOLAR_IN" ], "minConnected": 1, "message": "The EPS needs at least one solar panel.", "codexId": "eps" },
+    { "category": "eps", "portTypes": [ "BATT" ], "message": "The EPS needs a battery (through the deployment switch).", "codexId": "eps" },
+    { "category": "antenna", "portTypes": [ "RF" ], "message": "The antenna must be connected to a radio.", "codexId": "downlink" }
+  ],
+
+  "inlineRules": [
+    { "partId": "dep_switch", "fromCategory": "battery", "toCategory": "eps", "codexId": "deployment_switch",
+      "message": "The deployment switch must sit between the battery and the EPS." }
+  ],
+
+  "assemblyOrder": {
+    "cubesat": [ "frame_3u", "eps", "battery", "dep_switch", "obc", "radio", "antenna", "adcs", "camera", "solar", "rbf_pin" ],
+    "pathfinder": [ "pf_stage1", "pf_interstage", "pf_stage2", "pf_avionics_ring", "pf_payload_adapter", "payload", "pf_fairing_left", "pf_fairing_right" ]
+  },
+
+  "boltJoints": [
+    { "id": "j_s1_interstage", "lowerPartId": "pf_stage1", "upperPartId": "pf_interstage", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 45, "codexId": "star_pattern" },
+    { "id": "j_interstage_s2", "lowerPartId": "pf_interstage", "upperPartId": "pf_stage2", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 45, "codexId": "star_pattern" },
+    { "id": "j_payload_adapter", "lowerPartId": "pf_avionics_ring", "upperPartId": "pf_payload_adapter", "boltCount": 8, "size": "M6", "torqueNm": 12, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" },
+    { "id": "j_fairing_left", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_left", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" },
+    { "id": "j_fairing_right", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_right", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" }
+  ],
+
+  "pyroChannels": [
+    { "channel": 1, "function": "s1_ignition", "targetPartId": "av_igniter_s1", "failureIfUnwired": "no_ignition" },
+    { "channel": 2, "function": "stage_separation", "targetPartId": "av_stage_sep", "failureIfUnwired": "stuck_stage" },
+    { "channel": 3, "function": "s2_ignition", "targetPartId": "av_igniter_s2", "failureIfUnwired": "s2_no_thrust" },
+    { "channel": 4, "function": "fairing_separation", "targetPartId": "av_fairing_sep", "failureIfUnwired": "fairing_stuck" }
+  ],
+
+  "safeArm": {
+    "partId": "av_safe_arm", "vabState": "SAFE", "padState": "ARMED",
+    "message": "Keep the Safe/Arm plug in SAFE while anyone works on the rocket; arm it only at the pad."
+  },
+
+  "avionicsWiring": [
+    { "id": "w_batt_pdu", "from": "av_battery/PWR_OUT_1", "to": "av_pdu/PWR_IN", "cableType": "power", "consequence": "no_avionics_power", "message": "No battery power reaches the PDU: the whole avionics ring is dead." },
+    { "id": "w_pdu_fc", "from": "av_pdu/PWR_OUT_1", "to": "av_flight_computer/PWR_IN", "cableType": "power", "consequence": "no_flight_computer", "message": "Flight computer unpowered: nothing fires, automatic abort." },
+    { "id": "w_pdu_imu", "from": "av_pdu/PWR_OUT_2", "to": "av_imu/PWR_IN", "cableType": "power", "consequence": "guidance_drift", "message": "IMU unpowered: guidance has no attitude and the rocket drifts off course." },
+    { "id": "w_pdu_tlm", "from": "av_pdu/PWR_OUT_3", "to": "av_telemetry/PWR_IN", "cableType": "power", "consequence": "no_telemetry", "message": "Telemetry radio unpowered: LOS - NO TELEMETRY." },
+    { "id": "w_fc_imu", "from": "av_flight_computer/DATA_1", "to": "av_imu/DATA", "cableType": "data", "consequence": "guidance_drift", "message": "IMU data not reaching the computer: the rocket drifts off course." },
+    { "id": "w_fc_tlm", "from": "av_flight_computer/DATA_2", "to": "av_telemetry/DATA", "cableType": "data", "consequence": "no_telemetry", "message": "Telemetry has nothing to send: LOS - NO TELEMETRY." },
+    { "id": "w_tlm_ant", "from": "av_telemetry/RF", "to": "av_antenna/RF", "cableType": "rf", "consequence": "no_telemetry", "message": "No antenna on the telemetry radio: LOS - NO TELEMETRY." },
+    { "id": "w_pyro1", "from": "av_flight_computer/PYRO_OUT_1", "to": "av_igniter_s1/PYRO_IN", "cableType": "pyro", "consequence": "no_ignition", "message": "Stage 1 igniter not wired: no ignition at T-0, automatic abort." },
+    { "id": "w_pyro2", "from": "av_flight_computer/PYRO_OUT_2", "to": "av_stage_sep/PYRO_IN", "cableType": "pyro", "consequence": "stuck_stage", "message": "Stage separation not wired: stage 1 stays attached and stage 2 can't fire." },
+    { "id": "w_pyro3", "from": "av_flight_computer/PYRO_OUT_3", "to": "av_igniter_s2/PYRO_IN", "cableType": "pyro", "consequence": "s2_no_thrust", "message": "Stage 2 igniter not wired: the upper stage coasts without thrust." },
+    { "id": "w_pyro4", "from": "av_flight_computer/PYRO_OUT_4", "to": "av_fairing_sep/PYRO_IN", "cableType": "pyro", "consequence": "fairing_stuck", "message": "Fairing separation not wired: the fairing stays on and the satellite can't deploy." }
+  ],
+
+  "launchSites": [
+    { "id": "sonmiani", "name": "Sonmiani, Pakistan", "latitudeDeg": 25.2, "longitudeDeg": 66.75, "country": "Pakistan" },
+    { "id": "cape_canaveral", "name": "Cape Canaveral, USA", "latitudeDeg": 28.5, "longitudeDeg": -80.6, "country": "USA" }
+  ]
+}

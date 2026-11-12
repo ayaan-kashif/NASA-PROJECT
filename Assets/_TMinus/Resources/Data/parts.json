@@ -1,0 +1,206 @@
+{
+  "parts": [
+    { "id": "frame_3u", "name": "3U structure", "category": "frame", "assembly": "cubesat", "mount": "frame", "massKg": 0.35, "costK": 6, "lengthM": 0.34, "diameterM": 0.1, "illustrative": true, "codexId": "eps",
+      "description": "Aluminium frame 10 x 10 x 34 cm with 4 corner rails. Boards slide into slots U1-U3; panels and antennas mount outside.",
+      "specs": { "slots": 3, "boardsPerSlot": 2, "longFaces": 4, "endFaces": 2 }, "ports": [] },
+
+    { "id": "eps", "name": "Electrical power system board", "category": "eps", "assembly": "cubesat", "mount": "slot", "massKg": 0.10, "costK": 12, "powerIdleW": 0.15, "illustrative": true, "codexId": "eps",
+      "description": "Takes power from the solar panels, charges the battery and feeds every other board through protected outputs.",
+      "ports": [
+        { "id": "SOLAR_IN_1", "type": "SOLAR_IN", "label": "Solar in 1" },
+        { "id": "SOLAR_IN_2", "type": "SOLAR_IN", "label": "Solar in 2" },
+        { "id": "BATT", "type": "BATT", "label": "Battery" },
+        { "id": "PWR_OUT_1", "type": "PWR_OUT", "label": "Power out 1", "maxPowerW": 10 },
+        { "id": "PWR_OUT_2", "type": "PWR_OUT", "label": "Power out 2", "maxPowerW": 10 },
+        { "id": "PWR_OUT_3", "type": "PWR_OUT", "label": "Power out 3", "maxPowerW": 10 },
+        { "id": "PWR_OUT_4", "type": "PWR_OUT", "label": "Power out 4", "maxPowerW": 10 },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+
+    { "id": "batt_20", "name": "Battery 20 Wh", "category": "battery", "assembly": "cubesat", "mount": "slot", "massKg": 0.18, "costK": 4, "illustrative": true, "codexId": "battery_dod",
+      "description": "Lithium-ion pack. Carries the satellite through each eclipse.",
+      "specs": { "capacityWh": 20 },
+      "ports": [ { "id": "BATT", "type": "BATT", "label": "Battery" } ] },
+
+    { "id": "batt_40", "name": "Battery 40 Wh", "category": "battery", "assembly": "cubesat", "mount": "slot", "massKg": 0.33, "costK": 7, "illustrative": true, "codexId": "battery_dod",
+      "description": "Bigger lithium-ion pack: more eclipse margin, more mass.",
+      "specs": { "capacityWh": 40 },
+      "ports": [ { "id": "BATT", "type": "BATT", "label": "Battery" } ] },
+
+    { "id": "obc", "name": "Flight computer (2,000 MB)", "category": "obc", "assembly": "cubesat", "mount": "slot", "massKg": 0.10, "costK": 10, "powerIdleW": 0.5, "illustrative": true, "codexId": "data_budget",
+      "description": "The satellite's brain: runs the schedule, stores images and talks to every board over the data bus.",
+      "specs": { "storageMB": 2000 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA_1", "type": "DATA", "label": "Data bus 1", "bus": true },
+        { "id": "DATA_2", "type": "DATA", "label": "Data bus 2", "bus": true },
+        { "id": "DATA_3", "type": "DATA", "label": "Data bus 3", "bus": true },
+        { "id": "DATA_4", "type": "DATA", "label": "Data bus 4", "bus": true }
+      ] },
+
+    { "id": "radio_uhf", "name": "UHF radio 9.6 kbps", "category": "radio", "assembly": "cubesat", "mount": "slot", "massKg": 0.09, "costK": 8, "powerIdleW": 1, "powerActiveW": 4, "illustrative": true, "codexId": "downlink",
+      "description": "Cheap, low-power, slow. Fine for health data, tight for images.",
+      "specs": { "dataRateKbps": 9.6 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" },
+        { "id": "RF", "type": "RF", "label": "Antenna" }
+      ] },
+
+    { "id": "radio_sband", "name": "S-band radio 1,000 kbps", "category": "radio", "assembly": "cubesat", "mount": "slot", "massKg": 0.20, "costK": 25, "powerIdleW": 1.5, "powerActiveW": 10, "illustrative": true, "codexId": "downlink",
+      "description": "About 100 times faster than UHF, and hungrier for power while transmitting.",
+      "specs": { "dataRateKbps": 1000 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" },
+        { "id": "RF", "type": "RF", "label": "Antenna" }
+      ] },
+
+    { "id": "ant_uhf", "name": "UHF deployable antenna", "category": "antenna", "assembly": "cubesat", "mount": "face_end", "massKg": 0.05, "costK": 3, "illustrative": true, "codexId": "downlink",
+      "description": "Tape-spring antenna that unfolds after deployment. Pairs with the UHF radio.",
+      "specs": { "band": 1 },
+      "ports": [ { "id": "RF", "type": "RF", "label": "RF" } ] },
+
+    { "id": "ant_patch", "name": "S-band patch antenna", "category": "antenna", "assembly": "cubesat", "mount": "face_end", "massKg": 0.06, "costK": 6, "illustrative": true, "codexId": "downlink",
+      "description": "Flat antenna for the S-band radio.",
+      "specs": { "band": 2 },
+      "ports": [ { "id": "RF", "type": "RF", "label": "RF" } ] },
+
+    { "id": "adcs_mag", "name": "ADCS: magnetorquers + sun sensors", "category": "adcs", "assembly": "cubesat", "mount": "slot", "massKg": 0.15, "costK": 15, "powerIdleW": 0.4, "illustrative": true, "codexId": "adcs",
+      "description": "Points the satellite to about +/-10 degrees by pushing against Earth's magnetic field.",
+      "specs": { "pointingErrorDeg": 10 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+
+    { "id": "adcs_rw", "name": "ADCS: reaction wheels + star tracker", "category": "adcs", "assembly": "cubesat", "mount": "slot", "massKg": 0.70, "costK": 60, "powerIdleW": 2.5, "illustrative": true, "codexId": "adcs",
+      "description": "Spinning wheels and a star camera hold pointing to about +/-0.1 degrees. Needed for sharp images.",
+      "specs": { "pointingErrorDeg": 0.1 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+
+    { "id": "cam_wide", "name": "Wide camera (100 m/pixel)", "category": "camera", "assembly": "cubesat", "mount": "face_end", "massKg": 0.20, "costK": 10, "powerActiveW": 2, "illustrative": true, "codexId": "gsd",
+      "description": "Sees a wide area at 100 m per pixel from 550 km. 4 MB per image.",
+      "specs": { "gsdMAt550": 100, "imageMB": 4 },
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+
+    { "id": "cam_hd", "name": "Imaging camera (5 m/pixel)", "category": "camera", "assembly": "cubesat", "mount": "face_end", "massKg": 0.60, "costK": 45, "powerActiveW": 4.5, "illustrative": true, "codexId": "gsd",
+      "description": "Sharp 5 m per pixel from 550 km, 25 MB per image. Needs reaction-wheel pointing.",
+      "specs": { "gsdMAt550": 5, "imageMB": 25 },
+      "requires": [ "adcs_rw" ],
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+
+    { "id": "solar_body", "name": "Body-mounted solar panels (8 W)", "category": "solar", "assembly": "cubesat", "mount": "face_long", "massKg": 0.20, "costK": 20, "illustrative": true, "codexId": "eclipse",
+      "description": "Panels fixed to the sides: simple and robust, but they rarely face the Sun squarely.",
+      "specs": { "peakW": 8, "pointingFactor": 0.6 },
+      "ports": [
+        { "id": "SOLAR_OUT_1", "type": "SOLAR_OUT", "label": "Solar out 1" },
+        { "id": "SOLAR_OUT_2", "type": "SOLAR_OUT", "label": "Solar out 2" }
+      ] },
+
+    { "id": "solar_wings", "name": "Deployable solar wings (20 W)", "category": "solar", "assembly": "cubesat", "mount": "face_long", "massKg": 0.35, "costK": 45, "illustrative": true, "codexId": "eclipse",
+      "description": "Fold-out wings: much more power, more cost and one more thing that must deploy.",
+      "specs": { "peakW": 20, "pointingFactor": 0.8 },
+      "ports": [
+        { "id": "SOLAR_OUT_1", "type": "SOLAR_OUT", "label": "Solar out 1" },
+        { "id": "SOLAR_OUT_2", "type": "SOLAR_OUT", "label": "Solar out 2" }
+      ] },
+
+    { "id": "dep_switch", "name": "Deployment switch", "category": "switch", "assembly": "cubesat", "mount": "inline", "massKg": 0.01, "costK": 1, "illustrative": true, "codexId": "deployment_switch",
+      "description": "Sits between battery and EPS. Pressed flat inside the dispenser, it keeps the satellite switched off until it is pushed out.",
+      "ports": [
+        { "id": "BATT_IN", "type": "BATT", "label": "From battery" },
+        { "id": "BATT_OUT", "type": "BATT", "label": "To EPS" }
+      ] },
+
+    { "id": "rbf_pin", "name": "Remove-Before-Flight pin", "category": "pin", "assembly": "cubesat", "mount": "pin", "massKg": 0.01, "costK": 0, "illustrative": true, "codexId": "rbf_pin",
+      "description": "Keeps the satellite dead safe on the ground. Must be pulled at the pad, or the satellite never wakes up.",
+      "ports": [] },
+
+    { "id": "pf_stage1", "name": "Pathfinder stage 1", "category": "rocket_stage", "assembly": "pathfinder", "mount": "stack", "massKg": 1000, "costK": 0, "lengthM": 12, "diameterM": 1.2, "illustrative": true, "codexId": "staging",
+      "description": "Booster with 9 engines. Burns first, then drops away.", "ports": [] },
+    { "id": "pf_interstage", "name": "Pathfinder interstage", "category": "interstage", "assembly": "pathfinder", "mount": "stack", "massKg": 60, "lengthM": 1.0, "diameterM": 1.2, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Short ring that joins stage 1 to stage 2 and shields the upper engine.", "ports": [] },
+    { "id": "pf_stage2", "name": "Pathfinder stage 2", "category": "rocket_stage", "assembly": "pathfinder", "mount": "stack", "massKg": 250, "lengthM": 2.4, "diameterM": 1.2, "illustrative": true, "codexId": "staging",
+      "description": "Upper stage with one vacuum engine. Finishes the climb to orbit.", "ports": [] },
+    { "id": "pf_avionics_ring", "name": "Avionics ring", "category": "avionics_ring", "assembly": "pathfinder", "mount": "stack", "massKg": 25, "lengthM": 0.3, "diameterM": 1.2, "illustrative": true, "codexId": "telemetry",
+      "description": "Holds the flight computer, IMU, battery and pyro wiring. Open it in Bay view.", "ports": [] },
+    { "id": "pf_payload_adapter", "name": "Payload adapter + CubeSat dispenser", "category": "payload_adapter", "assembly": "pathfinder", "mount": "stack", "massKg": 15, "lengthM": 0.4, "diameterM": 1.0, "illustrative": true, "codexId": "deployment_switch",
+      "description": "Cone that carries the spring-loaded CubeSat dispenser.", "ports": [] },
+    { "id": "pf_fairing_left", "name": "Fairing half (left)", "category": "fairing", "assembly": "pathfinder", "mount": "stack", "massKg": 25, "lengthM": 2.5, "diameterM": 1.2, "illustrative": true, "codexId": "max_q",
+      "description": "Nose shell that protects the payload through the air. Jettisoned at 110 km.", "ports": [] },
+    { "id": "pf_fairing_right", "name": "Fairing half (right)", "category": "fairing", "assembly": "pathfinder", "mount": "stack", "massKg": 25, "lengthM": 2.5, "diameterM": 1.2, "illustrative": true, "codexId": "max_q",
+      "description": "Nose shell that protects the payload through the air. Jettisoned at 110 km.", "ports": [] },
+
+    { "id": "av_battery", "name": "Flight battery (28 V)", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 4, "illustrative": true, "codexId": "telemetry",
+      "description": "Powers the rocket's electronics during flight.", "specs": { "voltage": 28 },
+      "ports": [ { "id": "PWR_OUT_1", "type": "PWR_OUT", "label": "28 V out", "maxPowerW": 200 } ] },
+    { "id": "av_pdu", "name": "Power distribution unit", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 2, "illustrative": true, "codexId": "eps",
+      "description": "Splits battery power into protected lines for each device.",
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "PWR_OUT_1", "type": "PWR_OUT", "label": "Out 1", "maxPowerW": 60 },
+        { "id": "PWR_OUT_2", "type": "PWR_OUT", "label": "Out 2", "maxPowerW": 60 },
+        { "id": "PWR_OUT_3", "type": "PWR_OUT", "label": "Out 3", "maxPowerW": 60 }
+      ] },
+    { "id": "av_flight_computer", "name": "Flight computer", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 3, "powerIdleW": 30, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Steers the rocket and fires the pyro channels for ignition and separation.",
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA_1", "type": "DATA", "label": "Data 1", "bus": true },
+        { "id": "DATA_2", "type": "DATA", "label": "Data 2", "bus": true },
+        { "id": "DATA_3", "type": "DATA", "label": "Data 3", "bus": true },
+        { "id": "PYRO_OUT_1", "type": "PYRO_OUT", "label": "Pyro 1: S1 ignition" },
+        { "id": "PYRO_OUT_2", "type": "PYRO_OUT", "label": "Pyro 2: stage separation" },
+        { "id": "PYRO_OUT_3", "type": "PYRO_OUT", "label": "Pyro 3: S2 ignition" },
+        { "id": "PYRO_OUT_4", "type": "PYRO_OUT", "label": "Pyro 4: fairing separation" },
+        { "id": "ARM", "type": "ARM", "label": "Safe/Arm" }
+      ] },
+    { "id": "av_imu", "name": "Inertial measurement unit", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 1.5, "powerIdleW": 10, "illustrative": true, "codexId": "gravity_turn",
+      "description": "Gyros and accelerometers: tells the computer which way the rocket points.",
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" }
+      ] },
+    { "id": "av_telemetry", "name": "Telemetry radio", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 1.5, "powerIdleW": 20, "illustrative": true, "codexId": "telemetry",
+      "description": "Sends live flight data to the ground.",
+      "ports": [
+        { "id": "PWR_IN", "type": "PWR_IN", "label": "Power in" },
+        { "id": "DATA", "type": "DATA", "label": "Data" },
+        { "id": "RF", "type": "RF", "label": "Antenna" }
+      ] },
+    { "id": "av_antenna", "name": "Telemetry antenna", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 0.5, "illustrative": true, "codexId": "telemetry",
+      "description": "Flush antenna on the ring's skin.",
+      "ports": [ { "id": "RF", "type": "RF", "label": "RF" } ] },
+    { "id": "av_igniter_s1", "name": "Stage 1 igniter", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 0.3, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Lights the stage 1 engines at T-0.", "ports": [ { "id": "PYRO_IN", "type": "PYRO_IN", "label": "Pyro in" } ] },
+    { "id": "av_igniter_s2", "name": "Stage 2 igniter", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 0.3, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Lights the stage 2 engine after separation.", "ports": [ { "id": "PYRO_IN", "type": "PYRO_IN", "label": "Pyro in" } ] },
+    { "id": "av_stage_sep", "name": "Stage separation system", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 1, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Pyrotechnic bolts that cut stage 1 loose.", "ports": [ { "id": "PYRO_IN", "type": "PYRO_IN", "label": "Pyro in" } ] },
+    { "id": "av_fairing_sep", "name": "Fairing separation system", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 1, "illustrative": true, "codexId": "pyro_separation",
+      "description": "Splits the fairing halves apart above the atmosphere.", "ports": [ { "id": "PYRO_IN", "type": "PYRO_IN", "label": "Pyro in" } ] },
+    { "id": "av_safe_arm", "name": "Safe/Arm plug", "category": "avionics_device", "assembly": "avionics", "mount": "ring", "massKg": 0.2, "illustrative": true, "codexId": "safe_arm",
+      "description": "Physically blocks the pyro circuits. SAFE in the VAB, ARMED only at the pad.", "ports": [ { "id": "ARM", "type": "ARM", "label": "Arm" } ] },
+
+    { "id": "saturnv_sic", "name": "S-IC first stage", "category": "saturn_stage", "assembly": "saturn_v", "mount": "stack", "massKg": 137000, "lengthM": 42, "diameterM": 10, "inspectOnly": true, "codexId": "f1_engine",
+      "description": "Five F-1 engines burning kerosene and liquid oxygen for about two and a half minutes.", "source": "https://en.wikipedia.org/wiki/Saturn_V", "ports": [] },
+    { "id": "saturnv_sii", "name": "S-II second stage", "category": "saturn_stage", "assembly": "saturn_v", "mount": "stack", "massKg": 43000, "lengthM": 24.87, "diameterM": 10, "inspectOnly": true, "codexId": "j2_engine",
+      "description": "Five J-2 engines burning liquid hydrogen and liquid oxygen.", "source": "https://en.wikipedia.org/wiki/Saturn_V", "ports": [] },
+    { "id": "saturnv_sivb", "name": "S-IVB third stage", "category": "saturn_stage", "assembly": "saturn_v", "mount": "stack", "massKg": 15200, "lengthM": 17.86, "diameterM": 6.6, "inspectOnly": true, "codexId": "j2_engine",
+      "description": "One restartable J-2: first to orbit, then towards the Moon.", "source": "https://en.wikipedia.org/wiki/Saturn_V", "ports": [] },
+    { "id": "saturnv_iu", "name": "Instrument Unit", "category": "saturn_stage", "assembly": "saturn_v", "mount": "stack", "massKg": 2000, "lengthM": 0.91, "diameterM": 6.6, "inspectOnly": true, "illustrative": true, "codexId": "saturn_v",
+      "description": "The ring of computers and gyros that guided the Saturn V.", "ports": [] },
+    { "id": "saturnv_spacecraft", "name": "Apollo spacecraft", "category": "saturn_stage", "assembly": "saturn_v", "mount": "stack", "massKg": 43500, "lengthM": 25, "diameterM": 6.6, "inspectOnly": true, "illustrative": true, "codexId": "saturn_v",
+      "description": "Lunar module, service module, command module and launch escape tower.", "ports": [] }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "codex": [
+    { "id": "star_pattern", "title": "Star pattern", "sourceUrl": "https://en.wikipedia.org/wiki/Bolted_joint", "needsReview": false,
+      "short": "Tighten bolts in a criss-cross order, jumping across the circle each time, so the joint closes evenly instead of tilting.",
+      "long": "If you fully tighten bolts one after another around a flange, the first side clamps down while the far side is still loose. The flange tilts, leaves a gap and the bolts carry uneven loads. A star pattern jumps across the circle: bolt 1, then the one opposite, then a quarter turn round, and so on. Doing it in several passes (for example 30%, 70%, then 100% of the target torque) pulls both faces together flat, so every bolt shares the load." },
+
+    { "id": "torque", "title": "Torque", "sourceUrl": "https://en.wikipedia.org/wiki/Torque", "needsReview": false,
+      "short": "Torque is turning force, measured in newton-metres (N·m). The right torque stretches a bolt just enough to clamp the joint tight.",
+      "long": "Torque is force times the distance from the turning axis: 45 N·m is like hanging 4.6 kg on the end of a 1 m spanner. Tightening a bolt stretches it slightly, like a stiff spring, and that stretch is what clamps two parts together. Too little torque and the joint can open under load or vibration. Too much and the thread strips or the bolt yields, and it must be replaced. That's why every joint has a target torque and a tolerance." },
+
+    { "id": "staging", "title": "Staging", "sourceUrl": "https://en.wikipedia.org/wiki/Multistage_rocket", "needsReview": false,
+      "short": "A rocket drops empty stages so it stops carrying dead weight. Each new stage starts lighter and goes faster.",
+      "long": "Most of a rocket's mass is propellant. Once a stage's tanks are empty, its engines, tanks and structure are just weight. Dropping that stage and lighting a smaller one above it means the remaining rocket is much lighter, so the same thrust gives more acceleration. This is why almost every orbital rocket has two or more stages. Staging needs reliable separation and a reliable ignition of the next stage, and both depend on the wiring." },
+
+    { "id": "thrust_to_weight", "title": "Thrust-to-weight ratio", "sourceUrl": "https://en.wikipedia.org/wiki/Thrust-to-weight_ratio", "needsReview": false,
+      "short": "Thrust divided by weight. Above 1 the rocket lifts off; below 1 it stays on the pad however long the engines burn.",
+      "long": "Weight is mass times gravity (m x 9.81 m/s²). If engine thrust is smaller than the weight, the rocket cannot leave the ground. Big launchers lift off with a thrust-to-weight ratio of only about 1.2 to 1.5, so they start slowly and speed up as they burn propellant and get lighter. Too high a ratio wastes engine mass and shakes the vehicle; too low wastes propellant fighting gravity." },
+
+    { "id": "delta_v", "title": "Delta-v and the rocket equation", "sourceUrl": "https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation", "needsReview": false,
+      "short": "Delta-v is how much a stage can change its speed: Δv = Isp × g0 × ln(full mass ÷ empty mass).",
+      "long": "The rocket equation, from Konstantin Tsiolkovsky, says a stage's speed change depends on two things: how efficient its engine is (specific impulse, Isp) and how much of its mass is propellant (the ratio of full mass to empty mass). Because of the logarithm, doubling the propellant does not double the delta-v. Reaching low Earth orbit takes roughly 9,000 to 10,000 m/s once you include losses to gravity and drag, which is why rockets are mostly propellant." },
+
+    { "id": "isp", "title": "Specific impulse (Isp)", "sourceUrl": "https://en.wikipedia.org/wiki/Specific_impulse", "needsReview": false,
+      "short": "Specific impulse measures engine efficiency, in seconds. Higher Isp means more push from each kilogram of propellant.",
+      "long": "Specific impulse tells you how long one kilogram of propellant could produce a force equal to its own weight. Kerosene and liquid oxygen engines reach about 300 s; liquid hydrogen engines about 420 to 450 s. Isp is lower at sea level because the surrounding air pushes back on the exhaust leaving the nozzle. That's why an engine's thrust rises as the rocket climbs into thinner air." },
+
+    { "id": "max_q", "title": "Max-Q", "sourceUrl": "https://en.wikipedia.org/wiki/Max_q", "needsReview": false,
+      "short": "Max-Q is the moment of highest aerodynamic pressure on the rocket, when speed is high but the air is still fairly thick.",
+      "long": "Dynamic pressure q = ½ × air density × speed². Just after liftoff the rocket is slow; high up the air is thin. Somewhere in between, usually about a minute into flight, q peaks. That is max-Q, the hardest moment for the structure, the fairing and every bolted joint. Rockets often throttle down through max-Q to reduce the load. A badly bolted joint that survives the pad can fail here." },
+
+    { "id": "gravity_turn", "title": "Gravity turn", "sourceUrl": "https://en.wikipedia.org/wiki/Gravity_turn", "needsReview": false,
+      "short": "After a small tilt early on, gravity slowly bends the rocket's path over until it flies sideways, which is what orbit needs.",
+      "long": "Orbit is mostly about going sideways fast, not about going up. A rocket climbs vertically for a few seconds, tips over by a few degrees (the pitch kick), and then keeps its nose along its direction of travel. Gravity gradually curves the path towards horizontal. This keeps the rocket at a low angle of attack through the thick air, so sideways loads stay small. The IMU and guidance computer keep it on this path." },
+
+    { "id": "launching_east", "title": "Launching east", "sourceUrl": "https://en.wikipedia.org/wiki/Earth%27s_rotation", "needsReview": false,
+      "short": "Earth spins eastward. Launching east gives a free speed boost of about 465 m/s × cos(latitude): about 420 m/s from Sonmiani.",
+      "long": "A rocket on the pad is already moving with the ground. At the equator Earth's surface turns at about 465 m/s; further north or south the speed falls with the cosine of latitude. Launching towards the east adds this speed to the rocket's own, so it needs less propellant to reach orbit. Sonmiani, at about 25°N, gives roughly 420 m/s; Cape Canaveral, at 28.5°N, about 410 m/s." },
+
+    { "id": "orbit_periapsis", "title": "Orbit, apoapsis and periapsis", "sourceUrl": "https://en.wikipedia.org/wiki/Apsis", "needsReview": false,
+      "short": "An orbit's highest point is the apoapsis, its lowest the periapsis. You're in orbit when the periapsis stays above the atmosphere.",
+      "long": "An orbit is falling around the Earth while moving sideways fast enough to keep missing it. At 550 km that takes about 7.6 km/s. Most orbits are slightly oval: the high point is the apoapsis and the low point the periapsis. Rockets usually burn to raise the apoapsis to the target height, coast up to it, then burn again to lift the periapsis. If the periapsis dips into the atmosphere, drag pulls the satellite down." },
+
+    { "id": "eclipse", "title": "Eclipse and solar power", "sourceUrl": "https://en.wikipedia.org/wiki/Low_Earth_orbit", "needsReview": false,
+      "short": "In low orbit a satellite spends about a third of each orbit in Earth's shadow, with no solar power. The battery must cover it.",
+      "long": "At 550 km one orbit takes about 95 minutes, and in the worst case about 35 of them are in Earth's shadow. Solar panels produce nothing there, so the battery runs everything. Panels also rarely face the Sun squarely: body-mounted panels catch less light than deployable wings that can be angled. Orbit-average power generation must beat consumption, or the battery slowly drains and the satellite dies." },
+
+    { "id": "battery_dod", "title": "Battery depth of discharge", "sourceUrl": "https://en.wikipedia.org/wiki/Depth_of_discharge", "needsReview": true,
+      "short": "Depth of discharge is how much of the battery you use per cycle. Shallow cycles let a battery survive thousands of eclipses.",
+      "long": "A satellite in low orbit charges and discharges its battery about 15 times a day: thousands of cycles in a year. Draining a lithium-ion battery deeply each time wears it out quickly. Designers keep each eclipse to a shallow depth of discharge, often around 20 to 30%. In this game the limit is 30%, so the battery must hold about three times the energy one eclipse needs." },
+
+    { "id": "eps", "title": "Electrical power system (EPS)", "sourceUrl": "https://www.nasa.gov/wp-content/uploads/2017/03/nasa_csli_cubesat_101_508.pdf", "needsReview": false,
+      "short": "The EPS collects solar power, charges the battery and feeds every board through protected outputs. Each output has a power limit.",
+      "long": "The EPS is the satellite's power plant. It takes the solar panels' output, charges the battery safely and splits power into protected output lines for the other boards. Wiring a battery straight to a board skips this protection: no charge control and no fuse if something shorts. Each EPS output can carry only so many watts, so heavy loads must be spread across outputs." },
+
+    { "id": "deployment_switch", "title": "Deployment switch", "sourceUrl": "https://www.nasa.gov/wp-content/uploads/2017/03/nasa_csli_cubesat_101_508.pdf", "needsReview": false,
+      "short": "A switch pressed flat by the dispenser keeps a CubeSat completely off until it is pushed out into space.",
+      "long": "CubeSats ride inside a spring-loaded dispenser next to other payloads. To protect the rocket and its neighbours, a CubeSat must stay unpowered until it is out. Deployment switches, held down by the dispenser rails, cut the battery from the electronics. When the satellite springs free, the switches release and it powers up. The switch must sit between the battery and the EPS to do its job." },
+
+    { "id": "rbf_pin", "title": "Remove-Before-Flight pin", "sourceUrl": "https://en.wikipedia.org/wiki/Remove_before_flight", "needsReview": false,
+      "short": "A pin with a red flag that keeps hardware safe on the ground. If nobody pulls it before launch, the satellite never wakes up.",
+      "long": "Remove-Before-Flight items carry bright red tags so they're easy to spot. On a CubeSat the RBF pin holds the power circuit open while engineers handle it, so it can't switch on by accident. It must be pulled at the launch pad as one of the last checklist items. Pre-launch checklists exist because a tiny forgotten step like this can end a whole mission." },
+
+    { "id": "pyro_separation", "title": "Pyrotechnic separation", "sourceUrl": "https://en.wikipedia.org/wiki/Pyrotechnic_fastener", "needsReview": false,
+      "short": "Small explosive charges cut bolts or joints in milliseconds to drop stages and open fairings. Each one fires from a computer channel.",
+      "long": "Rockets separate stages and fairings with pyrotechnics: explosive bolts, cutting cords or pushers fired by an electrical pulse from the flight computer. Each event has its own pyro channel and its own cable. If a pyro cable is missing, nothing happens at the critical moment: the spent stage stays attached, the fairing stays shut, or the next engine never lights." },
+
+    { "id": "safe_arm", "title": "Safe/Arm", "sourceUrl": "https://en.wikipedia.org/wiki/Safety_interlock", "needsReview": true,
+      "short": "A Safe/Arm device physically blocks the firing circuits. It stays SAFE while people work on the rocket and is armed only at the pad.",
+      "long": "Pyrotechnics are dangerous on the ground: a stray voltage could fire a charge while a technician is nearby. A Safe/Arm plug or device mechanically breaks the firing circuit. Teams keep it in SAFE during assembly and testing and switch it to ARMED only late in the countdown, when the pad has been cleared. Working on pyro wiring while armed is a serious safety violation." },
+
+    { "id": "telemetry", "title": "Telemetry", "sourceUrl": "https://en.wikipedia.org/wiki/Telemetry", "needsReview": false,
+      "short": "Telemetry is the stream of measurements a vehicle radios to the ground: speed, height, temperatures, voltages, events.",
+      "long": "Mission controllers can't see inside a rocket, so it reports on itself. A telemetry radio sends readings from sensors and the flight computer to ground stations many times a second. Without telemetry the rocket may still fly, but nobody knows what happened if something goes wrong. Investigators rebuild failures from telemetry, which is why the debrief in this game reads your event log." },
+
+    { "id": "adcs", "title": "ADCS and pointing", "sourceUrl": "https://en.wikipedia.org/wiki/Attitude_control", "needsReview": false,
+      "short": "The attitude determination and control system points the satellite. Sharp images need precise, steady pointing.",
+      "long": "A camera is useless if the satellite drifts. ADCS senses orientation (sun sensors, magnetometers, star trackers) and turns the satellite (magnetorquers, reaction wheels). Magnetorquers are cheap and light but coarse, roughly within 10 degrees. Reaction wheels with a star tracker can hold within about 0.1 degrees, needed for a high-resolution camera, but they cost more mass, power and money." },
+
+    { "id": "gsd", "title": "Ground sample distance", "sourceUrl": "https://en.wikipedia.org/wiki/Ground_sample_distance", "needsReview": false,
+      "short": "Ground sample distance is how much ground one pixel covers. 5 m per pixel shows streets; 100 m per pixel shows only lakes and fields.",
+      "long": "A camera's resolution from orbit is described by its ground sample distance (GSD): the width of ground each pixel sees. GSD grows with altitude, so the same camera is sharper at 400 km than at 800 km. Smaller GSD means more detail but more pixels to cover the same area, so bigger image files and more data to send down." },
+
+    { "id": "downlink", "title": "Downlink and ground passes", "sourceUrl": "https://en.wikipedia.org/wiki/Ground_station", "needsReview": false,
+      "short": "A satellite can only send data while a ground station sees it: a few passes a day, several minutes each.",
+      "long": "In low orbit a satellite races overhead and is in view of one ground station for only a few minutes per pass, a handful of times a day. In this game: 4 contacts of 8 minutes. Data downlinked per day = radio speed × contact time. A 9.6 kbps UHF radio sends about 2.3 MB a day; a 1,000 kbps S-band radio about 240 MB. The antenna must be wired to the radio." },
+
+    { "id": "data_budget", "title": "Data budget", "sourceUrl": "https://www.nasa.gov/wp-content/uploads/2017/03/nasa_csli_cubesat_101_508.pdf", "needsReview": false,
+      "short": "Data in versus data out: if the camera makes more data each day than the radio can send, storage fills up and images are lost.",
+      "long": "Each image is stored on the flight computer until it can be sent to the ground. If you collect data faster than you can downlink it, storage fills and new images are dropped. Balancing a data budget means matching camera, storage and radio. A sharper camera makes bigger files, so it often needs a faster radio too. Solar storms can also reboot the computer and cost a day of operations." },
+
+    { "id": "saturn_v", "title": "Saturn V", "sourceUrl": "https://en.wikipedia.org/wiki/Saturn_V", "needsReview": false,
+      "short": "NASA's 111 m, three-stage Moon rocket. It flew 13 times from 1967 to 1973 and launched every crewed Apollo Moon mission.",
+      "long": "Saturn V was built for the Apollo programme. Its first stage, the S-IC, used five F-1 engines; the S-II and S-IVB used J-2 engines burning liquid hydrogen. At liftoff it weighed about 2,900 tonnes. It could put about 140 tonnes into low Earth orbit, or send about 43.5 tonnes towards the Moon. Its final flight launched the Skylab space station in 1973." },
+
+    { "id": "f1_engine", "title": "F-1 engine", "sourceUrl": "https://en.wikipedia.org/wiki/Rocketdyne_F-1", "needsReview": false,
+      "short": "The F-1 is the most powerful single-chamber liquid-fuelled rocket engine ever flown. Five of them lifted every Saturn V.",
+      "long": "Built by Rocketdyne, the F-1 burned RP-1 kerosene with liquid oxygen. Each engine made about 6.8 MN of thrust at sea level, and the five on the S-IC burned for about two and a half minutes. Early tests suffered combustion instability, where pressure waves inside the chamber grew until they could destroy the engine; engineers fixed it with baffles on the injector plate." },
+
+    { "id": "j2_engine", "title": "J-2 engine", "sourceUrl": "https://en.wikipedia.org/wiki/Rocketdyne_J-2", "needsReview": false,
+      "short": "The J-2 burned liquid hydrogen and liquid oxygen. Five powered the S-II; one restartable J-2 powered the S-IVB.",
+      "long": "Hydrogen engines have a high specific impulse, over 420 s in vacuum, which makes them ideal for upper stages. The J-2 on the S-IVB could restart in space: one burn finished the climb to a parking orbit, and a second burn, after a coast, sent Apollo towards the Moon. That second burn is called trans-lunar injection." },
+
+    { "id": "rehbar_1962", "title": "Rehbar-I, 1962", "sourceUrl": "https://en.wikipedia.org/wiki/Rehbar_(rocket_family)", "needsReview": true,
+      "short": "On 7 June 1962 Pakistan launched its first rocket, Rehbar-I, from Sonmiani near Karachi, with NASA support.",
+      "long": "Rehbar-I was a two-stage Nike-Cajun sounding rocket launched from the Sonmiani range on the Balochistan coast. It carried sodium, released high in the atmosphere to form a glowing cloud that scientists tracked from the ground to study upper-atmosphere winds. It reached about 130 km. The launch came from a cooperation between Pakistan's space research commission (SUPARCO) and NASA." },
+
+    { "id": "apollo12_lightning", "title": "Apollo 12 lightning strike", "sourceUrl": "https://en.wikipedia.org/wiki/Apollo_12", "needsReview": false,
+      "short": "Apollo 12 was hit by lightning twice during launch in 1969. 'Try SCE to AUX' brought the spacecraft's telemetry back.",
+      "long": "On 14 November 1969, 36.5 seconds and 52 seconds after liftoff, lightning struck Apollo 12. The spacecraft's fuel cells dropped offline and the telemetry on mission controllers' screens turned to garbage. Flight controller John Aaron recognised the pattern and called for switching the Signal Conditioning Equipment to auxiliary power. Telemetry returned, the crew reset the power systems, and the Saturn V's own guidance had kept flying throughout. The mission landed on the Moon." },
+
+    { "id": "landsat", "title": "Landsat", "sourceUrl": "https://en.wikipedia.org/wiki/Landsat_program", "needsReview": false,
+      "short": "Landsat satellites, run by NASA and the USGS, have photographed Earth's land since 1972: the longest continuous record from space.",
+      "long": "Landsat images show how forests, cities, farms, rivers and lakes change over decades. Their 30 m pixels are coarse enough to cover large areas and sharp enough to map floods. In 2022 Landsat recorded Lake Manchar in Sindh swelling during Pakistan's catastrophic monsoon floods. Your FloodWatch-1 reward uses those images. Credit: NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey." }
+  ]
+}

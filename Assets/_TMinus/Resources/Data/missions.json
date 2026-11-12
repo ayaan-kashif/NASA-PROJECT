@@ -1,0 +1,122 @@
+{
+  "missions": [
+    {
+      "id": "floodwatch_1",
+      "name": "FloodWatch-1",
+      "priority": "P0",
+      "difficulty": "Beginner / Intermediate",
+      "startHere": true,
+      "objective": "Image the Indus floodplain for 30 days and downlink at least 20 usable images.",
+      "description": "In 2022 record monsoon rains flooded a third of Pakistan and Lake Manchar burst its banks. Build a 3U CubeSat that watches the floodplain from orbit.",
+      "rocketOptions": [ "pathfinder" ],
+      "payloadType": "cubesat_3u",
+      "budgetMUSD": 7.72,
+      "massLimitKg": 4.0,
+      "orbitOptionsKm": [ 400, 550, 800 ],
+      "defaultOrbitKm": 550,
+      "launchSites": [ "sonmiani", "cape_canaveral" ],
+      "durationDays": 30,
+      "groundContactsPerDay": 4,
+      "contactMinutes": 8,
+      "imagingPassesPerDay": 1,
+      "imagesPerPass": 3,
+      "seed": 1962,
+      "illustrative": true,
+      "notes": "Budget = 7.5 M USD launch + 220 k USD spacecraft, so the premium HD build only just fits. Mass limit is a game value.",
+      "successCriteria": [
+        { "id": "reach_orbit", "text": "Reach orbit and deploy the CubeSat", "metric": "deployed", "threshold": 1 },
+        { "id": "survive_30d", "text": "Keep the satellite alive for 30 days", "metric": "daysAlive", "threshold": 30 },
+        { "id": "images_20", "text": "Downlink at least 20 usable images", "metric": "imagesDownlinked", "threshold": 20 },
+        { "id": "on_budget", "text": "Stay within the 7.72 M USD budget", "metric": "costMUSD", "threshold": 7.72 }
+      ],
+      "randomEvents": [
+        { "id": "ev_solar_storm", "day": 12, "type": "solar_storm", "effect": "computer_reboot", "value": 1, "codexId": "data_budget" },
+        { "id": "ev_ground_outage", "day": 20, "type": "ground_outage", "effect": "no_downlink", "value": 1, "codexId": "downlink" }
+      ],
+      "scoring": { "success": 40, "science": 25, "budget": 10, "margins": 10, "decisionQuality": 10, "collaboration": 5 },
+      "rewardImages": [
+        { "date": "2022-06-25", "title": "Lake Manchar before the floods", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
+        { "date": "2022-08-28", "title": "Lake Manchar overflowing", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
+        { "date": "2022-09-05", "title": "Floodwater spreading across the plain", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" }
+      ],
+      "rewardCredit": "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey.",
+      "codexIds": [ "landsat", "gsd", "downlink", "eclipse", "battery_dod" ]
+    },
+    {
+      "id": "moonshot",
+      "name": "Moonshot",
+      "priority": "P1",
+      "difficulty": "Advanced",
+      "locked": true,
+      "objective": "Fly the Saturn V to a 185 km parking orbit with at least 3,100 m/s left in the S-IVB for trans-lunar injection.",
+      "description": "Recreate the first half of an Apollo launch with the real Saturn V stage data.",
+      "rocketOptions": [ "saturn_v" ],
+      "payloadType": "apollo",
+      "parkingOrbitKm": 185,
+      "requiredDeltaVLeftMs": 3100,
+      "launchSites": [ "cape_canaveral" ],
+      "seed": 1969,
+      "illustrative": true,
+      "notes": "3,100 m/s is a game threshold, tuned after a test flight. The lumped interstage + escape-tower mass drops with the S-II; the 2,000 kg Instrument Unit stays.",
+      "successCriteria": [
+        { "id": "parking_orbit", "text": "Reach a 185 km parking orbit", "metric": "periapsisKm", "threshold": 180 },
+        { "id": "tli_margin", "text": "Keep 3,100 m/s in the S-IVB for TLI", "metric": "deltaVLeftMs", "threshold": 3100 }
+      ],
+      "scoring": { "success": 60, "science": 0, "budget": 0, "margins": 25, "decisionQuality": 15, "collaboration": 0 },
+      "codexIds": [ "saturn_v", "f1_engine", "j2_engine", "delta_v" ]
+    },
+    {
+      "id": "rehbar_1962",
+      "name": "Rehbar-I, 1962",
+      "priority": "P1",
+      "difficulty": "Beginner",
+      "locked": true,
+      "objective": "Fly a two-stage solid sounding rocket from Sonmiani to about 130 km and release a sodium-vapour cloud.",
+      "description": "On 7 June 1962 Pakistan launched its first rocket, Rehbar-I, from Sonmiani near Karachi: a two-stage Nike-Cajun flown with NASA support.",
+      "rocketOptions": [],
+      "payloadType": "sounding",
+      "targetApogeeKm": 130,
+      "launchSites": [ "sonmiani" ],
+      "seed": 1962,
+      "storyCard": "Rehbar-I lifted off from Sonmiani on 7 June 1962. Its sodium-vapour cloud let scientists on the ground watch winds high in the upper atmosphere.",
+      "notes": "The Nike-Cajun vehicle is added with this mission (P1).",
+      "successCriteria": [
+        { "id": "apogee", "text": "Reach about 130 km", "metric": "apogeeKm", "threshold": 120 }
+      ],
+      "codexIds": [ "rehbar_1962" ]
+    },
+    {
+      "id": "failure_apollo12",
+      "name": "Failure Lab: Apollo 12 lightning",
+      "priority": "P1",
+      "difficulty": "Intermediate",
+      "locked": true,
+      "objective": "Lightning strikes your Saturn V twice during ascent. Pick the switch that brings the telemetry back.",
+      "rocketOptions": [ "saturn_v" ],
+      "payloadType": "apollo",
+      "launchSites": [ "cape_canaveral" ],
+      "seed": 1114,
+      "codexIds": [ "apollo12_lightning", "telemetry" ]
+    },
+    {
+      "id": "sandbox",
+      "name": "Sandbox",
+      "priority": "P1",
+      "difficulty": "Free build",
+      "locked": true,
+      "objective": "No budget, no limits: build anything and fly it.",
+      "rocketOptions": [ "pathfinder", "saturn_v" ],
+      "payloadType": "cubesat_3u",
+      "budgetMUSD": 0,
+      "orbitOptionsKm": [ 400, 550, 800 ],
+      "defaultOrbitKm": 550,
+      "launchSites": [ "sonmiani", "cape_canaveral" ],
+      "durationDays": 30,
+      "groundContactsPerDay": 4,
+      "contactMinutes": 8,
+      "imagingPassesPerDay": 1,
+      "imagesPerPass": 3,
+      "seed": 0
+    }
+  ]
+}

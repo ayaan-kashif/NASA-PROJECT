@@ -1,7 +1,7 @@
 {
     "name": "TMinus.EditorTools",
     "rootNamespace": "TMinus.EditorTools",
-    "references": ["TMinus.Core", "TMinus.UI"],
+    "references": ["TMinus.Core", "TMinus.UI", "UnityEditor.TestRunner", "UnityEngine.TestRunner"],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

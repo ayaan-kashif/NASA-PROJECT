@@ -108,7 +108,11 @@ namespace TMinus.Core
             if (!files.TryGetValue("rules", out var text) || string.IsNullOrWhiteSpace(text)) return;
             try
             {
-                if (JToken.Parse(text) is JObject obj) _rules = new RulesDef { raw = obj };
+                if (JToken.Parse(text) is JObject obj)
+                {
+                    _rules = obj.ToObject<RulesDef>() ?? new RulesDef();
+                    _rules.raw = obj;
+                }
                 else _errors.Add("rules.json must be a JSON object.");
             }
             catch (Exception ex)
