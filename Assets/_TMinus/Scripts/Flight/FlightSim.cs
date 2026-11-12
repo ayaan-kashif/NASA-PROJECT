@@ -188,6 +188,8 @@ namespace TMinus.Flight
                 }
         }
 
+        bool _fairingStuckLogged;
+
         void CheckFairing(double altitudeM)
         {
             if (_fairingChecked || altitudeM < 110000) return;
@@ -198,6 +200,8 @@ namespace TMinus.Flight
             if (!hasFairing) return;
             if (!_avionics.FairingSeparationOk)
             {
+                if (_fairingStuckLogged) return;
+                _fairingStuckLogged = true;
                 Log("fairing_stuck", "Fairing separation failed; the fairing stays attached.", Cause("fairing_stuck"), Severity.Fault);
                 return;
             }

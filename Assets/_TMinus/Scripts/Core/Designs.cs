@@ -87,6 +87,29 @@ namespace TMinus.Core
         public bool launched;
     }
 
+    /// <summary>One telemetry sample kept for the debrief (1 Hz).</summary>
+    [Serializable]
+    public struct TelemetryPoint
+    {
+        public float t, altitudeKm, speedMs, qKPa;
+    }
+
+    /// <summary>Result of the last flight (Flight scene -> Operations / Debrief).</summary>
+    [Serializable]
+    public sealed class FlightRecord
+    {
+        public bool flown;
+        public bool orbitAchieved;
+        public bool deployed;
+        public string outcome;        // Orbit / Failed / Aborted
+        public string failureCode;    // joint_failure, stuck_stage, ignition_failure, impact, ...
+        public string failureCause;   // cause id (cable link id or joint id)
+        public double maxQKPa, maxQTimeS;
+        public double apoapsisKm, periapsisKm;
+        public double flightTimeS;
+        public List<TelemetryPoint> telemetry = new List<TelemetryPoint>();
+    }
+
     [Serializable]
     public sealed class GameSettings
     {

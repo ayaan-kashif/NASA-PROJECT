@@ -254,7 +254,8 @@ namespace TMinus.Assembly
             float k = 1 - Mathf.Exp(-Time.deltaTime * 6f);
             foreach (var p in Parts)
             {
-                if (p == null || p == Dragging || !_target.TryGetValue(p, out var pose)) continue;
+                // Skip the dragged part and parts released from the stack (e.g. a dropped stage in flight).
+                if (p == null || p == Dragging || p.transform.parent != transform || !_target.TryGetValue(p, out var pose)) continue;
                 var pos = Exploded ? _exploded[p] : pose.position;
                 p.transform.localPosition = Vector3.Lerp(p.transform.localPosition, pos, k);
                 p.transform.localRotation = Quaternion.Slerp(p.transform.localRotation, pose.rotation, k);

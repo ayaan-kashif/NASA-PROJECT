@@ -15,8 +15,8 @@ namespace TMinus.Flight
             for (int i = 0; i < fuel.Length; i++) fuel[i] = Vehicle.stages[i].propMassKg > 0 ? 100 * _fuel[i] / Vehicle.stages[i].propMassKg : 0;
             return new TelemetrySample
             {
-                timeS = _time, altitudeM = altitude, downrangeM = Downrange(), surfaceSpeedMs = _velocity.Magnitude,
-                orbitalSpeedMs = rel.Magnitude, accelerationG = thrust / Math.Max(1, _mass) / FlightConstants.G0,
+                timeS = _time, altitudeM = altitude, downrangeM = Downrange(), surfaceSpeedMs = rel.Magnitude,
+                orbitalSpeedMs = _velocity.Magnitude, accelerationG = thrust / Math.Max(1, _mass) / FlightConstants.G0,
                 dynamicPressurePa = q, massKg = _mass, throttle = command.throttle, thrustN = thrust,
                 thrustToWeight = thrust / Math.Max(1, _mass * FlightConstants.G0), deltaVRemainingMs = DeltaVRemaining(),
                 apoapsisM = orbit.apoapsisM, periapsisM = orbit.periapsisM, stageIndex = _stageIndex,

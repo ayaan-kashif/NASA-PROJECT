@@ -1,0 +1,53 @@
+/* Flight HUD (Prompt 11), on top of VAB.uss + IntegrationBay.uss */
+
+.flight-top {
+    position: absolute; top: 14px; left: 14px; right: 14px;
+    flex-direction: row; align-items: center;
+    padding: 8px 12px; background-color: rgba(8, 14, 34, 0.85); border-radius: 12px;
+}
+.clock { font-size: 30px; color: white; -unity-font-style: bold; padding: 0 14px 0 4px; min-width: 170px; }
+.phase { font-size: 16px; color: rgb(255, 170, 110); letter-spacing: 2px; -unity-font-style: bold; padding: 0 12px; flex-grow: 1; }
+.tool-btn.abort { background-color: rgba(200, 60, 55, 0.85); color: white; -unity-font-style: bold; }
+
+.flight-stats {
+    position: absolute; right: 14px; top: 90px; width: 360px;
+    padding: 14px 16px; background-color: rgba(8, 14, 34, 0.85); border-radius: 12px;
+}
+.fuel-row { flex-direction: row; align-items: center; margin-bottom: 6px; }
+.fuel-row .stat-key { width: 70px; }
+.fuel-row .budget-track { flex-grow: 1; height: 12px; }
+
+.flight-feed {
+    position: absolute; left: 14px; top: 90px; width: 400px;
+    padding: 12px 14px; background-color: rgba(8, 14, 34, 0.8); border-radius: 12px;
+}
+.feed-line { font-size: 14px; color: rgb(205, 215, 235); white-space: normal; padding: 2px 0; }
+.feed-line.warn { color: rgb(255, 210, 120); }
+.feed-line.bad { color: rgb(255, 120, 110); -unity-font-style: bold; }
+
+.flight-charts { position: absolute; left: 14px; right: 390px; bottom: 14px; height: 200px; flex-direction: row; }
+.chart { flex-grow: 1; margin-right: 12px; background-color: rgba(8, 14, 34, 0.85); border-radius: 12px; padding: 8px 12px; }
+.chart-title { font-size: 12px; letter-spacing: 2px; color: rgb(150, 165, 200); -unity-font-style: bold; padding: 0; }
+.chart-value { position: absolute; right: 12px; top: 6px; font-size: 22px; color: white; -unity-font-style: bold; padding: 0; }
+
+.orbit-map { position: absolute; left: 430px; right: 390px; top: 90px; bottom: 230px; background-color: rgba(2, 4, 12, 0.92); border-radius: 14px; }
+.map-caption { position: absolute; left: 14px; bottom: 10px; font-size: 16px; color: white; }
+
+.los { position: absolute; right: 14px; top: 90px; width: 380px; padding: 18px; background-color: rgba(120, 20, 20, 0.85); border-radius: 12px; }
+.los-title { font-size: 26px; color: white; -unity-font-style: bold; padding: 0; }
+.los-text { font-size: 15px; color: rgb(255, 220, 215); white-space: normal; padding: 0; }
+
+.banner-row { position: absolute; top: 120px; left: 0; right: 0; flex-direction: row; justify-content: center; }
+.banner { font-size: 34px; color: white; -unity-font-style: bold; letter-spacing: 3px; padding: 10px 26px; background-color: rgba(255, 122, 26, 0.9); border-radius: 12px; }
+.banner.bad { background-color: rgba(200, 50, 45, 0.92); }
+
+.pad-panel-small { width: 640px; padding: 24px 28px; background-color: rgb(12, 20, 44); border-radius: 16px; border-top-width: 4px; border-top-color: rgb(255, 122, 26); }
+.kick-slider { margin: 10px 0; }
+.kick-slider Label { color: white; font-size: 16px; }
+.card-btn.big { height: 56px; font-size: 22px; margin-top: 12px; }
+
+.end-row { position: absolute; bottom: 240px; left: 0; right: 0; flex-direction: row; justify-content: center; }
+.end-panel { width: 720px; padding: 20px 26px; background-color: rgb(12, 20, 44); border-radius: 16px; border-top-width: 5px; align-items: center; }
+.end-panel.good { border-top-color: rgb(60, 220, 110); }
+.end-panel.bad { border-top-color: rgb(255, 80, 70); }
+.end-title { font-size: 40px; color: white; -unity-font-style: bold; letter-spacing: 3px; padding: 0; }

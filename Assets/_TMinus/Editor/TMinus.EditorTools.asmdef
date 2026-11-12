@@ -1,7 +1,7 @@
 {
     "name": "TMinus.EditorTools",
     "rootNamespace": "TMinus.EditorTools",
-    "references": ["TMinus.Core", "TMinus.UI", "TMinus.Assembly", "TMinus.Wiring", "TMinus.Spacecraft", "TMinus.Mission", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime", "UnityEditor.TestRunner", "UnityEngine.TestRunner"],
+    "references": ["TMinus.Core", "TMinus.UI", "TMinus.Assembly", "TMinus.Wiring", "TMinus.Spacecraft", "TMinus.Mission", "TMinus.Flight", "Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime", "UnityEditor.TestRunner", "UnityEngine.TestRunner"],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
