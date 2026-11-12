@@ -19,7 +19,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude: P9 DONE (2026-11-13).
 - P11 (Flight scene + HUD): WORK IN PROGRESS, committed so it isn't lost. Builds and compiles; scene built via Tools > T-Minus > Build Flight Scene. KNOWN BUG to fix first: in play mode `FlightDebug.Launch` throws a NullReferenceException right after `FlightDebug.Reload` (FlightController.Instance or its hud is null after the scene reload; the IGNITION button path is untested too). Repro: `bash tools/agent/uplay.sh tools/agent/example_flight.txt`. Then check screenshots in Logs/agent-shots/.
 - Open after P11: P12 (operations + scoring + debrief, reads GameState.Flight / FlightRecord), P13-P18.
-- 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 on main; Antigravity = P13 + P14 on branch houston (own clone); Grok = P16 + README on branch ship (own clone). Claude merges in the final audit.
+- 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Claude merges houston in the final audit.
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).
 
 ## Shared changes log
