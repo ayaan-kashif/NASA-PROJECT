@@ -19,6 +19,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude: P9 DONE (2026-11-13).
 - Codex: P11 DONE (2026-11-13, local commit; do not push).
 - Codex: P12 DONE (operations, scoring, debrief; local commit only, 2026-11-13).
+- Codex: P18 IN PROGRESS (owned scope: design-code comparison panel; local commit only).
 - P11 verification: 61/61 EditMode tests; play hooks confirmed orbit + deployment, joint_failure at max-Q, and stuck_stage caused by w_pyro2. Unity window did not stay foreground for readable final screenshots; manually inspect the T-10 button countdown in Unity.
 - P12 verification: 71/71 EditMode tests; scripted perfect run = 30 days, 87 images, 3 stars; missing pyro2 = stuck_stage/w_pyro2, no operations; HD camera = power deficit, 2 days alive, no images. Landsat art remains a clearly credited TODO placeholder.
 - Open after P12: P13-P18.

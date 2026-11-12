@@ -14,3 +14,5 @@
 .debrief-buttons { flex-direction: row; flex-wrap: wrap; margin-top: 22px; }
 .debrief-button { background-color: #173b58; color: #ffffff; border-width: 1px; border-color: #55d9d1; padding: 10px 16px; margin-right: 8px; margin-bottom: 8px; }
 .debrief-button:hover { background-color: #23617c; }
+.design-code-input { min-height: 62px; margin-top: 8px; margin-bottom: 8px; background-color: #081426; color: #ffffff; }
+.design-code-input .unity-text-field__input { background-color: #081426; color: #ffffff; border-color: #55d9d1; }

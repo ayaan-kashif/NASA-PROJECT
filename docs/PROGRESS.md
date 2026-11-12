@@ -66,3 +66,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Added deterministic per-orbit operations using spacecraft budgets, powered deployment checks, battery/data/image/downlink accounting, mission events, causal timeline, weighted score/stars, top fixes, design code copy and a local top-10. Added the generated Debrief scene and debug hooks.
 - Added README, credits and the submission/demo checklist. Landsat reward remains a design-dependent placeholder with the codex credit and a clear asset TODO because image files are not in the repo.
 - Verified: 71/71 EditMode tests; play-tested perfect = 30 days, 87 images, 3 stars; missing separation = `stuck_stage` caused by `w_pyro2`; HD camera = power deficit, 2 days alive, 0 images. Build the scene with Tools > T-Minus > Build Debrief.
+
+## P18 — Design comparison (partial, 2026-11-13)
+- Added a Debrief panel that decodes a `TM1-` design code and compares its mass, cost, power margin, battery, predicted image return, pointing, GSD and budget statuses against the current design.
+- Verified: design-code self-comparison through the Unity Editor; 73/73 EditMode tests; Debrief screenshot captured after a perfect 3-star flight.
+- Remaining: the P18 Judge Mode main-menu/F9 sequence is not integrated; MainMenu is outside this task's owned files. Existing `BriefingDebug.Demo` still exposes the RF/joint/separation demo variants.

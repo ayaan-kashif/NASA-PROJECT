@@ -32,5 +32,18 @@ namespace TMinus.Tests
         [TestCase(0, 0)] [TestCase(35, 1)] [TestCase(60, 2)] [TestCase(85, 3)] [TestCase(100, 3)]
         public void StarsFollowMissionScoreThresholds(double points, int stars)
         { Assert.AreEqual(stars, MissionScoring.StarsForScore(points)); }
+
+        [Test] public void DesignComparisonShowsDirectionAndSignedDelta()
+        {
+            Assert.AreEqual("Mass: 4 → 3 kg  (-1 kg) (improved)", DesignCompare.Metric("Mass", 4, 3, " kg", "lower"));
+            Assert.AreEqual("Cost: 5 → 6 M USD  (+1 M USD) (worse)", DesignCompare.Metric("Cost", 5, 6, " M USD", "lower"));
+        }
+
+        [Test] public void ComparisonBudgetStatusesAreReadable()
+        {
+            Assert.AreEqual("GREEN", DesignCompare.Status(TMinus.Core.BudgetStatus.Green));
+            Assert.AreEqual("WATCH", DesignCompare.Status(TMinus.Core.BudgetStatus.Yellow));
+            Assert.AreEqual("RED", DesignCompare.Status(TMinus.Core.BudgetStatus.Red));
+        }
     }
 }

@@ -41,6 +41,7 @@ namespace TMinus.Mission
             var reward = Card("SCIENCE REWARD  /  LAKE MANCHAR");
             reward.Add(new Label(ops.rewardPlaceholder));
             var credit = new Label(ops.rewardCredit); credit.AddToClassList("muted"); reward.Add(credit); page.Add(reward);
+            AddDesignCompare(page);
             page.Add(new Label("WHAT HAPPENED") { name = "section" });
             var events = s.Events.All.Where(e => e.system == "operations" || (e.system == "flight" && (e.severity >= Severity.Warning || e.code == "orbit_achieved" || e.code == "cubesat_deployed")))
                 .OrderBy(e => e.time).TakeLast(12);
@@ -56,6 +57,29 @@ namespace TMinus.Mission
             _status = new Label(""); _status.AddToClassList("muted"); page.Add(_status);
         }
         static VisualElement Card(string heading) { var c = new VisualElement(); c.AddToClassList("debrief-card"); c.Add(new Label(heading)); return c; }
+        void AddDesignCompare(VisualElement page)
+        {
+            var card = Card("COMPARE ANOTHER DESIGN");
+            card.Add(new Label("Paste a TM1 design code to compare spacecraft budgets for this mission."));
+            var input = new TextField { multiline = true }; input.AddToClassList("design-code-input"); card.Add(input);
+            var results = new VisualElement(); card.Add(results);
+            var button = new Button(() =>
+            {
+                results.Clear();
+                if (!DesignCompare.TryCompare(GameState.Instance, input.value, out var c, out var error))
+                { results.Add(new Label(error)); return; }
+                results.Add(new Label(c.missionName + "  ·  current → shared design"));
+                results.Add(new Label(DesignCompare.Metric("Mass", c.current.massKg, c.candidate.massKg, " kg", "lower")));
+                results.Add(new Label(DesignCompare.Metric("Mission cost", c.current.totalCostM, c.candidate.totalCostM, " M USD", "lower")));
+                results.Add(new Label(DesignCompare.Metric("Power margin", c.current.marginW, c.candidate.marginW, " W")));
+                results.Add(new Label(DesignCompare.Metric("Battery", c.current.batteryWh, c.candidate.batteryWh, " Wh")));
+                results.Add(new Label(DesignCompare.Metric("Images predicted", c.current.imagesDownlinkedMission, c.candidate.imagesDownlinkedMission, " images")));
+                results.Add(new Label(DesignCompare.Metric("Pointing quality", c.current.pointingQuality, c.candidate.pointingQuality, "")));
+                results.Add(new Label(DesignCompare.Metric("Ground sample distance", c.current.gsdM, c.candidate.gsdM, " m", "lower")));
+                results.Add(new Label($"Power {DesignCompare.Status(c.current.power)} → {DesignCompare.Status(c.candidate.power)}   ·   Data {DesignCompare.Status(c.current.data)} → {DesignCompare.Status(c.candidate.data)}   ·   Pointing {DesignCompare.Status(c.current.pointing)} → {DesignCompare.Status(c.candidate.pointing)}"));
+            }) { text = "Compare design code" };
+            button.AddToClassList("debrief-button"); card.Add(button); page.Add(card);
+        }
         static VisualElement BuildTimeline(OpsReport o)
         {
             var graph = new VisualElement(); graph.AddToClassList("soc-timeline");
