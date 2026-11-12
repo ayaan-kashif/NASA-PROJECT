@@ -1,0 +1,15 @@
+scene Assets/_TMinus/Scenes/MissionBriefing.unity
+wait 2.5
+shot brief_missions
+call TMinus.Mission.BriefingDebug.Demo joint
+call TMinus.Mission.BriefingDebug.Brief floodwatch_1
+wait 1
+shot brief_floodwatch
+call TMinus.Mission.BriefingDebug.Checklist x
+wait 1
+shot brief_checklist
+call TMinus.Mission.BriefingDebug.Demo perfect
+call TMinus.Mission.BriefingDebug.PadDone x
+wait 1
+shot brief_checklist_ok
+stop

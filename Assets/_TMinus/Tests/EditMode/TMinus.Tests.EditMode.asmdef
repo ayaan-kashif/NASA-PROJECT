@@ -1,7 +1,7 @@
 {
     "name": "TMinus.Tests.EditMode",
     "rootNamespace": "TMinus.Tests",
-    "references": ["TMinus.Core", "TMinus.Assembly", "TMinus.Wiring", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+    "references": ["TMinus.Core", "TMinus.Assembly", "TMinus.Wiring", "TMinus.Mission", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
     "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

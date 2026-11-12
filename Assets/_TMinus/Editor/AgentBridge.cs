@@ -61,6 +61,19 @@ namespace TMinus.EditorTools
             }
         }
 
+        [MenuItem("Tools/T-Minus/Agent/Report Editor State")]
+        static void ReportState() =>
+            File.WriteAllText("Logs/agent-state.txt", $"{DateTime.Now:O} playing={EditorApplication.isPlaying} willChange={EditorApplication.isPlayingOrWillChangePlaymode} " +
+                        $"paused={EditorApplication.isPaused} compiling={EditorApplication.isCompiling} updating={EditorApplication.isUpdating} testsRunning={_running}");
+
+        [MenuItem("Tools/T-Minus/Agent/Stop Play Mode")]
+        static void StopPlay()
+        {
+            EditorApplication.isPlaying = false;
+            _running = false;
+            WriteStatus("stop play requested");
+        }
+
         static bool Take(string path) => Take(path, out _);
 
         static bool Take(string path, out string content)

@@ -22,6 +22,7 @@ namespace TMinus.Core
         public SpacecraftDesign Spacecraft = new SpacecraftDesign();
         public VehicleDesign Vehicle = new VehicleDesign();
         public GameSettings Settings = new GameSettings();
+        public LaunchRecord Launch = new LaunchRecord();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Bootstrap()

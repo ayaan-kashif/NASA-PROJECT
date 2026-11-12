@@ -1,0 +1,77 @@
+/* Mission briefing + pad (Prompt 9), on top of VAB.uss */
+
+.brief-root { background-color: rgb(8, 14, 34); }
+.brief-page { flex-grow: 1; padding: 30px 40px 20px 40px; }
+.brief-header { flex-direction: row; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.brief-title { font-size: 44px; color: white; -unity-font-style: bold; letter-spacing: 4px; padding: 0; }
+.brief-subtitle { font-size: 19px; color: rgb(175, 190, 220); white-space: normal; padding: 0; max-width: 1300px; }
+
+.mission-grid { flex-direction: row; flex-wrap: wrap; }
+.mission-card {
+    width: 420px; min-height: 210px; margin: 0 18px 18px 0; padding: 18px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 14px; border-width: 2px; border-color: rgba(255, 255, 255, 0.08);
+    border-left-width: 5px; border-left-color: rgb(255, 122, 26);
+}
+.mission-card:hover { border-color: rgb(255, 122, 26); background-color: rgba(255, 122, 26, 0.08); }
+.mission-card.locked { opacity: 0.55; border-left-color: rgba(255, 255, 255, 0.2); }
+.mission-name { font-size: 26px; color: white; -unity-font-style: bold; padding: 0; }
+.mission-diff { font-size: 14px; color: rgb(255, 170, 110); letter-spacing: 1px; padding: 0; margin: 4px 0 8px 0; }
+.mission-obj { font-size: 17px; color: rgb(220, 228, 245); white-space: normal; padding: 0; margin-bottom: 10px; }
+.mission-meta { font-size: 14px; color: rgb(150, 165, 200); white-space: normal; padding: 0; }
+
+.brief-cols { flex-direction: row; flex-grow: 1; }
+.brief-col {
+    flex-grow: 1; flex-basis: 0; margin-right: 16px; padding: 16px 18px;
+    background-color: rgba(255, 255, 255, 0.04); border-radius: 14px;
+}
+.brief-sub { font-size: 13px; letter-spacing: 2px; color: rgb(255, 160, 90); -unity-font-style: bold; margin: 14px 0 6px 0; padding: 0; }
+.brief-text { font-size: 15px; color: rgb(200, 210, 232); white-space: normal; padding: 0; margin-bottom: 6px; }
+.brief-item { font-size: 16px; color: white; white-space: normal; padding: 2px 0; }
+.choice-card {
+    padding: 10px 12px; margin-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0.05); border-radius: 10px;
+    border-width: 2px; border-color: rgba(255, 255, 255, 0.06);
+}
+.choice-card:hover { border-color: rgba(255, 122, 26, 0.6); }
+.choice-card.selected { border-color: rgb(255, 122, 26); background-color: rgba(255, 122, 26, 0.12); }
+.choice-card.locked { opacity: 0.5; }
+.choice-name { font-size: 18px; color: white; -unity-font-style: bold; padding: 0; }
+.name-field { margin: 4px 0 0 0; font-size: 16px; }
+.role-line { font-size: 13px; color: rgb(150, 200, 255); padding: 0 0 6px 4px; white-space: normal; }
+.flow-btn {
+    height: 50px; margin: 0 0 10px 0; font-size: 19px; color: white; -unity-text-align: middle-left; padding-left: 16px;
+    background-color: rgba(255, 255, 255, 0.08); border-width: 0; border-radius: 10px;
+}
+.flow-btn:hover { background-color: rgba(255, 255, 255, 0.16); }
+.flow-btn.accent { background-color: rgb(255, 122, 26); -unity-font-style: bold; }
+
+.pad-panel {
+    width: 1100px; max-height: 92%; padding: 24px 28px;
+    background-color: rgb(12, 20, 44); border-radius: 16px; border-top-width: 4px; border-top-color: rgb(255, 122, 26);
+}
+.pad-title { font-size: 22px; color: white; -unity-font-style: bold; white-space: normal; padding: 0; margin: 4px 0 6px 0; }
+.check-row {
+    flex-direction: row; align-items: center; padding: 8px 12px; margin-bottom: 6px;
+    background-color: rgba(255, 255, 255, 0.04); border-radius: 8px; border-left-width: 4px;
+}
+.check-row.pass { border-left-color: rgb(60, 220, 110); }
+.check-row.fail { border-left-color: rgb(255, 80, 70); background-color: rgba(255, 80, 70, 0.07); }
+.check-mark { width: 82px; font-size: 14px; -unity-font-style: bold; padding: 0; }
+.check-row.pass .check-mark { color: rgb(60, 220, 110); }
+.check-row.fail .check-mark { color: rgb(255, 110, 100); }
+.check-title { font-size: 16px; color: white; -unity-font-style: bold; padding: 0; }
+.check-detail { font-size: 14px; color: rgb(190, 200, 225); white-space: normal; padding: 0; }
+.check-row .card-btn { flex-grow: 0; width: 110px; margin-left: 10px; }
+
+.poll-panel {
+    width: 760px; padding: 30px 34px; align-items: center;
+    background-color: rgb(12, 20, 44); border-radius: 16px; border-top-width: 4px; border-top-color: rgb(255, 122, 26);
+}
+.poll-role { font-size: 34px; color: rgb(255, 170, 110); -unity-font-style: bold; padding: 0; margin: 8px 0; }
+.poll-warn { font-size: 16px; color: rgb(255, 150, 140); white-space: normal; padding: 0; -unity-text-align: middle-center; }
+.poll-buttons { flex-direction: row; margin-top: 20px; }
+.poll-go, .poll-nogo { width: 220px; height: 80px; margin: 0 12px; font-size: 32px; -unity-font-style: bold; color: white; border-width: 0; border-radius: 14px; }
+.poll-go { background-color: rgb(40, 170, 90); }
+.poll-nogo { background-color: rgb(200, 60, 55); }
+.countdown { font-size: 120px; color: white; -unity-font-style: bold; padding: 0; }

@@ -75,6 +75,18 @@ namespace TMinus.Core
         public string launchSiteId = "sonmiani";
     }
 
+    /// <summary>What the crew knew and decided at launch (decision-quality score, debrief).</summary>
+    [Serializable]
+    public sealed class LaunchRecord
+    {
+        /// <summary>Checklist item ids that were FAIL when the countdown started.</summary>
+        public List<string> knownFailures = new List<string>();
+        /// <summary>Role -> "GO" / "NO-GO" in the final poll.</summary>
+        public List<string> poll = new List<string>();
+        public int noGoRounds;
+        public bool launched;
+    }
+
     [Serializable]
     public sealed class GameSettings
     {
