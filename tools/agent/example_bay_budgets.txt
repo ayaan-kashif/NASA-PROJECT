@@ -1,0 +1,11 @@
+scene Assets/_TMinus/Scenes/IntegrationBay.unity
+wait 3
+call TMinus.Spacecraft.BayDebug.InstallDefault x
+call TMinus.Spacecraft.BayDebug.WireDefault all
+wait 1.5
+shot budgets_default
+call TMinus.Spacecraft.BayDebug.Swap cam_wide cam_hd
+wait 1
+shot budgets_hd
+call TMinus.Spacecraft.BayDebug.Report x
+stop

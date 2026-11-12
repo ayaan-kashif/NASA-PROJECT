@@ -90,8 +90,8 @@
         { "id": "DATA", "type": "DATA", "label": "Data" }
       ] },
 
-    { "id": "cam_hd", "name": "Imaging camera (5 m/pixel)", "category": "camera", "assembly": "cubesat", "mount": "face_end", "massKg": 0.60, "costK": 45, "powerActiveW": 4.5, "illustrative": true, "codexId": "gsd",
-      "description": "Sharp 5 m per pixel from 550 km, 25 MB per image. Needs reaction-wheel pointing.",
+    { "id": "cam_hd", "name": "Imaging camera (5 m/pixel)", "category": "camera", "assembly": "cubesat", "mount": "face_end", "massKg": 0.60, "costK": 45, "powerIdleW": 1.0, "powerActiveW": 4.5, "illustrative": true, "codexId": "gsd",
+      "description": "Sharp 5 m per pixel from 550 km, 25 MB per image. Needs reaction-wheel pointing, and draws 1 W all the time to keep its sensor warm.",
       "specs": { "gsdMAt550": 5, "imageMB": 25 },
       "requires": [ "adcs_rw" ],
       "ports": [

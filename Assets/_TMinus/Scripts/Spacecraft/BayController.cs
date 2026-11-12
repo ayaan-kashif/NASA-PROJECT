@@ -70,6 +70,14 @@ namespace TMinus.Spacecraft
             ui.RemovePressed += Remove;
             ui.FaultPressed += ShowFault;
 
+            var mission = Data.GetMission(GameState.Instance.CurrentMissionId);
+            if (Design.orbitAltitudeKm <= 0) Design.orbitAltitudeKm = mission?.defaultOrbitKm ?? 550;
+            var orbits = mission != null && mission.orbitOptionsKm.Count > 0 ? mission.orbitOptionsKm : new List<double> { 400, 550, 800 };
+            _budgets = new BudgetsPanel(ui.BudgetsSlot, orbits);
+            _budgets.OrbitChosen += km => { Design.orbitAltitudeKm = km; AudioFx.Play("click"); RefreshBudgets(); };
+            DesignChanged += RefreshBudgets;
+            RefreshBudgets();
+
             ui.ShowFaults(bench.Faults, bench.Tiles.Count);
             RefreshBin();
             SetMode("build");
@@ -201,13 +209,27 @@ namespace TMinus.Spacecraft
             Save();
         }
 
+        BudgetsPanel _budgets;
+
+        /// <summary>Latest budgets for the current design (HOUSTON and the checklist read this).</summary>
+        public SpacecraftReport Report { get; private set; }
+
+        void RefreshBudgets()
+        {
+            var mission = Data.GetMission(GameState.Instance.CurrentMissionId);
+            var rocket = Data.GetRocket(GameState.Instance.Vehicle.rocketId);
+            Report = SpacecraftBudget.Compute(Design, Data, mission, rocket);
+            _budgets?.Refresh(Report);
+        }
+
         void Save()
         {
             bench.SaveTo(Design.cables);
             DesignChanged?.Invoke();
         }
 
-        public string Report() =>
-            $"parts={Design.parts.Count} cables={bench.Graph.Cables.Count} faults={bench.Faults.Count} [{string.Join(" | ", bench.Faults.Select(f => f.code + ":" + f.device))}]";
+        public string Summary() =>
+            $"parts={Design.parts.Count} cables={bench.Graph.Cables.Count} faults={bench.Faults.Count} [{string.Join(" | ", bench.Faults.Select(f => f.code + ":" + f.device))}]" +
+            (Report != null ? $" power {Report.consumptionW:0.00}/{Report.generationW:0.00} W ({Report.power}) data {Report.data} pointing {Report.pointing} cost {Report.totalCostM:0.000}M" : "");
     }
 }

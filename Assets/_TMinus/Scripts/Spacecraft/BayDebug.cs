@@ -30,7 +30,7 @@ namespace TMinus.Spacecraft
         public static string InstallDefault(string _)
         {
             foreach (var p in DefaultParts) C.Install(p);
-            return C.Report();
+            return C.Summary();
         }
 
         /// <summary>"all" wires the default build; "norf" skips the antenna cable; "short" adds a short circuit test.</summary>
@@ -41,7 +41,7 @@ namespace TMinus.Spacecraft
                 if (variant == "norf" && pair[0] == "radio_uhf/RF") continue;
                 C.bench.Connect(pair[0], pair[1], false);
             }
-            return C.Report();
+            return C.Summary();
         }
 
         public static string TryConnect(string args)
@@ -64,7 +64,17 @@ namespace TMinus.Spacecraft
 
         static string GameStateText() => "rbfPulled=" + Core.GameState.Instance.Spacecraft.rbfPinPulled;
 
-        public static string Report(string _) => C.Report();
+        public static string Report(string _) => C.Summary();
+
+        public static string Swap(string args)
+        {
+            var a = args.Split(' ');
+            C.Remove(a[0]);
+            C.Install(a[1]);
+            return C.Summary();
+        }
+
+        public static string Orbit(string km) { Core.GameState.Instance.Spacecraft.orbitAltitudeKm = double.Parse(km); C.SendMessage("RefreshBudgets"); return C.Summary(); }
 
         /// <summary>Hover the live cable from port a over port b to show the hint, for screenshots.</summary>
         public static string Faults(string _) =>

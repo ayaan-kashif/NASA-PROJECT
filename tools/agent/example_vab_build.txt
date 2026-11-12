@@ -1,0 +1,20 @@
+scene Assets/_TMinus/Scenes/VAB.unity
+wait 3
+call TMinus.Assembly.VabDebug.Drag pf_stage1 STAND/top release
+wait 1
+call TMinus.Assembly.VabDebug.Drag pf_interstage pf_stage1/top release
+wait 1
+call TMinus.Assembly.VabDebug.Drag pf_stage2 pf_interstage/top
+wait 0.3
+shot drag_valid
+call TMinus.Assembly.VabDebug.Drag pf_stage2 pf_interstage/top release
+call TMinus.Assembly.VabDebug.Drag pf_avionics_ring pf_stage2/top release
+call TMinus.Assembly.VabDebug.Drag pf_payload_adapter pf_avionics_ring/top release
+call TMinus.Assembly.VabDebug.Drag payload pf_payload_adapter/payload release
+call TMinus.Assembly.VabDebug.Drag pf_fairing_left pf_payload_adapter/fairing_left release
+call TMinus.Assembly.VabDebug.Drag pf_fairing_right pf_payload_adapter/fairing_right release
+wait 2
+shot drag_complete
+call TMinus.Assembly.VabDebug.Undo x
+call TMinus.Assembly.VabDebug.Report x
+stop
