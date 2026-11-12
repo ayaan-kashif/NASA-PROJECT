@@ -1,7 +1,7 @@
 {
   "cableTypes": [
     { "id": "power", "label": "Power (red/black pair)", "color": "#E53935", "pattern": "solid", "maxLengthM": 0.6, "polarized": true, "codexId": "eps",
-      "allowed": [ { "from": "PWR_OUT", "to": "PWR_IN" }, { "from": "SOLAR_OUT", "to": "SOLAR_IN" }, { "from": "BATT", "to": "BATT" } ] },
+      "allowed": [ { "from": "PWR_OUT", "to": "PWR_IN" }, { "from": "SOLAR_OUT", "to": "SOLAR_IN" }, { "from": "BATT", "to": "BATT" }, { "from": "BATT", "to": "PWR_IN" } ] },
     { "id": "data", "label": "Data (blue)", "color": "#1E88E5", "pattern": "dashed", "maxLengthM": 0.6, "polarized": false, "codexId": "data_budget",
       "allowed": [ { "from": "DATA", "to": "DATA" } ] },
     { "id": "rf", "label": "RF coax (grey)", "color": "#9E9E9E", "pattern": "ringed", "maxLengthM": 0.4, "polarized": false, "codexId": "downlink",
