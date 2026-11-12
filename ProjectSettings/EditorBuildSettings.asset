@@ -6,7 +6,26 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_TMinus/Scenes/Boot.unity
+    guid: 7c77083c04521f7408abf38df8f712ea
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/MainMenu.unity
+    guid: b6c27d68c07bc584ca12699ce5aeba34
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/MissionBriefing.unity
+    guid: cc18e8bd8e8c4b046b30e9574858c7b0
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/IntegrationBay.unity
+    guid: 91c3d7de6c2664348a077b2eb8d244d8
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/VAB.unity
+    guid: b84fe2b8d048a2d4caab1e90b85ee72b
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/Flight.unity
+    guid: 25d7b22fce34bbb4a92d0468c048e166
+  - enabled: 1
+    path: Assets/_TMinus/Scenes/Debrief.unity
+    guid: 243c3c2549d5c7c46ae83e726931be46
   m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

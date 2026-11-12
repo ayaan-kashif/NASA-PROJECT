@@ -1,0 +1,14 @@
+{
+    "name": "TMinus.Wiring",
+    "rootNamespace": "TMinus.Wiring",
+    "references": ["TMinus.Core"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

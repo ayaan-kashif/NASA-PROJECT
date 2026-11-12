@@ -1,0 +1,14 @@
+{
+    "name": "TMinus.Houston",
+    "rootNamespace": "TMinus.Houston",
+    "references": ["TMinus.Core"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

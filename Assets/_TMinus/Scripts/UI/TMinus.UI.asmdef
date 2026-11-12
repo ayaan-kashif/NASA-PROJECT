@@ -1,0 +1,14 @@
+{
+    "name": "TMinus.UI",
+    "rootNamespace": "TMinus.UI",
+    "references": ["TMinus.Core", "Unity.InputSystem", "UnityEngine.UI"],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

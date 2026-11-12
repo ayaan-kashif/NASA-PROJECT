@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="menu-root" class="menu-root">
+        <ui:VisualElement class="stars" picking-mode="Ignore" />
+        <ui:VisualElement class="menu-panel">
+            <ui:Label text="T-MINUS" class="title" />
+            <ui:Label text="Build it bolt by bolt. Wire it pin by pin. Launch it for real." class="tagline" />
+            <ui:VisualElement class="accent-line" />
+            <ui:Button name="btn-missions" text="Missions" class="menu-button primary" />
+            <ui:Button name="btn-sandbox" text="Sandbox" class="menu-button" />
+            <ui:Button name="btn-codex" text="Codex" class="menu-button" />
+            <ui:Button name="btn-settings" text="Settings" class="menu-button" />
+            <ui:Button name="btn-quit" text="Quit" class="menu-button quiet" />
+        </ui:VisualElement>
+        <ui:Label name="toast" text="" class="toast hidden" />
+        <ui:Label name="version" text="" class="version" />
+    </ui:VisualElement>
+</ui:UXML>

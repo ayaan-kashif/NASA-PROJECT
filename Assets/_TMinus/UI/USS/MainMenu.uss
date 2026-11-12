@@ -1,0 +1,112 @@
+/* T-MINUS main menu: dark navy, white text, one orange accent (#FF7A1A). */
+
+.menu-root {
+    flex-grow: 1;
+    background-color: rgb(8, 14, 34);
+    justify-content: center;
+    padding-left: 140px;
+}
+
+.stars {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgba(30, 60, 140, 0.12);
+}
+
+.menu-panel {
+    width: 520px;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 120px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    letter-spacing: 12px;
+    margin-bottom: 4px;
+    padding: 0;
+}
+
+.tagline {
+    font-size: 22px;
+    color: rgb(175, 190, 220);
+    white-space: normal;
+    margin-bottom: 18px;
+    padding: 0;
+}
+
+.accent-line {
+    width: 96px;
+    height: 5px;
+    background-color: rgb(255, 122, 26);
+    border-radius: 3px;
+    margin-bottom: 36px;
+}
+
+.menu-button {
+    height: 64px;
+    margin: 0 0 14px 0;
+    padding-left: 24px;
+    font-size: 26px;
+    -unity-text-align: middle-left;
+    color: rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    transition-property: background-color, border-color, translate;
+    transition-duration: 0.12s;
+}
+
+.menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgb(255, 122, 26);
+    translate: 6px 0;
+}
+
+.menu-button:active {
+    background-color: rgba(255, 122, 26, 0.35);
+}
+
+.menu-button:focus {
+    border-color: rgb(255, 122, 26);
+}
+
+.menu-button.primary {
+    background-color: rgb(255, 122, 26);
+    border-color: rgb(255, 122, 26);
+    -unity-font-style: bold;
+}
+
+.menu-button.primary:hover {
+    background-color: rgb(255, 145, 60);
+}
+
+.menu-button.quiet {
+    color: rgb(175, 190, 220);
+}
+
+.toast {
+    position: absolute;
+    bottom: 60px;
+    left: 140px;
+    font-size: 20px;
+    color: rgb(255, 255, 255);
+    background-color: rgba(255, 122, 26, 0.9);
+    padding: 12px 20px;
+    border-radius: 10px;
+    transition-property: opacity;
+    transition-duration: 0.2s;
+}
+
+.toast.hidden {
+    opacity: 0;
+}
+
+.version {
+    position: absolute;
+    right: 24px;
+    bottom: 18px;
+    font-size: 16px;
+    color: rgb(110, 125, 160);
+}
