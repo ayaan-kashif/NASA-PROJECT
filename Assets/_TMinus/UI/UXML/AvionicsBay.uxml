@@ -1,0 +1,32 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="av-root" class="vab-root" picking-mode="Ignore">
+        <ui:VisualElement class="top-row" picking-mode="Ignore">
+            <ui:VisualElement name="toolbar" class="toolbar">
+                <ui:Button name="btn-back" text="&lt;  Back to VAB" class="tool-btn" />
+                <ui:VisualElement class="tool-sep" />
+                <ui:Label text="AVIONICS RING · PATHFINDER" class="av-title" />
+                <ui:VisualElement class="tool-sep" />
+                <ui:Button name="btn-meter" text="Multimeter" class="tool-btn toggle" />
+                <ui:Button name="btn-arm" text="Safe/Arm: SAFE" class="tool-btn arm-safe" />
+                <ui:Button name="btn-reset" text="Reset camera" class="tool-btn" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="right-col" class="right-col">
+            <ui:VisualElement name="faults" class="faults-panel">
+                <ui:VisualElement class="card-header">
+                    <ui:Label text="FLIGHT CHECK" class="info-category" />
+                    <ui:Label name="fault-count" class="fault-count" />
+                </ui:VisualElement>
+                <ui:Label name="av-intro" class="orbit-info" text="Every cable here fires something in flight. A missing cable is not a crash today: it is a failure at T+ seconds." />
+                <ui:ScrollView name="fault-list" class="fault-list" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="labels-layer" class="labels-layer" picking-mode="Ignore" />
+        <ui:Label class="controls-hint" text="Click a port, then a port  ·  R: flip power plug  ·  Right-click cable: unplug  ·  Keep Safe/Arm on SAFE while you work" />
+        <ui:VisualElement class="toast-row" picking-mode="Ignore">
+            <ui:Label name="toast" class="toast hidden" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

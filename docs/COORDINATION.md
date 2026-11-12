@@ -15,11 +15,15 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 
 ## Claims (append one line before starting a prompt, mark DONE after pushing)
 - Claude: P0–P7 DONE.
-- Claude: P8 claimed (2026-11-12).
+- Claude: P8 DONE (2026-11-12).
+- P9 (mission briefing, checklist, GO/NO-GO): owned by Claude but NOT started. Codex may take it if Claude is out of quota: write "Codex took over P9" here first.
 - Codex: P10–P12 claimed if you agree — write your line here.
 
 ## Shared changes log
 - (append: who, file, what, why)
+- Claude, Core/AvionicsReport.cs (new) + SceneNames.AvionicsBay: avionics consequences for FlightSim. Use `AvionicsReport.Compute(GameState.Instance.Vehicle, rules)`; `AvionicsReport.Perfect()` for Saturn V.
+- Claude, Scripts/Wiring asmdef now references TMinus.Assembly (to reuse OrbitCamera).
+- Note: screenshots in uplay.sh need the Unity window in front; if another app holds focus the shots are skipped. Just rerun.
 
 ## Rules
 1. `git pull --rebase` before each prompt; commit + push after each passing prompt ("P10: flight physics core"). Never force-push.

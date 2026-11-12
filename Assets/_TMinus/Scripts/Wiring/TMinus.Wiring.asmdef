@@ -1,7 +1,7 @@
 {
     "name": "TMinus.Wiring",
     "rootNamespace": "TMinus.Wiring",
-    "references": ["TMinus.Core", "Unity.InputSystem"],
+    "references": ["TMinus.Core", "TMinus.Assembly", "Unity.InputSystem"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

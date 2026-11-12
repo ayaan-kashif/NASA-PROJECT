@@ -11,6 +11,7 @@
             <ui:Button name="btn-exploded" text="Exploded view" class="tool-btn toggle" />
             <ui:Button name="btn-xray" text="X-ray" class="tool-btn toggle" />
             <ui:Button name="btn-reset" text="Reset camera" class="tool-btn" />
+            <ui:Button name="btn-avionics" text="Avionics bay" class="tool-btn" />
             <ui:VisualElement class="tool-sep" />
             <ui:Button name="btn-next" text="To launch pad  &gt;" class="tool-btn accent" />
         </ui:VisualElement>

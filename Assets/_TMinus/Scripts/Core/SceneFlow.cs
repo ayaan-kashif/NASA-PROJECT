@@ -13,6 +13,8 @@ namespace TMinus.Core
         public const string VAB = "VAB";
         public const string Flight = "Flight";
         public const string Debrief = "Debrief";
+        /// <summary>Close-up of the Pathfinder avionics ring (Prompt 8), opened from the VAB.</summary>
+        public const string AvionicsBay = "AvionicsBay";
 
         /// <summary>Build Settings order. Boot must stay first.</summary>
         public static readonly string[] All =

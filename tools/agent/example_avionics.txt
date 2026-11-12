@@ -1,0 +1,10 @@
+scene Assets/_TMinus/Scenes/AvionicsBay.unity
+wait 3
+call TMinus.Wiring.AvionicsDebug.Wire nosep
+wait 1.5
+shot avionics_nosep
+call TMinus.Wiring.AvionicsDebug.Arm x
+wait 0.5
+shot avionics_armed
+call TMinus.Wiring.AvionicsDebug.Report x
+stop

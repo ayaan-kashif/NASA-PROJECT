@@ -73,3 +73,8 @@
 .budget-fill.yellow { background-color: rgb(255, 210, 80); }
 .budget-fill.red { background-color: rgb(255, 80, 70); }
 .budget-why { font-size: 13px; color: rgb(185, 198, 225); white-space: normal; padding: 3px 0 0 20px; }
+
+/* ---------- avionics bay (Prompt 8) ---------- */
+.av-title { font-size: 15px; letter-spacing: 2px; color: rgb(255, 180, 110); -unity-font-style: bold; padding: 0 6px; -unity-text-align: middle-center; }
+.arm-safe { background-color: rgba(60, 220, 110, 0.25); color: rgb(170, 255, 200); border-width: 1px; border-color: rgb(60, 220, 110); }
+.arm-armed { background-color: rgba(255, 80, 70, 0.35); color: white; border-width: 1px; border-color: rgb(255, 80, 70); -unity-font-style: bold; }

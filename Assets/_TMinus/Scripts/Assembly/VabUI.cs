@@ -61,6 +61,7 @@ namespace TMinus.Assembly
             Bind("btn-reset", () => ResetCamera?.Invoke());
             Bind("btn-menu", () => SceneFlow.Load(SceneNames.MainMenu));
             Bind("btn-next", SceneFlow.Next);
+            Bind("btn-avionics", () => SceneFlow.Load(SceneNames.AvionicsBay));
             Bind("btn-info-close", () => { HidePart(); InfoClosed?.Invoke(); });
             Bind("btn-learn", () => OpenCodex(GameState.Instance?.Data.GetPart(_shownPartId)?.codexId));
             Bind("btn-ask", () => HoustonBus.Ask(_shownPartId, "VAB"));
