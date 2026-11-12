@@ -61,3 +61,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Fixed scene-reload readiness: FlightController recovers scene references and initializes idempotently; debug launch, report, warp and camera hooks no longer dereference a missing runtime. Debug fast-forward now updates flight events, records and display state.
 - Added a T-10 countdown UI, pad hold-down for sub-TWR vehicles, a 1:1000 Earth display, improved pad framing, restored Earth visibility in chase mode, and readable prelaunch/end-card text.
 - Verified: 61/61 EditMode tests; play hooks report 542 × 545 km orbit + CubeSat deployment, joint_failure at 26 s, and stuck_stage at 128 s from `w_pyro2`. Unity did not stay foreground for useful final screenshots, so the visible countdown still needs a focused manual check.
+
+## P12 — Operations, scoring and debrief (2026-11-13)
+- Added deterministic per-orbit operations using spacecraft budgets, powered deployment checks, battery/data/image/downlink accounting, mission events, causal timeline, weighted score/stars, top fixes, design code copy and a local top-10. Added the generated Debrief scene and debug hooks.
+- Added README, credits and the submission/demo checklist. Landsat reward remains a design-dependent placeholder with the codex credit and a clear asset TODO because image files are not in the repo.
+- Verified: 71/71 EditMode tests; play-tested perfect = 30 days, 87 images, 3 stars; missing separation = `stuck_stage` caused by `w_pyro2`; HD camera = power deficit, 2 days alive, 0 images. Build the scene with Tools > T-Minus > Build Debrief.

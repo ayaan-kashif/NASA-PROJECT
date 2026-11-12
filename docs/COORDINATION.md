@@ -18,8 +18,10 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude: P8 DONE (2026-11-12).
 - Claude: P9 DONE (2026-11-13).
 - Codex: P11 DONE (2026-11-13, local commit; do not push).
+- Codex: P12 DONE (operations, scoring, debrief; local commit only, 2026-11-13).
 - P11 verification: 61/61 EditMode tests; play hooks confirmed orbit + deployment, joint_failure at max-Q, and stuck_stage caused by w_pyro2. Unity window did not stay foreground for readable final screenshots; manually inspect the T-10 button countdown in Unity.
-- Open after P11: P12 (operations + scoring + debrief, reads GameState.Flight / FlightRecord), P13-P18.
+- P12 verification: 71/71 EditMode tests; scripted perfect run = 30 days, 87 images, 3 stars; missing pyro2 = stuck_stage/w_pyro2, no operations; HD camera = power deficit, 2 days alive, no images. Landsat art remains a clearly credited TODO placeholder.
+- Open after P12: P13-P18.
 - 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Agents commit locally only and never push; Claude audits, merges houston and pushes.
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).
 

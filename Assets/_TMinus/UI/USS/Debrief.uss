@@ -1,0 +1,16 @@
+.debrief-root { background-color: #071020; color: #eaf2ff; }
+.debrief-page { padding: 28px 7%; flex-grow: 1; }
+#eyebrow { color: #55d9d1; font-size: 13px; letter-spacing: 2px; }
+#title { color: #ffffff; font-size: 32px; -unity-font-style: bold; margin-top: 6px; }
+#summary { color: #a9bed8; font-size: 16px; margin-bottom: 16px; }
+#section { color: #55d9d1; font-size: 14px; letter-spacing: 1px; margin-top: 20px; margin-bottom: 7px; }
+.debrief-grid { flex-direction: row; flex-wrap: wrap; }
+.debrief-card { background-color: #101d31; border-left-width: 3px; border-left-color: #55d9d1; padding: 14px; margin: 6px; min-width: 280px; flex-grow: 1; }
+.debrief-card > Label:first-child { color: #55d9d1; -unity-font-style: bold; margin-bottom: 8px; }
+.debrief-card Label { color: #eaf2ff; font-size: 14px; margin-bottom: 4px; white-space: normal; }
+.muted { color: #a9bed8; font-size: 12px; white-space: normal; margin-top: 6px; }
+.soc-timeline { height: 115px; flex-direction: row; align-items: flex-end; background-color: #101d31; padding: 8px; }
+.soc-bar { flex-grow: 1; min-width: 3px; margin-right: 2px; background-color: #55d9d1; }
+.debrief-buttons { flex-direction: row; flex-wrap: wrap; margin-top: 22px; }
+.debrief-button { background-color: #173b58; color: #ffffff; border-width: 1px; border-color: #55d9d1; padding: 10px 16px; margin-right: 8px; margin-bottom: 8px; }
+.debrief-button:hover { background-color: #23617c; }
