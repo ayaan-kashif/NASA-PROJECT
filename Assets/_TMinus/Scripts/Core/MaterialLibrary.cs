@@ -25,6 +25,7 @@ namespace TMinus.Core
         public const string GhostValid = "Ghost_Valid";
         public const string GhostInvalid = "Ghost_Invalid";
         public const string XRay = "XRay_Shell";
+        public const string CableUnlit = "Cable_Unlit";
 
         public List<Material> materials = new List<Material>();
 
@@ -71,6 +72,7 @@ namespace TMinus.Core
                 case GhostValid: return new Color(0.2f, 1f, 0.45f, 0.35f);
                 case GhostInvalid: return new Color(1f, 0.25f, 0.2f, 0.35f);
                 case XRay: return new Color(0.6f, 0.8f, 1f, 0.15f);
+                case CableUnlit: return Color.white;
                 default: return Color.magenta;
             }
         }

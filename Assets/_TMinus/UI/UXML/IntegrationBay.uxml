@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="bay-root" class="vab-root" picking-mode="Ignore">
+        <ui:VisualElement class="top-row" picking-mode="Ignore">
+            <ui:VisualElement name="toolbar" class="toolbar">
+                <ui:Button name="btn-menu" text="Menu" class="tool-btn" />
+                <ui:VisualElement class="tool-sep" />
+                <ui:Button name="btn-build" text="Build" class="tool-btn toggle" />
+                <ui:Button name="btn-wire" text="Wire (FlatSat)" class="tool-btn toggle" />
+                <ui:VisualElement class="tool-sep" />
+                <ui:Button name="btn-cutaway" text="Cutaway" class="tool-btn toggle" />
+                <ui:Button name="btn-meter" text="Multimeter" class="tool-btn toggle" />
+                <ui:Button name="btn-reset" text="Reset camera" class="tool-btn" />
+                <ui:VisualElement class="tool-sep" />
+                <ui:Button name="btn-next" text="To the VAB  &gt;" class="tool-btn accent" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement class="parts-bin-slot">
+            <ui:VisualElement class="bin">
+                <ui:Label text="CUBESAT PARTS" class="bin-title" />
+                <ui:Label name="bin-progress" class="bin-progress" />
+                <ui:ScrollView name="bin-list" class="bin-list" />
+                <ui:Label name="bin-hint" class="bin-hint" text="Click a part to install it in the 3U frame. Then switch to Wire (FlatSat) and plug in every cable." />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="right-col" class="right-col">
+            <ui:VisualElement name="budgets-slot" class="budgets-slot" />
+            <ui:VisualElement name="faults" class="faults-panel">
+                <ui:VisualElement class="card-header">
+                    <ui:Label text="WIRING CHECK" class="info-category" />
+                    <ui:Label name="fault-count" class="fault-count" />
+                </ui:VisualElement>
+                <ui:ScrollView name="fault-list" class="fault-list" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="labels-layer" class="labels-layer" picking-mode="Ignore" />
+        <ui:Label name="controls-hint" class="controls-hint" text="Right-drag: orbit  ·  Middle-drag: pan  ·  Scroll: zoom  ·  Wire mode: click port, then port  ·  R: flip power plug  ·  Right-click cable: unplug" />
+        <ui:VisualElement class="toast-row" picking-mode="Ignore">
+            <ui:Label name="toast" class="toast hidden" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -107,6 +107,7 @@ namespace TMinus.Assembly
 
             float diameter = (float)def.stages.Select(s => s.diameterM).DefaultIfEmpty(1).Max();
             environment?.FitTo(diameter, Current.Height);
+            if (orbit != null) { orbit.yaw = 30; orbit.pitch = 6; }
             orbit?.Frame(Current.WorldBounds(), instant: true);
             ui?.SetSelectedRocket(rocketId);
 

@@ -30,6 +30,7 @@ namespace TMinus.Core
         public string fromPort;
         public string toPort;
         public string cableType;
+        public bool reversed;
     }
 
     /// <summary>The CubeSat as built in the Integration Bay.</summary>

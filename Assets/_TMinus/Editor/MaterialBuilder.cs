@@ -17,7 +17,7 @@ namespace TMinus.EditorTools
             MaterialLibrary.BodyWhite, MaterialLibrary.BandBlack, MaterialLibrary.InsulationOrange,
             MaterialLibrary.MetalGrey, MaterialLibrary.EngineDark, MaterialLibrary.Concrete,
             MaterialLibrary.Wall, MaterialLibrary.GantryRed, MaterialLibrary.BoardGreen,
-            MaterialLibrary.GhostValid, MaterialLibrary.GhostInvalid, MaterialLibrary.XRay
+            MaterialLibrary.GhostValid, MaterialLibrary.GhostInvalid, MaterialLibrary.XRay, MaterialLibrary.CableUnlit
         };
 
         [MenuItem("Tools/T-Minus/Build Materials", priority = 10)]
@@ -42,12 +42,14 @@ namespace TMinus.EditorTools
             foreach (var name in Names)
             {
                 var path = $"{Dir}/{name}.mat";
+                var wanted = name == MaterialLibrary.CableUnlit ? Shader.Find("Universal Render Pipeline/Unlit") : shader;
                 var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
                 if (mat == null)
                 {
-                    mat = new Material(shader) { name = name };
+                    mat = new Material(wanted) { name = name };
                     AssetDatabase.CreateAsset(mat, path);
                 }
+                else if (mat.shader != wanted) mat.shader = wanted;
                 Configure(mat, name);
                 EditorUtility.SetDirty(mat);
                 lib.materials.Add(mat);

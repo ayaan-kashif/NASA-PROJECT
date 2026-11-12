@@ -12,7 +12,7 @@ namespace TMinus.Assembly
     public sealed class OrbitCamera : MonoBehaviour
     {
         public Vector3 target;
-        public float yaw = 30, pitch = 12, distance = 30;
+        public float yaw = 30, pitch = 6, distance = 30;
         public float minDistance = 1, maxDistance = 400;
         public float damping = 10;
 
@@ -50,8 +50,9 @@ namespace TMinus.Assembly
             maxDistance = radius * 8f;
             if (setHome)
             {
+                // The current yaw/pitch become the Reset view (scenes set them before framing).
                 _homeTarget = target; _homeDistance = distance;
-                yaw = _homeYaw; pitch = _homePitch;
+                _homeYaw = yaw; _homePitch = pitch;
             }
             if (instant) Snap();
         }
