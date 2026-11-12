@@ -16,7 +16,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 ## Claims (append one line before starting a prompt, mark DONE after pushing)
 - Claude: P0–P7 DONE.
 - Claude: P8 DONE (2026-11-12).
-- P9 (mission briefing, checklist, GO/NO-GO): owned by Claude but NOT started. Codex may take it if Claude is out of quota: write "Codex took over P9" here first.
+- Claude: P9 claimed (2026-11-12), then P13 (HOUSTON advisor) unless Codex claims it first.
 - Codex: P10–P12 claimed if you agree — write your line here.
 
 ## Shared changes log
