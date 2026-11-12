@@ -13,13 +13,22 @@ namespace TMinus.Flight
     /// pad for the pitch-kick choice, checks thrust-to-weight at T-0, flies with time warp, turns sim events into
     /// animations and HUD callouts, then stores a FlightRecord and goes to the Debrief.
     /// </summary>
-    public sealed class FlightController : MonoBehaviour
+    public sealed partial class FlightController : MonoBehaviour
     {
         public FlightView view;
         public FlightHud hud;
         public OrbitCamera orbit;
 
-        public static FlightController Instance { get; private set; }
+        static FlightController _instance;
+        public static FlightController Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = FindAnyObjectByType<FlightController>();
+                return _instance;
+            }
+            private set => _instance = value;
+        }
         public FlightSim Sim { get; private set; }
         public int Warp { get; set; } = 1;
         public string CameraMode { get; private set; } = "ground";
@@ -43,31 +52,7 @@ namespace TMinus.Flight
             if (S != null) S.Events.Added -= OnEvent;
         }
 
-        void Start()
-        {
-            var data = S.Data;
-            var rules = data.GetRules();
-            _rocket = data.GetRocket(S.Vehicle.rocketId) ?? data.GetRocket("pathfinder");
-            S.Vehicle.rocketId = _rocket.id;
-            _avionics = _rocket.buildable ? AvionicsReport.Compute(S.Vehicle, rules) : AvionicsReport.Perfect();
-            var joints = _rocket.buildable ? BoltJointState.AllStatuses(rules, S.Vehicle).Select(j => (IJointStatus)j).ToList() : null;
-
-            Sim = FlightRuntime.Create(data, S.Vehicle, _avionics, joints, S.Events);
-            if (S.Spacecraft.orbitAltitudeKm > 0 && _rocket.buildable) Sim.Options.targetAltitudeKm = S.Spacecraft.orbitAltitudeKm;
-            Sim.Options.pitchKickDeg = S.Vehicle.pitchKickDeg > 0 ? S.Vehicle.pitchKickDeg : 3;
-
-            _cam = orbit.GetComponent<Camera>();
-            view.cam = _cam;
-            view.Build(_rocket, data, Sim.Position, Sim.Options.latitudeDeg);
-            S.Events.Added += OnEvent;
-
-            hud.Init(this, _avionics.TelemetryOk);
-            hud.ShowPrelaunch(Sim.Options.pitchKickDeg, TwrAtLiftoff());
-            orbit.IsPointerOverUI = hud.IsPointerOverUI;
-            orbit.yaw = 20; orbit.pitch = 5;
-            orbit.Frame(view.RocketBounds(), true);
-            SetCamera("ground");
-        }
+        void Start() => EnsureInitialized();
 
         public double TwrAtLiftoff()
         {
@@ -79,7 +64,9 @@ namespace TMinus.Flight
         /// <summary>T-0: check lift-off thrust, then release the clamps.</summary>
         public void Launch(double pitchKickDeg)
         {
+            EnsureInitialized();
             if (Launched || Ended) return;
+            _countdownRemaining = 0;
             Sim.Options.pitchKickDeg = pitchKickDeg;
             S.Vehicle.pitchKickDeg = pitchKickDeg;
             hud.HidePrelaunch();
@@ -98,6 +85,7 @@ namespace TMinus.Flight
 
         void Update()
         {
+            TickCountdown();
             HandleKeys();
             if (Launched && !Ended)
             {
@@ -220,7 +208,12 @@ namespace TMinus.Flight
 
         public void Abort()
         {
-            if (!Launched || Ended) return;
+            if (Ended) return;
+            if (!Launched)
+            {
+                if (_countdownRemaining > 0) CancelCountdown();
+                return;
+            }
             S.Events.AddAt(Sim.TimeS, "flight", "manual_abort", "Flight Director called an abort.", null, Severity.Warning);
             hud.Banner("ABORT", false);
             Finish("Aborted", "manual_abort", null);
@@ -258,7 +251,7 @@ namespace TMinus.Flight
             }
             float alt = (float)(last?.altitudeM ?? 0);
             _cam.backgroundColor = Color.Lerp(new Color(0.45f, 0.65f, 0.95f), new Color(0.005f, 0.008f, 0.02f), Mathf.Clamp01(alt / 70000f));
-            _cam.farClipPlane = 4e7f;
+            _cam.farClipPlane = 2e4f;
             _cam.nearClipPlane = CameraMode == "ground" ? 1f : 0.3f;
         }
 

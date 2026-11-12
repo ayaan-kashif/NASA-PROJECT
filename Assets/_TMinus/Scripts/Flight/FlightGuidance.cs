@@ -23,7 +23,15 @@ namespace TMinus.Flight
             double targetRadius = FlightConstants.EarthRadiusM + sim.Options.targetAltitudeKm * 1000;
             double throttle = 1;
 
-            if (sim.Phase == FlightPhase.Pad) sim.SetPhase(FlightPhase.Ascent);
+            if (sim.Phase == FlightPhase.Pad)
+            {
+                var firstStage = sim.Vehicle.stages[sim.StageIndex];
+                double seaLevelThrust = firstStage.thrustVacN * firstStage.ispSeaLevel / Math.Max(1, firstStage.ispVac);
+                if (seaLevelThrust * sim.ManualThrottle > sim.MassKg * FlightConstants.G0)
+                    sim.SetPhase(FlightPhase.Ascent);
+                else
+                    direction = radial; // Hold-down clamps keep a sub-TWR vehicle on the pad.
+            }
             if (sim.Phase == FlightPhase.Ascent)
             {
                 var orbit = OrbitElements.From(state, sim.Velocity);

@@ -30,6 +30,23 @@ namespace TMinus.Tests.Flight
         }
 
         [Test]
+        public void SubTwrRocketRemainsHeldOnLaunchPad()
+        {
+            var vehicle = new FlightVehicle { id = "pad-hold-test" };
+            vehicle.stages.Add(new FlightStage
+            {
+                id = "weak-stage", dryMassKg = 900, propMassKg = 100,
+                thrustVacN = 5000, ispVac = 300, ispSeaLevel = 250, diameterM = 1
+            });
+            var sim = new FlightSim(vehicle, new LaunchOptions { payloadMassKg = 0 }) { RecordTelemetry = false };
+
+            sim.RunForSimSeconds(10);
+
+            Assert.That(sim.Phase, Is.EqualTo(FlightPhase.Pad));
+            Assert.That(FlightPhysics.Altitude(sim.Position), Is.EqualTo(0).Within(1e-6));
+        }
+
+        [Test]
         public void Circular550KmOrbitStaysWithinTwoKmForTenOrbits()
         {
             double radius = FlightConstants.EarthRadiusM + 550000;

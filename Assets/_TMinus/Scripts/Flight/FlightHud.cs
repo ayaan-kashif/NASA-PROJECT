@@ -13,7 +13,8 @@ namespace TMinus.Flight
         [SerializeField] StyleSheet style;
 
         VisualElement _root, _stats, _fuel, _feed, _charts, _prelaunch, _end, _los, _banner;
-        Label _clock, _phase, _bannerText;
+        Label _clock, _phase, _bannerText, _countdownLabel;
+        Button _ignition;
         LineChart _altChart, _speedChart;
         OrbitMap _map;
         readonly Dictionary<string, Label> _values = new Dictionary<string, Label>();
@@ -87,9 +88,9 @@ namespace TMinus.Flight
 
         public void ShowPrelaunch(double pitchKick, double twr)
         {
-            _prelaunch = Box("modal", _root);
+            _prelaunch = Box("modal prelaunch-overlay", _root);
             var p = Box("pad-panel-small", _prelaunch);
-            L("TERMINAL COUNT HOLD · T-0", "info-category", p);
+            _countdownLabel = L("TERMINAL COUNT HOLD · T-10 READY", "info-category", p);
             L($"Lift-off thrust-to-weight: {twr:0.00} {(twr >= 1 ? "✓" : "✗ (below 1: it can't lift off)")}", "check-title", p);
             L("Pitch kick: how far the rocket tips over a few seconds after lift-off. Too little and it climbs straight up wasting fuel; too much and it dives into thick air.", "check-detail", p);
             var slider = new Slider("Pitch kick (°)", 1, 6) { value = (float)pitchKick };
@@ -97,10 +98,28 @@ namespace TMinus.Flight
             var val = L($"{pitchKick:0.0}°", "check-title", p);
             slider.RegisterValueChangedCallback(e => val.text = $"{e.newValue:0.0}°");
             p.Add(slider);
-            Btn("IGNITION  ›", () => _ctrl.Launch(slider.value), "card-btn accent big", p);
+            _ignition = Btn("START COUNTDOWN  ›", () => _ctrl.StartCountdown(slider.value), "card-btn accent big", p);
         }
 
         public void HidePrelaunch() { if (_prelaunch != null) _prelaunch.style.display = DisplayStyle.None; }
+
+        public void Countdown(int secondsRemaining)
+        {
+            if (_countdownLabel != null) _countdownLabel.text = secondsRemaining > 0 ? $"COUNTDOWN · T-{secondsRemaining:00}" : "T-0 · IGNITION";
+            if (secondsRemaining == 0) Banner("IGNITION · LIFTOFF", true);
+        }
+
+        public void CancelCountdown()
+        {
+            if (_countdownLabel != null) _countdownLabel.text = "TERMINAL COUNT HOLD · T-10 READY";
+            if (_ignition != null) { _ignition.SetEnabled(true); _ignition.text = "START COUNTDOWN  ›"; }
+        }
+
+        public void CountdownStarted()
+        {
+            if (_ignition != null) { _ignition.SetEnabled(false); _ignition.text = "COUNTDOWN IN PROGRESS"; }
+            Countdown(10);
+        }
 
         public void ShowEnd(FlightRecord r)
         {

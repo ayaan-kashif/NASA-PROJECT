@@ -41,7 +41,11 @@
 .banner { font-size: 34px; color: white; -unity-font-style: bold; letter-spacing: 3px; padding: 10px 26px; background-color: rgba(255, 122, 26, 0.9); border-radius: 12px; }
 .banner.bad { background-color: rgba(200, 50, 45, 0.92); }
 
+.prelaunch-overlay { background-color: rgba(0, 0, 0, 0.12); align-items: center; justify-content: flex-start; padding-top: 100px; }
 .pad-panel-small { width: 640px; padding: 24px 28px; background-color: rgb(12, 20, 44); border-radius: 16px; border-top-width: 4px; border-top-color: rgb(255, 122, 26); }
+.pad-panel-small .info-category { color: rgb(255, 170, 110); font-size: 14px; -unity-font-style: bold; letter-spacing: 1px; }
+.pad-panel-small .check-title { color: white; font-size: 16px; -unity-font-style: bold; }
+.pad-panel-small .check-detail { color: rgb(215, 225, 245); font-size: 15px; white-space: normal; }
 .kick-slider { margin: 10px 0; }
 .kick-slider Label { color: white; font-size: 16px; }
 .card-btn.big { height: 56px; font-size: 22px; margin-top: 12px; }
@@ -51,3 +55,4 @@
 .end-panel.good { border-top-color: rgb(60, 220, 110); }
 .end-panel.bad { border-top-color: rgb(255, 80, 70); }
 .end-title { font-size: 40px; color: white; -unity-font-style: bold; letter-spacing: 3px; padding: 0; }
+.end-panel .check-detail { color: rgb(215, 225, 245); font-size: 15px; white-space: normal; }

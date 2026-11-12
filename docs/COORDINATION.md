@@ -17,7 +17,8 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude: P0–P7 DONE.
 - Claude: P8 DONE (2026-11-12).
 - Claude: P9 DONE (2026-11-13).
-- P11 (Flight scene + HUD): WORK IN PROGRESS, committed so it isn't lost. Builds and compiles; scene built via Tools > T-Minus > Build Flight Scene. KNOWN BUG to fix first: in play mode `FlightDebug.Launch` throws a NullReferenceException right after `FlightDebug.Reload` (FlightController.Instance or its hud is null after the scene reload; the IGNITION button path is untested too). Repro: `bash tools/agent/uplay.sh tools/agent/example_flight.txt`. Then check screenshots in Logs/agent-shots/.
+- Codex: P11 DONE (2026-11-13, local commit; do not push).
+- P11 verification: 61/61 EditMode tests; play hooks confirmed orbit + deployment, joint_failure at max-Q, and stuck_stage caused by w_pyro2. Unity window did not stay foreground for readable final screenshots; manually inspect the T-10 button countdown in Unity.
 - Open after P11: P12 (operations + scoring + debrief, reads GameState.Flight / FlightRecord), P13-P18.
 - 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Agents commit locally only and never push; Claude audits, merges houston and pushes.
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).

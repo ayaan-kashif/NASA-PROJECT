@@ -46,7 +46,7 @@ namespace TMinus.Flight
 
         void BuildEarth()
         {
-            float R = (float)FlightConstants.EarthRadiusM;
+            float R = (float)(FlightConstants.EarthRadiusM * 0.001);
             var sphere = new GameObject("Earth");
             sphere.transform.SetParent(earthRoot, false);
             sphere.AddComponent<MeshFilter>().sharedMesh = UvSphere(R, 256, 128);
@@ -62,12 +62,13 @@ namespace TMinus.Flight
             var up = _toUnity * _padDirSim;
             pad.localPosition = up * (R + 0.02f);
             pad.localRotation = Quaternion.FromToRotation(Vector3.up, up);
-            Disc(pad, "Ground", 15000, new Color(0.45f, 0.42f, 0.32f), 0.0f);
+            Disc(pad, "Ground", 150, new Color(0.45f, 0.42f, 0.32f), 0.0f);
             Disc(pad, "PadConcrete", 40, new Color(0.55f, 0.55f, 0.55f), 0.05f);
             var tower = GameObject.CreatePrimitive(PrimitiveType.Cube);
             tower.name = "Tower"; tower.transform.SetParent(pad, false);
             tower.transform.localScale = new Vector3(3, 24, 3);
-            tower.transform.localPosition = new Vector3(6, 12, 0);
+            // Keep the tower beside the launch axis so the pad camera does not hide the vehicle behind it.
+            tower.transform.localPosition = new Vector3(40, 12, 0);
             tower.GetComponent<Renderer>().sharedMaterial = M.Get(M.GantryRed);
         }
 
@@ -109,7 +110,7 @@ namespace TMinus.Flight
         public void Sync(Vec2d pos, Vec2d vel, double time, double thrustFraction, double altitudeM)
         {
             _simPos = pos; _simTime = time;
-            earthRoot.position = ToUnity(new Vec2d() - pos);
+            earthRoot.position = ToUnity((new Vec2d() - pos) * 0.001);
             earthRoot.rotation = Quaternion.AngleAxis((float)(_omega * time * Mathf.Rad2Deg), Vector3.forward);
 
             // Nose along the air-relative velocity once moving, else straight up from the ground.

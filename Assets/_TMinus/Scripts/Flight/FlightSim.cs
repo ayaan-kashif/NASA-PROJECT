@@ -63,6 +63,7 @@ namespace TMinus.Flight
             var east = new Vec2d(-Math.Sin(_startAngle), Math.Cos(_startAngle));
             _velocity = east * (Options.startInCircularOrbit ? Math.Sqrt(FlightConstants.Mu / startRadius) : _rotationRate * startRadius);
             _mass = vehicle.InitialMassKg(Options.payloadMassKg);
+            if (Options.initialAltitudeKm > 0 || Options.startInCircularOrbit) Phase = FlightPhase.Coast;
             _outcome.phase = Phase;
             if (vehicle.stages.Count == 0 || _mass <= 0) Fail("invalid_vehicle", "No usable rocket stage is configured.", vehicle.id);
             else if (!_avionics.S1IgnitionOk)
@@ -121,6 +122,7 @@ namespace TMinus.Flight
             if (!_stageIgnited || _stageIndex < 0 || _stageIndex >= Vehicle.stages.Count || _fuel[_stageIndex] <= 0)
                 command.throttle = 0;
             Integrate(FlightConstants.Dt, command);
+            HoldDownOnPad();
             _time += FlightConstants.Dt;
             double h = FlightPhysics.Altitude(_position);
             double q = FlightPhysics.DynamicPressure(_position, _velocity, Options.latitudeDeg);
@@ -135,6 +137,15 @@ namespace TMinus.Flight
         }
 
         static double Clamp(double x, double min, double max) => Math.Max(min, Math.Min(max, x));
+
+        void HoldDownOnPad()
+        {
+            if (Phase != FlightPhase.Pad) return;
+            Vec2d radial = _position.Normalized;
+            _position = radial * FlightConstants.EarthRadiusM;
+            _velocity -= radial * _velocity.Dot(radial);
+        }
+
         bool Terminal() => Phase == FlightPhase.Orbit || Phase == FlightPhase.Failed || Phase == FlightPhase.Aborted;
         string Cause(string consequence) => _avionics.CauseId(consequence);
 
