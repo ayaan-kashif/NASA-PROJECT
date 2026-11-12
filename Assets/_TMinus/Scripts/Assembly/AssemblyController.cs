@@ -24,7 +24,7 @@ namespace TMinus.Assembly
         bool _snapValid;
 
         RocketView View => vab != null ? vab.Current : null;
-        public bool Active => vab != null && vab.Mode == "assemble" && View != null && View.Graph != null;
+        public bool Active => vab != null && vab.Mode == "assemble" && View != null && View.Graph != null && !BoltTool.IsActive;
         public bool IsDragging => _drag != null;
 
         void Start()

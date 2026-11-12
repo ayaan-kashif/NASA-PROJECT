@@ -9,7 +9,7 @@ namespace TMinus.Assembly
 {
     /// <summary>VAB panels (UI/UXML/VAB.uxml): toolbar, info card, rocket library, codex modal, labels.</summary>
     [RequireComponent(typeof(UIDocument))]
-    public sealed class VabUI : MonoBehaviour
+    public sealed partial class VabUI : MonoBehaviour
     {
         [SerializeField] StyleSheet style;
 
@@ -77,9 +77,10 @@ namespace TMinus.Assembly
             _dragHint.AddToClassList("drag-hint");
             _dragHint.style.display = DisplayStyle.None;
             _root.Add(_dragHint);
+            InitBoltUi();
         }
 
-        public void RefreshBin(RocketView view) => Bin?.Refresh(view);
+        public void RefreshBin(RocketView view) => Bin?.Refresh(view, Joints());
 
         public void SetBinVisible(bool visible) => Bin?.SetVisible(visible);
 

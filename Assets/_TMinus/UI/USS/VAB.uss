@@ -197,3 +197,28 @@
 }
 .drag-hint.valid { border-left-color: rgb(60, 220, 110); }
 .drag-hint.invalid { border-left-color: rgb(255, 80, 70); background-color: rgba(60, 10, 10, 0.92); }
+
+/* ---------- bolting (Prompt 5) ---------- */
+.joint-item { border-left-color: rgb(255, 200, 80); }
+.joint-item.joint-done { border-left-color: rgb(60, 220, 110); }
+.joint-item.joint-bad { border-left-color: rgb(255, 80, 70); }
+.bolt-panel-host { position: absolute; right: 18px; top: 90px; width: 420px; }
+.bolt-panel {
+    padding: 18px 20px;
+    background-color: rgba(8, 14, 34, 0.94);
+    border-radius: 14px;
+    border-width: 1px; border-color: rgba(255, 255, 255, 0.1);
+    border-left-width: 4px; border-left-color: rgb(255, 200, 80);
+}
+.bolt-spec { font-size: 17px; color: rgb(205, 215, 235); padding: 0; margin-bottom: 4px; }
+.bolt-pass { font-size: 18px; color: rgb(255, 180, 110); -unity-font-style: bold; white-space: normal; padding: 0; margin-bottom: 4px; }
+.bolt-order { font-size: 15px; color: rgb(160, 175, 205); white-space: normal; padding: 0; margin-bottom: 10px; }
+.bolt-modes { flex-direction: row; margin-bottom: 6px; }
+.bolt-integrity-label { font-size: 16px; color: white; -unity-font-style: bold; padding: 0; margin-top: 4px; }
+.bolt-bar-track { height: 12px; background-color: rgba(255, 255, 255, 0.1); border-radius: 6px; margin: 6px 0 10px 0; overflow: hidden; }
+.bolt-bar-fill { height: 100%; background-color: rgb(60, 220, 110); border-radius: 6px; }
+.bolt-bar-fill.bad { background-color: rgb(255, 80, 70); }
+.bolt-legend { font-size: 13px; color: rgb(160, 175, 205); white-space: normal; padding: 0; margin-bottom: 6px; }
+.bolt-hint { font-size: 14px; color: rgb(205, 215, 235); white-space: normal; padding: 0; margin-bottom: 12px; }
+.torque-gauge { background-color: rgba(8, 14, 34, 0.85); border-radius: 75px; align-items: center; justify-content: center; }
+.gauge-text { font-size: 15px; color: white; -unity-text-align: middle-center; -unity-font-style: bold; }

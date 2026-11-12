@@ -87,6 +87,47 @@ namespace TMinus.Assembly
             return ctrl.DebugDrag(part, screen, a.Length > 2 && a[2] == "release");
         }
 
+        static BoltTool Bolts => Object.FindAnyObjectByType<BoltTool>();
+
+        /// <summary>Stack the whole Pathfinder (assemble mode).</summary>
+        public static string BuildAll(string _)
+        {
+            var g = C?.Current?.Graph;
+            if (g == null) return "no graph";
+            foreach (var id in g.Rules.Order)
+            {
+                if (g.IsAttached(id)) continue;
+                var socket = g.Rules.SocketFor(id);
+                foreach (var (lower, s) in g.FreeSockets())
+                    if (s == socket && g.TryAttach(id, lower, s, out _)) break;
+            }
+            return g.IsComplete() ? "complete" : "incomplete";
+        }
+
+        public static string BoltEnter(string jointId) { Bolts?.Enter(jointId); return BoltTool.IsActive.ToString(); }
+
+        /// <summary>"star" = insert all, then 3 passes in star order. "clockwise" = full torque 1..N on pass 1.
+        /// "partial" = star pass 1 and 2 only, bolts 3 and 9 left out.</summary>
+        public static string BoltPattern(string pattern)
+        {
+            var t = Bolts;
+            if (t?.Joint == null) return "no joint";
+            var st = t.Joint.State;
+            for (int i = 0; i < st.Count; i++) if (st.StateOf(i) == Core.BoltState.Missing) t.Insert(i);
+            if (pattern == "clockwise")
+                for (int i = 0; i < st.Count; i++) t.Release(i, (float)st.Target);
+            else
+            {
+                int passes = pattern == "partial" ? 2 : 3;
+                for (int p = 1; p <= passes; p++)
+                    foreach (var i in Core.BoltMath.StarOrder(st.Count)) t.Release(i, (float)st.PassTargetNm(p));
+                if (pattern == "partial") { t.Remove(2); t.Remove(8); }
+            }
+            return st.GetStatus().ToString();
+        }
+
+        public static string BoltExit(string _) { Bolts?.Exit(); return "ok"; }
+
         public static string Undo(string _) => C?.Current?.Graph?.Undo().ToString();
 
         public static string Report(string _)

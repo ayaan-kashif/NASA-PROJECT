@@ -82,6 +82,12 @@ namespace TMinus.EditorTools
             assembly.vab = ctrl;
             assembly.selector = selector;
             assembly.ui = ui;
+            var bolts = ctrlGo.AddComponent<BoltTool>();
+            bolts.vab = ctrl;
+            bolts.orbit = orbit;
+            bolts.selector = selector;
+            bolts.ui = ui;
+            ctrl.boltTool = bolts;
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, scenePath);

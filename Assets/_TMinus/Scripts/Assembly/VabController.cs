@@ -16,6 +16,7 @@ namespace TMinus.Assembly
         public VabUI ui;
         public VabEnvironment environment;
         public Transform rocketRoot;
+        public BoltTool boltTool;
 
         public RocketView Current { get; private set; }
         public string Mode { get; private set; } = "assemble";
@@ -50,6 +51,7 @@ namespace TMinus.Assembly
                 ui.XRayChanged += on => Current?.SetXRay(on);
                 ui.ResetCamera += () => orbit?.ResetView();
                 ui.InfoClosed += () => selector?.Select(null);
+                ui.JointsProvider = JointList;
             }
 
             var rocketId = state.Vehicle.rocketId;
@@ -88,6 +90,8 @@ namespace TMinus.Assembly
             var state = GameState.Instance;
             var saved = state.Vehicle.rocketId == rocketId ? state.Vehicle : null;
             Current = RocketView.Spawn(def, Data, parent, assembly, deck, saved);
+            if (assembly) boltTool?.Bind(Current);
+            else boltTool?.Bind(null);
 
             if (Current.Graph != null)
             {
@@ -133,6 +137,17 @@ namespace TMinus.Assembly
             if (Current == null || orbit == null) yield break;
             if (exploded) orbit.Focus(Current.WorldBounds(attachedOnly: true));
             else orbit.ResetView();
+        }
+
+        System.Collections.Generic.IEnumerable<(string id, string label, JointStatus status, bool mounted)> JointList()
+        {
+            if (boltTool == null || Current?.Graph == null) yield break;
+            var g = Current.Graph;
+            foreach (var v in boltTool.Views)
+            {
+                bool mounted = g.Edges.Any(e => e.jointId == v.Def.id);
+                yield return (v.Def.id, $"{g.Rules.Name(v.Def.lowerPartId)} + {g.Rules.Name(v.Def.upperPartId)}", v.State.GetStatus(), mounted);
+            }
         }
 
         void OnSelected(Part p)

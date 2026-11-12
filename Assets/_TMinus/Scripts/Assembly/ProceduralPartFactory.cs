@@ -207,7 +207,15 @@ namespace TMinus.Assembly
                 root.SetParent(part.transform, false);
                 bool half = part.partId.Contains("fairing");
                 float start = part.partId.EndsWith("left") ? 90 : -90;
-                float r = Mathf.Max(0.05f, part.diameterM / 2 * 0.94f);
+                // Bolts sit on an external flange ring so the player can reach them.
+                float r = Mathf.Max(0.05f, part.diameterM / 2 * 1.06f);
+                var flangeMesh = half
+                    ? MeshBuilder.Lathe(new[] { new Vector2(part.diameterM / 2, 0), new Vector2(r * 1.04f, 0), new Vector2(r * 1.04f, 0.03f), new Vector2(part.diameterM / 2, 0.03f) }, 24, 180, start, doubleSided: true, name: "flange")
+                    : MeshBuilder.Lathe(new[] { new Vector2(part.diameterM / 2, 0), new Vector2(r * 1.04f, 0), new Vector2(r * 1.04f, 0.03f), new Vector2(part.diameterM / 2, 0.03f) }, 48, doubleSided: true, name: "flange");
+                var flange = new GameObject("Flange");
+                flange.transform.SetParent(root, false);
+                flange.AddComponent<MeshFilter>().sharedMesh = flangeMesh;
+                flange.AddComponent<MeshRenderer>().sharedMaterial = M.Get(M.MetalGrey);
                 for (int i = 0; i < j.boltCount; i++)
                 {
                     float deg = half ? start + 180f * (i + 0.5f) / j.boltCount : 360f * i / j.boltCount;
@@ -215,7 +223,7 @@ namespace TMinus.Assembly
                     var b = new GameObject($"BOLT_{i + 1:00}").transform;
                     b.SetParent(root, false);
                     b.localPosition = new Vector3(Mathf.Cos(a) * r, 0.03f, Mathf.Sin(a) * r);
-                    b.localRotation = Quaternion.LookRotation(Vector3.down);
+                    b.localRotation = Quaternion.identity; // bolt axis = local up
                 }
             }
         }

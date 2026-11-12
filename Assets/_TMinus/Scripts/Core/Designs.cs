@@ -52,6 +52,14 @@ namespace TMinus.Core
         public int sequence;
     }
 
+    /// <summary>How many times a joint was warped by tightening bolts out of sequence.</summary>
+    [Serializable]
+    public sealed class JointWarp
+    {
+        public string jointId;
+        public int count;
+    }
+
     /// <summary>The rocket as assembled in the VAB.</summary>
     [Serializable]
     public sealed class VehicleDesign
@@ -59,6 +67,7 @@ namespace TMinus.Core
         public string rocketId = "pathfinder";
         public List<PlacedPart> parts = new List<PlacedPart>();
         public List<BoltRecord> bolts = new List<BoltRecord>();
+        public List<JointWarp> jointWarps = new List<JointWarp>();
         public List<CableLink> avionicsCables = new List<CableLink>();
         public bool armed;
         public double pitchKickDeg = 3;
