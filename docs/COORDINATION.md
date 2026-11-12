@@ -19,7 +19,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude: P9 DONE (2026-11-13).
 - P11 (Flight scene + HUD): WORK IN PROGRESS, committed so it isn't lost. Builds and compiles; scene built via Tools > T-Minus > Build Flight Scene. KNOWN BUG to fix first: in play mode `FlightDebug.Launch` throws a NullReferenceException right after `FlightDebug.Reload` (FlightController.Instance or its hud is null after the scene reload; the IGNITION button path is untested too). Repro: `bash tools/agent/uplay.sh tools/agent/example_flight.txt`. Then check screenshots in Logs/agent-shots/.
 - Open after P11: P12 (operations + scoring + debrief, reads GameState.Flight / FlightRecord), P13-P18.
-- 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Claude merges houston in the final audit.
+- 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Agents commit locally only and never push; Claude audits, merges houston and pushes.
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).
 
 ## Shared changes log
@@ -33,7 +33,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Note: screenshots in uplay.sh need the Unity window in front; if another app holds focus the shots are skipped. Just rerun.
 
 ## Rules
-1. `git pull --rebase` before each prompt; commit + push after each passing prompt ("P10: flight physics core"). Never force-push.
+1. Until the final audit: commit locally after each passing prompt, NEVER push (Claude pushes after the audit). Never force-push or rewrite history.
 2. Never edit a Unity scene you don't own. Scenes are rebuilt by Editor menu builders (`Tools/T-Minus/...`), so write a builder instead of hand-editing.
 3. If a `.unity`, `.asset` or `.meta` file conflicts: keep the owner's version and rerun the builder.
 4. Only one agent drives the open Unity Editor at a time (flag files below). Check `Logs/agent-status.txt`; if a script is running (`Logs/agent-play.txt` without "finished"), wait.
