@@ -1,0 +1,19 @@
+{
+  "name": "tminus-houston-proxy",
+  "version": "1.0.0",
+  "description": "Vercel serverless proxy for HOUSTON AI mentor in T-MINUS",
+  "main": "api/houston.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@vercel/node": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
