@@ -6,8 +6,8 @@ using UnityEngine;
 namespace TMinus.Assembly
 {
     /// <summary>
-    /// VAB scene glue: spawns the chosen rocket on the stand, frames the camera, and connects
-    /// selection, the info card, the library and the toolbar.
+    /// VAB scene glue. Assemble mode: the player's Pathfinder build (parts start on the floor).
+    /// Inspect mode: any rocket, fully assembled. Connects selection, info card, library, toolbar.
     /// </summary>
     public sealed class VabController : MonoBehaviour
     {
@@ -18,7 +18,8 @@ namespace TMinus.Assembly
         public Transform rocketRoot;
 
         public RocketView Current { get; private set; }
-        public string Mode { get; private set; } = "inspect";
+        public string Mode { get; private set; } = "assemble";
+        public string RocketId { get; private set; }
         public static VabController Instance { get; private set; }
 
         DataRegistry Data => GameState.Instance.Data;
@@ -33,10 +34,10 @@ namespace TMinus.Assembly
         void Start()
         {
             var state = GameState.Instance;
-            if (orbit != null) orbit.IsPointerOverUI = ui != null ? ui.IsPointerOverUI : (System.Func<Vector2, bool>)null;
+            if (orbit != null && ui != null) orbit.IsPointerOverUI = ui.IsPointerOverUI;
             if (selector != null)
             {
-                selector.IsPointerOverUI = orbit?.IsPointerOverUI;
+                if (ui != null) selector.IsPointerOverUI = ui.IsPointerOverUI;
                 selector.SelectionChanged += OnSelected;
                 selector.FocusRequested += p => { if (p != null) orbit?.Focus(p.WorldBounds()); };
             }
@@ -44,7 +45,7 @@ namespace TMinus.Assembly
             if (ui != null)
             {
                 ui.RocketChosen += ShowRocket;
-                ui.ModeChanged += m => Mode = m;
+                ui.ModeChanged += SetMode;
                 ui.ExplodedChanged += SetExploded;
                 ui.XRayChanged += on => Current?.SetXRay(on);
                 ui.ResetCamera += () => orbit?.ResetView();
@@ -53,15 +54,25 @@ namespace TMinus.Assembly
 
             var rocketId = state.Vehicle.rocketId;
             if (Data.GetRocket(rocketId) == null) rocketId = Data.Rockets.FirstOrDefault()?.id;
+            Mode = Data.GetRocket(rocketId)?.buildable == true ? "assemble" : "inspect";
+            ui?.SetMode(Mode, notify: false);
             ui?.BuildLibrary(Data.Rockets.OrderBy(r => r.real), rocketId);
             if (rocketId != null) ShowRocket(rocketId);
             else ui?.Toast("No rockets in rockets.json.");
+        }
+
+        public void SetMode(string mode)
+        {
+            Mode = mode;
+            ui?.SetMode(mode, notify: false);
+            if (RocketId != null) ShowRocket(RocketId);
         }
 
         public void ShowRocket(string rocketId)
         {
             var def = Data.GetRocket(rocketId);
             if (def == null) return;
+            RocketId = rocketId;
 
             if (Current != null) Destroy(Current.gameObject);
             selector?.Select(null);
@@ -69,20 +80,43 @@ namespace TMinus.Assembly
             ui?.ClearLabels();
             ui?.SetToggles(false, false);
 
+            bool assembly = Mode == "assemble" && def.buildable;
+            float deck = environment != null ? environment.DeckTop : 0;
             var parent = rocketRoot != null ? rocketRoot : transform;
-            parent.position = new Vector3(0, environment != null ? environment.DeckTop : 0, 0);
-            Current = RocketView.Spawn(def, Data, parent);
+            parent.position = new Vector3(0, deck, 0);
+
+            var state = GameState.Instance;
+            var saved = state.Vehicle.rocketId == rocketId ? state.Vehicle : null;
+            Current = RocketView.Spawn(def, Data, parent, assembly, deck, saved);
+
+            if (Current.Graph != null)
+            {
+                Current.Graph.GraphChanged += () =>
+                {
+                    if (Current == null) return;
+                    if (assembly) Current.SaveTo(state.Vehicle);
+                    ui?.RefreshBin(Current);
+                };
+            }
+            ui?.SetBinVisible(assembly);
+            ui?.RefreshBin(Current);
 
             float diameter = (float)def.stages.Select(s => s.diameterM).DefaultIfEmpty(1).Max();
             environment?.FitTo(diameter, Current.Height);
             orbit?.Frame(Current.WorldBounds(), instant: true);
             ui?.SetSelectedRocket(rocketId);
 
-            var mission = Data.GetMission(GameState.Instance.CurrentMissionId);
-            if (mission != null && mission.rocketOptions.Contains(rocketId)) GameState.Instance.Vehicle.rocketId = rocketId;
-            else if (mission != null) ui?.Toast($"{def.name}: inspect only. {mission.name} flies on {string.Join(", ", mission.rocketOptions)}.");
+            var mission = Data.GetMission(state.CurrentMissionId);
+            if (mission != null && mission.rocketOptions.Contains(rocketId)) state.Vehicle.rocketId = rocketId;
 
-            GameState.Instance.Events.Add("VAB", "RocketShown", $"{def.name} on the stand");
+            if (Mode == "assemble" && !def.buildable)
+                ui?.Toast($"{def.name} is inspect-only. Assemble mode builds the Pathfinder.");
+            else if (mission != null && !mission.rocketOptions.Contains(rocketId))
+                ui?.Toast($"{def.name}: inspect only. {mission.name} flies on the Pathfinder.");
+            else if (assembly && !Current.Graph.IsComplete())
+                ui?.Toast("Drag the parts from the floor onto the stand, bottom first.");
+
+            state.Events.Add("VAB", "RocketShown", $"{def.name} ({(assembly ? "assemble" : "inspect")})");
         }
 
         public void SetExploded(bool on)
@@ -97,7 +131,7 @@ namespace TMinus.Assembly
         {
             yield return new WaitForSeconds(0.7f); // parts glide for about half a second
             if (Current == null || orbit == null) yield break;
-            if (exploded) orbit.Focus(Current.WorldBounds());
+            if (exploded) orbit.Focus(Current.WorldBounds(attachedOnly: true));
             else orbit.ResetView();
         }
 

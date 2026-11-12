@@ -155,3 +155,45 @@
 .modal-title { font-size: 32px; color: white; -unity-font-style: bold; margin-bottom: 12px; padding: 0; }
 .modal-body { font-size: 19px; color: rgb(215, 225, 245); white-space: normal; margin-bottom: 14px; padding: 0; }
 .modal-source { font-size: 14px; color: rgb(140, 155, 190); white-space: normal; margin-bottom: 18px; padding: 0; }
+
+/* ---------- parts bin (Prompt 4) ---------- */
+.bin {
+    flex-grow: 1;
+    padding: 14px 14px 12px 14px;
+    background-color: rgba(8, 14, 34, 0.9);
+    border-radius: 14px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.bin-title { font-size: 13px; letter-spacing: 3px; color: rgb(140, 155, 190); -unity-font-style: bold; padding: 0; }
+.bin-progress { font-size: 18px; color: white; -unity-font-style: bold; margin: 4px 0 10px 0; padding: 0; }
+.bin-chips { flex-direction: row; flex-wrap: wrap; margin-bottom: 8px; }
+.bin-chip {
+    height: 30px; margin: 0 6px 6px 0; padding: 0 10px;
+    font-size: 14px; color: rgb(200, 210, 235);
+    background-color: rgba(255, 255, 255, 0.06); border-width: 0; border-radius: 15px;
+}
+.bin-chip.on { background-color: rgb(255, 122, 26); color: white; }
+.bin-list { flex-grow: 1; }
+.bin-item {
+    padding: 10px 12px; margin-bottom: 8px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    border-left-width: 3px; border-left-color: rgba(255, 255, 255, 0.25);
+}
+.bin-item:hover { background-color: rgba(255, 122, 26, 0.18); border-left-color: rgb(255, 122, 26); }
+.bin-item-name { font-size: 17px; color: white; -unity-font-style: bold; padding: 0; white-space: normal; }
+.bin-item-meta { font-size: 14px; color: rgb(160, 175, 205); padding: 0; }
+.bin-empty { font-size: 15px; color: rgb(160, 175, 205); white-space: normal; }
+.bin-hint { font-size: 13px; color: rgb(140, 155, 190); white-space: normal; margin-top: 6px; padding: 0; }
+
+.drag-hint {
+    position: absolute;
+    max-width: 420px;
+    font-size: 16px; color: white; white-space: normal;
+    padding: 6px 10px; border-radius: 8px;
+    background-color: rgba(8, 14, 34, 0.92);
+    border-left-width: 4px; border-left-color: rgb(140, 155, 190);
+}
+.drag-hint.valid { border-left-color: rgb(60, 220, 110); }
+.drag-hint.invalid { border-left-color: rgb(255, 80, 70); background-color: rgba(60, 10, 10, 0.92); }

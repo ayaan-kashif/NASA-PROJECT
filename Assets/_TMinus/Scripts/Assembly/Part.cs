@@ -13,6 +13,8 @@ namespace TMinus.Assembly
     public sealed class Part : MonoBehaviour
     {
         public string partId;
+        /// <summary>Unique id inside one rocket/build (the assembly graph node id).</summary>
+        public string instanceId;
         /// <summary>Height this part adds to a stack (0 for parts that wrap others, e.g. fairing halves).</summary>
         public float stackLength;
         /// <summary>How far engine bells hang below SNAP_Bottom.</summary>
@@ -86,6 +88,47 @@ namespace TMinus.Assembly
         public void SetInternalsVisible(bool visible)
         {
             foreach (var go in Internals) if (go != null) go.SetActive(visible);
+        }
+
+        readonly Dictionary<Renderer, Material[]> _beforeOverride = new Dictionary<Renderer, Material[]>();
+
+        /// <summary>Show the whole part in one material (drag ghost). ClearOverrideMaterial restores it.</summary>
+        public void SetOverrideMaterial(Material m)
+        {
+            foreach (var r in Renderers)
+            {
+                if (r == null || r.name.StartsWith("INT_")) continue;
+                if (!_beforeOverride.ContainsKey(r)) _beforeOverride[r] = r.sharedMaterials;
+                var mats = new Material[r.sharedMaterials.Length];
+                for (int i = 0; i < mats.Length; i++) mats[i] = m;
+                r.sharedMaterials = mats;
+            }
+        }
+
+        public void ClearOverrideMaterial()
+        {
+            foreach (var kv in _beforeOverride) if (kv.Key != null) kv.Key.sharedMaterials = kv.Value;
+            _beforeOverride.Clear();
+        }
+
+        /// <summary>Brief emission pulse (green flash on a good connection).</summary>
+        public void Flash(Color color, float seconds = 0.45f)
+        {
+            if (isActiveAndEnabled) StartCoroutine(FlashRoutine(color, seconds));
+        }
+
+        System.Collections.IEnumerator FlashRoutine(Color color, float seconds)
+        {
+            var mpb = new MaterialPropertyBlock();
+            int id = Shader.PropertyToID("_EmissionColor");
+            for (float t = 0; t < seconds; t += Time.deltaTime)
+            {
+                mpb.SetColor(id, color * (1 - t / seconds) * 2f);
+                foreach (var r in Renderers) if (r != null) r.SetPropertyBlock(mpb);
+                yield return null;
+            }
+            mpb.SetColor(id, Color.black);
+            foreach (var r in Renderers) if (r != null) r.SetPropertyBlock(mpb);
         }
     }
 }

@@ -78,6 +78,10 @@ namespace TMinus.EditorTools
             ctrl.ui = ui;
             ctrl.environment = env;
             ctrl.rocketRoot = new GameObject("RocketRoot").transform;
+            var assembly = ctrlGo.AddComponent<AssemblyController>();
+            assembly.vab = ctrl;
+            assembly.selector = selector;
+            assembly.ui = ui;
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, scenePath);

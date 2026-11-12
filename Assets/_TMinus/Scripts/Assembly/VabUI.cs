@@ -30,6 +30,9 @@ namespace TMinus.Assembly
         bool _explodedOn, _xrayOn;
 
         public VisualElement PartsBinSlot { get; private set; }
+        public PartsBin Bin { get; private set; }
+        public event Action<string> BinItemPressed;
+        Label _dragHint;
 
         void OnEnable()
         {
@@ -63,6 +66,39 @@ namespace TMinus.Assembly
             Bind("btn-ask", () => HoustonBus.Ask(_shownPartId, "VAB"));
             Bind("btn-codex-close", () => _modal.AddToClassList("hidden"));
             SetMode("inspect", notify: false);
+
+            if (PartsBinSlot != null)
+            {
+                Bin = new PartsBin(PartsBinSlot);
+                Bin.ItemPressed += id => BinItemPressed?.Invoke(id);
+                Bin.SetVisible(false);
+            }
+            _dragHint = new Label { pickingMode = PickingMode.Ignore };
+            _dragHint.AddToClassList("drag-hint");
+            _dragHint.style.display = DisplayStyle.None;
+            _root.Add(_dragHint);
+        }
+
+        public void RefreshBin(RocketView view) => Bin?.Refresh(view);
+
+        public void SetBinVisible(bool visible) => Bin?.SetVisible(visible);
+
+        /// <summary>Tooltip next to the cursor while dragging. valid: true = green, false = red, null = neutral.</summary>
+        public void ShowDragHint(string text, bool? valid, Vector2 screenPos)
+        {
+            if (_dragHint == null || _root.panel == null) return;
+            _dragHint.text = text;
+            _dragHint.EnableInClassList("valid", valid == true);
+            _dragHint.EnableInClassList("invalid", valid == false);
+            var p = RuntimePanelUtils.ScreenToPanel(_root.panel, new Vector2(screenPos.x, Screen.height - screenPos.y));
+            _dragHint.style.left = p.x + 22;
+            _dragHint.style.top = p.y + 18;
+            _dragHint.style.display = DisplayStyle.Flex;
+        }
+
+        public void HideDragHint()
+        {
+            if (_dragHint != null) _dragHint.style.display = DisplayStyle.None;
         }
 
         Button Bind(string name, Action onClick)
