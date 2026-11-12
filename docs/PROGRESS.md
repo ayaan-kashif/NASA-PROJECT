@@ -46,3 +46,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Core `AvionicsReport.Compute(vehicle, rules)`: each missing/reversed cable from rules.json `avionicsWiring` -> consequence (no_ignition, stuck_stage, s2_no_thrust, guidance_drift, no_telemetry, fairing_stuck, no_avionics_power, no_flight_computer) with the link id as cause; power faults cascade (S1IgnitionOk, StageSeparationOk, GuidanceOk, TelemetryOk ... are false). `AvionicsReport.Perfect()` for rockets without buildable avionics.
 - AvionicsBay scene (Tools > T-Minus > Build Avionics Bay, in Build Settings; opened by the VAB's "Avionics bay" button, Back returns): 11 devices on the reused wiring bench, cables saved to `GameState.Vehicle.avionicsCables`, Flight check panel lists each missing cable with its flight consequence, Safe/Arm toggle (ARMED in the VAB = blocker; wiring changes while ARMED log a fault).
 - Verified: 47/47 tests (4 avionics tests: every single missing cable gives exactly its consequence, power cascade); play test 10/11 wired -> stuck_stage <- w_pyro2.
+
+## P10 — Flight physics core (2026-11-12)
+- Added a pure C# fixed 0.05 s RK4 solver, atmospheric drag, Earth rotation, pressure-adjusted thrust, orbital elements, staging, telemetry, max-Q, and causally logged avionics/joint failures; added flight-facing Core contracts.
+- Tuned Pathfinder stage 2 to 50 kN. Pure C# harness reaches a 550 km orbit with a 150 kg payload; measured max-Q is 40.610 kPa, so joint limits are 52.7931 kPa (1.3 x max-Q).
+- Unity EditMode verification remains pending: the Editor exited and batchmode returned code 1 because the Unity LicenseClient connection was refused; P10 is not marked done yet.

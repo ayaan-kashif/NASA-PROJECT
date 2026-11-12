@@ -45,11 +45,11 @@
   },
 
   "boltJoints": [
-    { "id": "j_s1_interstage", "lowerPartId": "pf_stage1", "upperPartId": "pf_interstage", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 45, "codexId": "star_pattern" },
-    { "id": "j_interstage_s2", "lowerPartId": "pf_interstage", "upperPartId": "pf_stage2", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 45, "codexId": "star_pattern" },
-    { "id": "j_payload_adapter", "lowerPartId": "pf_avionics_ring", "upperPartId": "pf_payload_adapter", "boltCount": 8, "size": "M6", "torqueNm": 12, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" },
-    { "id": "j_fairing_left", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_left", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" },
-    { "id": "j_fairing_right", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_right", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 45, "codexId": "torque" }
+    { "id": "j_s1_interstage", "lowerPartId": "pf_stage1", "upperPartId": "pf_interstage", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 52.7931, "codexId": "star_pattern" },
+    { "id": "j_interstage_s2", "lowerPartId": "pf_interstage", "upperPartId": "pf_stage2", "boltCount": 12, "size": "M10", "torqueNm": 45, "tolerancePct": 10, "maxQkPa": 52.7931, "codexId": "star_pattern" },
+    { "id": "j_payload_adapter", "lowerPartId": "pf_avionics_ring", "upperPartId": "pf_payload_adapter", "boltCount": 8, "size": "M6", "torqueNm": 12, "tolerancePct": 10, "maxQkPa": 52.7931, "codexId": "torque" },
+    { "id": "j_fairing_left", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_left", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 52.7931, "codexId": "torque" },
+    { "id": "j_fairing_right", "lowerPartId": "pf_payload_adapter", "upperPartId": "pf_fairing_right", "boltCount": 8, "size": "M6", "torqueNm": 10, "tolerancePct": 10, "maxQkPa": 52.7931, "codexId": "torque" }
   ],
 
   "pyroChannels": [

@@ -6,7 +6,7 @@ namespace TMinus.Core
 {
     public enum BoltState { Missing, Inserted, Torqued, UnderTorqued, OverTorqued }
 
-    public struct JointStatus
+    public struct JointStatus : IJointStatus
     {
         public string jointId;
         public double integrity;      // 0..1
@@ -14,6 +14,8 @@ namespace TMinus.Core
         public double maxQkPa;
         /// <summary>Dynamic pressure this joint survives: maxQkPa x integrity.</summary>
         public double FailureQkPa => maxQkPa * integrity;
+        string IJointStatus.JointId => jointId;
+        double IJointStatus.FailureQkPa => FailureQkPa;
         public override string ToString() =>
             $"{jointId}: integrity {integrity:0.00}, {torqued}/{boltCount} torqued, {missing} missing, {under} under, {over} over, {sequenceErrors} sequence errors";
     }

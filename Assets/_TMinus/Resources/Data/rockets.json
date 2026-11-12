@@ -52,8 +52,8 @@
           "propMassKg": 2000,
           "engineCount": 1,
           "engineName": "PF-26V (vacuum engine)",
-          "thrustSlKN": 26,
-          "thrustVacKN": 26,
+          "thrustSlKN": 50,
+          "thrustVacKN": 50,
           "ispSl": 345,
           "ispVac": 345,
           "diameterM": 1.2,
@@ -61,9 +61,9 @@
           "propellants": "LOX/RP-1",
           "ignitionChannel": 3,
           "separationChannel": 0,
-          "source": "Game values",
+          "source": "Game values tuned in Prompt 10",
           "illustrative": true,
-          "notes": "Vacuum engine: it only ever fires above the thick air, so the sea-level figures are set equal to vacuum."
+          "notes": "Illustrative vacuum engine: stage 2 only fires above the thick air; thrust was tuned to 50 kN so Pathfinder can reach a 550 km orbit with a 150 kg payload."
         }
       ],
       "components": [

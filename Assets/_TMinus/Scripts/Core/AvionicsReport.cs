@@ -17,7 +17,7 @@ namespace TMinus.Core
     /// What the rocket's avionics wiring means for the flight (Prompt 8), read by FlightSim (Prompt 10)
     /// and the pre-launch checklist (Prompt 9). Power faults cascade: no battery -> PDU means nothing works.
     /// </summary>
-    public sealed class AvionicsReport
+    public sealed class AvionicsReport : IAvionicsReport
     {
         public readonly List<AvionicsConsequence> consequences = new List<AvionicsConsequence>();
         public bool armed;
@@ -34,6 +34,8 @@ namespace TMinus.Core
         public bool TelemetryOk => PowerOk && !Has("no_telemetry");
         public bool FairingSeparationOk => PowerOk && !Has("fairing_stuck");
         public bool AllOk => consequences.Count == 0;
+
+        public string CauseId(string consequence) => First(consequence)?.linkId;
 
         /// <summary>All-OK report (e.g. Saturn V, which has no buildable avionics).</summary>
         public static AvionicsReport Perfect() => new AvionicsReport();
