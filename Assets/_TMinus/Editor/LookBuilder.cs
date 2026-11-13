@@ -52,6 +52,14 @@ namespace TMinus.EditorTools
             stars.SetColor("_Tint", new Color(0.5f, 0.5f, 0.5f)); stars.SetFloat("_Exposure", 1.6f);
             var atmo = Mat("Atmosphere", "TMinus/AtmosphereRim");
             atmo.SetColor("_Color", new Color(0.32f, 0.58f, 1f)); atmo.SetFloat("_Power", 7f); atmo.SetFloat("_Intensity", 1.8f);
+            // Additive flame for engine plumes and break-ups.
+            var flame = Mat("Flame", "Universal Render Pipeline/Particles/Unlit");
+            flame.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Tex}/T_Glow.png"));
+            flame.SetFloat("_Surface", 1); flame.SetFloat("_Blend", 2);
+            flame.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha); flame.SetFloat("_DstBlend", (float)BlendMode.One);
+            flame.SetFloat("_ZWrite", 0); flame.SetOverrideTag("RenderType", "Transparent");
+            flame.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); flame.renderQueue = (int)RenderQueue.Transparent;
+
             var ground = Mat("Ground", "Universal Render Pipeline/Lit");
             Textures(ground, "Ground", Vector2.one, 0.7f, 0.12f, 0f);
 

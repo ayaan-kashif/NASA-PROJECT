@@ -33,6 +33,9 @@ namespace TMinus.EditorTools
             importer.importBlendShapes = false;
             importer.importVisibility = true;
             importer.preserveHierarchy = true; // Keep empties for sockets
+            importer.isReadable = true;            // MeshCollider cooking in builds
+            importer.importNormals = ModelImporterNormals.Import;
+            importer.importTangents = ModelImporterTangents.CalculateMikk;
             importer.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
         }
 
@@ -53,18 +56,10 @@ namespace TMinus.EditorTools
 
                 if (mf.GetComponent<Collider>() == null)
                 {
-                    if (mesh.triangles != null && mesh.triangles.Length / 3 <= 255)
-                    {
-                        var mc = mf.gameObject.AddComponent<MeshCollider>();
-                        mc.sharedMesh = mesh;
-                        mc.convex = true;
-                    }
-                    else
-                    {
-                        var bc = mf.gameObject.AddComponent<BoxCollider>();
-                        bc.size = mesh.bounds.size;
-                        bc.center = mesh.bounds.center;
-                    }
+                    // Exact (non-convex) collider: parts never use rigidbodies, and a box around a round
+                    // tank would swallow clicks meant for the bolts on its flange.
+                    var mc = mf.gameObject.AddComponent<MeshCollider>();
+                    mc.sharedMesh = mesh;
                 }
             }
 

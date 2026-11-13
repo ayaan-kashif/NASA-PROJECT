@@ -32,15 +32,16 @@ namespace TMinus.EditorTools
 
             // Lighting: soft blue trilight ambient + 3-point rig.
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.42f, 0.5f, 0.7f);
-            RenderSettings.ambientEquatorColor = new Color(0.24f, 0.28f, 0.38f);
-            RenderSettings.ambientGroundColor = new Color(0.1f, 0.1f, 0.12f);
+            RenderSettings.ambientSkyColor = new Color(0.78f, 0.82f, 0.9f);
+            RenderSettings.ambientEquatorColor = new Color(0.5f, 0.53f, 0.6f);
+            RenderSettings.ambientGroundColor = new Color(0.22f, 0.22f, 0.25f);
             RenderSettings.skybox = null;
             RenderSettings.fog = false;
             // The camera starts at yaw 30 looking +x/+z, so the key light shines the same way.
-            Light("Key Light", new Vector3(38, 15, 0), 2.0f, new Color(1f, 0.96f, 0.9f), LightShadows.Soft);
-            Light("Fill Light", new Vector3(15, 120, 0), 0.5f, new Color(0.6f, 0.72f, 1f), LightShadows.None);
-            Light("Rim Light", new Vector3(10, 210, 0), 0.9f, new Color(0.85f, 0.9f, 1f), LightShadows.None);
+            Light("Key Light", new Vector3(38, 15, 0), 2.6f, new Color(1f, 0.96f, 0.9f), LightShadows.Soft);
+            Light("Fill Light", new Vector3(15, 120, 0), 1.3f, new Color(0.9f, 0.94f, 1f), LightShadows.None);
+            Light("Rim Light", new Vector3(10, 210, 0), 1.6f, new Color(0.95f, 0.97f, 1f), LightShadows.None);
+            Light("Front Fill", new Vector3(20, 300, 0), 1.2f, new Color(1f, 0.98f, 0.95f), LightShadows.None);
 
             var env = VabEnvironment.Build(null);
 

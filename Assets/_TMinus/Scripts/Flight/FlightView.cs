@@ -75,6 +75,8 @@ namespace TMinus.Flight
             _sky = FlightSky.Build(cam, sun, earthRoot, UvSphere(R * 1.008f, 192, 96));
         }
 
+        static Material FlameMaterial() => Resources.Load<Material>("Looks/Flame") ?? M.Get(M.CableUnlit);
+
         ParticleSystem MakeExhaust()
         {
             var go = new GameObject("Exhaust");
@@ -82,19 +84,21 @@ namespace TMinus.Flight
             go.transform.localRotation = Quaternion.Euler(90, 0, 0); // emit downwards
             var ps = go.AddComponent<ParticleSystem>();
             var main = ps.main;
-            main.startLifetime = 0.6f; main.startSpeed = 40; main.startSize = 1.6f;
-            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.85f, 0.45f), new Color(1f, 0.45f, 0.15f));
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.6f); main.startSpeed = new ParticleSystem.MinMaxCurve(35, 55);
+            main.startSize = new ParticleSystem.MinMaxCurve(1.0f, 1.7f);
+            main.startColor = Color.white;
             main.simulationSpace = ParticleSystemSimulationSpace.Local;
-            main.maxParticles = 600;
+            main.maxParticles = 900;
             var em = ps.emission; em.rateOverTime = 0;
-            var shape = ps.shape; shape.shapeType = ParticleSystemShapeType.Cone; shape.angle = 6; shape.radius = 0.4f;
+            var shape = ps.shape; shape.shapeType = ParticleSystemShapeType.Cone; shape.angle = 5; shape.radius = 0.38f;
             var col = ps.colorOverLifetime; col.enabled = true;
-            var g = new Gradient();
-            g.SetKeys(new[] { new GradientColorKey(Color.white, 0), new GradientColorKey(new Color(1f, 0.5f, 0.2f), 0.4f), new GradientColorKey(Color.gray, 1) },
-                      new[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(0.6f, 0.4f), new GradientAlphaKey(0, 1) });
+            var g = new Gradient();   // white-hot core -> yellow -> orange -> faint red, fading out
+            g.SetKeys(new[] { new GradientColorKey(new Color(1f, 0.97f, 0.9f), 0), new GradientColorKey(new Color(1f, 0.75f, 0.3f), 0.25f),
+                              new GradientColorKey(new Color(1f, 0.4f, 0.1f), 0.6f), new GradientColorKey(new Color(0.5f, 0.15f, 0.08f), 1) },
+                      new[] { new GradientAlphaKey(1f, 0), new GradientAlphaKey(0.8f, 0.3f), new GradientAlphaKey(0.35f, 0.7f), new GradientAlphaKey(0, 1) });
             col.color = g;
-            var sz = ps.sizeOverLifetime; sz.enabled = true; sz.size = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, 0.6f, 1, 2.5f));
-            go.GetComponent<ParticleSystemRenderer>().sharedMaterial = M.Get(M.CableUnlit);
+            var sz = ps.sizeOverLifetime; sz.enabled = true; sz.size = new ParticleSystem.MinMaxCurve(1, AnimationCurve.Linear(0, 0.7f, 1, 2.2f));
+            go.GetComponent<ParticleSystemRenderer>().sharedMaterial = FlameMaterial();
             return ps;
         }
 
@@ -133,10 +137,10 @@ namespace TMinus.Flight
             if (_exhaust != null)
             {
                 var em = _exhaust.emission;
-                em.rateOverTime = (float)(thrustFraction * 400);
+                em.rateOverTime = (float)(thrustFraction * 600);
                 var shape = _exhaust.shape;
                 // Plume widens as the air thins.
-                shape.angle = Mathf.Lerp(6, 40, Mathf.Clamp01((float)(altitudeM / 60000)));
+                shape.angle = Mathf.Lerp(5, 28, Mathf.Clamp01((float)(altitudeM / 60000)));
                 _exhaust.transform.localPosition = new Vector3(0, LowestAttachedY() - 1f, 0);
             }
 
@@ -195,7 +199,7 @@ namespace TMinus.Flight
             var main = ps.main; main.loop = false; main.duration = 1; main.startLifetime = 2; main.startSpeed = 30; main.startSize = 2;
             main.startColor = new Color(1f, 0.6f, 0.2f);
             var em = ps.emission; em.rateOverTime = 0; em.SetBursts(new[] { new ParticleSystem.Burst(0, 200) });
-            go.GetComponent<ParticleSystemRenderer>().sharedMaterial = M.Get(M.CableUnlit);
+            go.GetComponent<ParticleSystemRenderer>().sharedMaterial = FlameMaterial();
             ps.Play();
             if (_exhaust != null) { var e = _exhaust.emission; e.rateOverTime = 0; }
             var all = _rocket.Parts.Where(p => p != null && p.transform.parent == _rocket.transform).ToList();

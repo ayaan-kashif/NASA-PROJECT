@@ -138,6 +138,16 @@ namespace TMinus.EditorTools
             }, false);
             SaveNormal("T_PCB_N", S, (x, y) => TraceHeight(x, y, S), 2.5f);
 
+            // Soft round glow for flame and explosion particles (alpha falls off smoothly to the edge).
+            string glow = Save("T_Glow", 128, (x, y) =>
+            {
+                float d = Mathf.Sqrt((x - 63.5f) * (x - 63.5f) + (y - 63.5f) * (y - 63.5f)) / 63.5f;
+                float a = Mathf.Pow(Mathf.Clamp01(1 - d), 2.2f);
+                return new Color(1, 1, 1, a);
+            }, false);
+            var gi = (TextureImporter)AssetImporter.GetAtPath(glow);
+            gi.alphaIsTransparency = true; gi.wrapMode = TextureWrapMode.Clamp; gi.SaveAndReimport();
+
             // Launch-site ground: scrub grass and sand.
             Save("T_Ground_A", S, (x, y) =>
             {

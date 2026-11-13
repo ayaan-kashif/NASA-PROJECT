@@ -20,7 +20,7 @@ namespace TMinus.Assembly
         public static GameObject Create(string partId, DataRegistry data, Transform parent = null)
         {
             var fromPrefab = PrefabProvider?.Invoke(partId, parent);
-            if (fromPrefab != null) return fromPrefab;
+            if (fromPrefab != null) { CompleteModel(fromPrefab.GetComponent<Part>(), data); return fromPrefab; }
 
             var def = data?.GetPart(partId);
             var go = new GameObject(partId);
@@ -53,6 +53,33 @@ namespace TMinus.Assembly
             part.RegisterSockets();
             part.SetInternalsVisible(false);
             return go;
+        }
+
+        /// <summary>
+        /// A Blender model only has to look right: any socket it doesn't carry (SNAP_*, the bolt flange and
+        /// BOLT_## holes) is generated here from the same data the procedural parts use, so they always match.
+        /// </summary>
+        static void CompleteModel(Part part, DataRegistry data)
+        {
+            if (part == null) return;
+            var def = data?.GetPart(part.partId);
+            if (def != null)
+            {
+                var stage = FindStage(data, part.partId);
+                part.Def = def;
+                part.diameterM = (float)(stage?.diameterM ?? def.diameterM);
+                part.stackLength = def.category == "fairing" ? 0 : (float)(stage?.lengthM ?? def.lengthM);
+                part.isShell = def.category == "rocket_stage" || def.category == "saturn_stage" || def.category == "interstage" || def.category == "fairing";
+            }
+            part.RegisterSockets();
+            if (part.GetSnap("SNAP_Bottom") == null) AddSnap(part, "SNAP_Bottom", 0);
+            if (def != null && def.category != "fairing" && part.GetSnap("SNAP_Top") == null) AddSnap(part, "SNAP_Top", part.stackLength);
+            if (def != null && def.category == "payload_adapter" && part.GetSnap("SNAP_Payload") == null) AddSnap(part, "SNAP_Payload", part.stackLength + 0.02f);
+            bool hasJoint = false;
+            foreach (Transform c in part.transform) if (c.name.StartsWith("Joint_")) hasJoint = true;
+            if (!hasJoint) AddBoltHoles(part, data);
+            part.RegisterSockets();
+            part.SetInternalsVisible(false);
         }
 
         static StageDef FindStage(DataRegistry data, string partId)
