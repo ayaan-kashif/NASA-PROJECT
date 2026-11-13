@@ -110,3 +110,34 @@
     font-size: 16px;
     color: rgb(110, 125, 160);
 }
+
+/* ---- overlays: Codex, Settings, Sandbox ---- */
+.overlay {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgba(4, 8, 20, 0.86);
+    align-items: center; justify-content: center;
+}
+.overlay-card {
+    width: 70%; max-width: 1200px; height: 82%;
+    background-color: rgb(14, 22, 46);
+    border-width: 2px; border-color: rgba(255, 255, 255, 0.14); border-radius: 16px;
+    border-top-color: rgb(255, 122, 26); border-top-width: 4px;
+    padding: 28px 36px;
+}
+.overlay-head { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.overlay-title { font-size: 40px; -unity-font-style: bold; color: rgb(255, 255, 255); letter-spacing: 6px; }
+.overlay-close {
+    font-size: 20px; color: rgb(255, 255, 255); background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 6px 16px;
+}
+.overlay-close:hover { border-color: rgb(255, 122, 26); }
+.overlay-body { flex-grow: 1; color: rgb(225, 232, 245); font-size: 20px; }
+.overlay-body .muted { color: rgb(150, 165, 195); white-space: normal; margin: 6px 0 12px 0; font-size: 18px; }
+.codex-search { font-size: 20px; margin-bottom: 4px; }
+.codex-list { flex-grow: 1; }
+.codex-item { margin-bottom: 6px; font-size: 22px; color: rgb(255, 255, 255); }
+.codex-short { white-space: normal; color: rgb(255, 196, 140); font-size: 19px; margin: 4px 0; }
+.codex-long { white-space: normal; color: rgb(205, 214, 232); font-size: 18px; margin-bottom: 6px; }
+.codex-source { font-size: 15px; color: rgb(140, 190, 255); background-color: rgba(0, 0, 0, 0); border-width: 0; -unity-text-align: middle-left; padding: 2px 0; }
+.settings-row { margin: 10px 0 18px 0; font-size: 22px; color: rgb(255, 255, 255); }
+.sandbox-room { height: auto; padding-top: 12px; padding-bottom: 12px; white-space: normal; }

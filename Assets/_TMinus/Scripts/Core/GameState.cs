@@ -44,6 +44,7 @@ namespace TMinus.Core
             Instance = this;
             Events = new EventLog(() => Time.timeAsDouble);
             Data = DataRegistry.LoadFromResources();
+            SettingsStore.Load(Settings);
             gameObject.AddComponent<SceneFader>();
         }
 

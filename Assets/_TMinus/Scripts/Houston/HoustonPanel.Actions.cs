@@ -87,10 +87,12 @@ namespace TMinus.Houston
             AddUserMessage(question);
             var ctx = ContextBuilder.Build(GameState.Instance);
             var rec = AssemblyAdvisor.NextStep(ctx);
-            SetTyping(_llm != null && _llm.IsEnabled);
-            string answer = _llm != null ? await _llm.Ask(question, rec, ctx) : rec?.text;
+            // "Hints only" (Settings): the built-in advisor answers, never the AI.
+            bool useAi = _llm != null && GameState.Instance?.Settings.houstonMode != HoustonMode.HintsOnly;
+            SetTyping(useAi && _llm.IsEnabled);
+            string answer = useAi ? await _llm.Ask(question, rec, ctx) : rec?.text;
             SetTyping(false);
-            bool offline = _llm == null || _llm.LastAnswerOffline;
+            bool offline = !useAi || _llm.LastAnswerOffline;
             AddAssistantMessage(answer + (offline ? "  [offline]" : ""), rec?.codexId, rec?.objectRef);
         }
 

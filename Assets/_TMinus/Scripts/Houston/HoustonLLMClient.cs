@@ -116,7 +116,7 @@ namespace TMinus.Houston
                     type = "debrief",
                     causalTimeline,
                     scoreBreakdown,
-                    language = _config?.language ?? "en"
+                    language = GameState.Instance?.Settings.language ?? _config?.language ?? "en"
                 };
                 string body = JsonConvert.SerializeObject(new { packet, question = "Narrate the debrief" });
                 var result = await PostAsync(_config.endpointUrl, body, _config.timeoutSec);
@@ -191,7 +191,7 @@ namespace TMinus.Houston
                 faults = topFaults,
                 codex = codexEntries,
                 events = recentEvents,
-                language = _config?.language ?? "en"
+                language = GameState.Instance?.Settings.language ?? _config?.language ?? "en"
             };
         }
 
