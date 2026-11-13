@@ -24,6 +24,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - P12 verification: 71/71 EditMode tests; scripted perfect run = 30 days, 87 images, 3 stars; missing pyro2 = stuck_stage/w_pyro2, no operations; HD camera = power deficit, 2 days alive, no images. Landsat art remains a clearly credited TODO placeholder.
 - Open after P12: P13-P18.
 - 2026-11-13 split (see docs/AGENT_PROMPTS.md): Codex = P11 fix + P12 + README/credits (+ P18 if time) on main; Antigravity = P13 + P14 + P16 on branch houston (own clone). Agents commit locally only and never push; Claude audits, merges houston and pushes.
+- Antigravity: P13, P14, P16 DONE (2026-11-13).
 - Codex: P10 DONE (implemented by Codex, verified + committed by Claude 2026-11-13).
 
 ## Shared changes log
@@ -34,6 +35,7 @@ If Claude stops (weekly limit), Codex may take over Claude's rows: write "Codex 
 - Claude, Scripts/Wiring asmdef now references TMinus.Assembly (to reuse OrbitCamera).
 - Codex, Core/FlightContracts.cs plus AvionicsReport/BoltMath implementations: additive flight-facing build-state contracts for avionics and integrity.
 - Codex, Resources/Data/rockets.json and rules.json: Pathfinder stage 2 tuned to 50 kN; joint limits set to 1.3 x measured 40.610 kPa max-Q.
+- Antigravity, Tests/EditMode/TMinus.Tests.EditMode.asmdef: added TMinus.Houston and TMinus.EditorTools references for Houston and Import tests.
 - Note: screenshots in uplay.sh need the Unity window in front; if another app holds focus the shots are skipped. Just rerun.
 
 ## Rules

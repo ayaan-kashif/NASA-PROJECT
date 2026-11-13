@@ -1,14 +1,30 @@
 {
     "name": "TMinus.Tests.EditMode",
     "rootNamespace": "TMinus.Tests",
-    "references": ["TMinus.Core", "TMinus.Assembly", "TMinus.Wiring", "TMinus.Mission", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
-    "includePlatforms": ["Editor"],
+    "references": [
+        "TMinus.Core",
+        "TMinus.Assembly",
+        "TMinus.Wiring",
+        "TMinus.Mission",
+        "TMinus.Houston",
+        "TMinus.EditorTools",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": ["nunit.framework.dll", "Newtonsoft.Json.dll"],
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": false,
-    "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

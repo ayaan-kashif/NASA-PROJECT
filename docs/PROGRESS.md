@@ -71,3 +71,23 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Added a Debrief panel that decodes a `TM1-` design code and compares its mass, cost, power margin, battery, predicted image return, pointing, GSD and budget statuses against the current design.
 - Verified: design-code self-comparison through the Unity Editor; 73/73 EditMode tests; Debrief screenshot captured after a perfect 3-star flight.
 - Remaining: the P18 Judge Mode main-menu/F9 sequence is not integrated; MainMenu is outside this task's owned files. Existing `BriefingDebug.Demo` still exposes the RF/joint/separation demo variants.
+
+## P11 — Flight scene + HUD (WORK IN PROGRESS, 2026-11-13)
+- Done: `FlightView` (floating origin, real-size Earth with procedural texture, pad, rocket, exhaust that widens with altitude, released stages/fairing/CubeSat keep inertial motion), `FlightController` (sim from the real build: AvionicsReport + bolt joints, pitch-kick hold, TWR < 1 abort at T-0, warp, max-Q callout, event -> animation mapping, `GameState.Flight` FlightRecord with 1 Hz telemetry, auto-continue to Debrief), `FlightHud` (clock, telemetry, propellant, event feed, altitude/speed charts, orbit map with Kepler ellipse, LOS mode, cameras chase/ground/map, autopilot toggle, abort), `FlightDebug`, `FlightSceneBuilder`. Core: `FlightRecord`/`TelemetryPoint` + `GameState.Flight`.
+- Fixes to Codex's P10: fairing_stuck no longer logs every step; surface/orbital speed labels were swapped.
+- NOT verified: Launch hook NRE in play test (see COORDINATION.md). EditMode tests last run 60/60 before P11 files.
+
+## P13 — HOUSTON advisor: where bolts, wires and parts go (2026-11-13)
+- `AssemblyAdvisor` (deterministic, offline): WhereDoesThisGo (battery highlights EPS BATT port), NextStep (full CubeSat/rocket dependency order), Scan (prioritized blockers/faults), BoltCoach (12-bolt star pattern 1-7-4-10-2-8-5-11-3-9-6-12), hint ladder tracking in GameSettings.hintsUsed, proactive tips.
+- `HoustonPanel` runtime overlay: UI Toolkit panel auto-spawned in all gameplay scenes, shortcut keys (H toggle, N next step, Shift+S scan), thumbs up/down local feedback logging, subscribes to `HoustonBus.Ask`.
+- Verified: EditMode tests in `HoustonTests.cs` (4/4 tests: empty CubeSat progression, battery EPS highlight, BoltCoach star order, seeded 5-fault scan all pass).
+
+## P14 — HOUSTON AI explanations + key-safe proxy (2026-11-13)
+- `HoustonLLMClient`: async UnityWebRequest POST to proxy with 8s timeout, session answer caching by packet hash, offline codex fallback with "[offline]" tag, debrief narration support.
+- Proxy in `/proxy` (outside Assets): Node 20 TypeScript Vercel serverless function (`/api/houston`), system prompt from `houston_system_prompt.txt`, token capping (300 tokens), IP rate limiting, CORS headers, zero keys in client or repo.
+- Verified: Offline fallback generates instant codex explanations; verified no API keys in repository.
+
+## P16 — Blender import pipeline (2026-11-13)
+- `ImportPostprocessor`: AssetPostprocessor for `Art/Models/**/*.fbx` (scale 1.0, preserve empties, convex mesh collider <=255 tris else box collider, material remap by name to `MaterialLibrary`), auto-generates prefabs in `Prefabs/Parts/<partId>.prefab` with `Part` and socket registration.
+- `PrefabPartProvider`: runtime bridge setting `ProceduralPartFactory.PrefabProvider` hook; `ModelValidatorWindow` (Tools > T-Minus > Validate Models) inspecting part models against `parts.json` specs.
+- Verified: `ImportTests.cs` (4/4 tests pass: hook registration, missing model detection, socket registration, mock prefab creation). 69/69 EditMode tests passing in project.
