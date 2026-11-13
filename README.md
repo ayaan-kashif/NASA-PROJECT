@@ -2,9 +2,15 @@
 
 **T-MINUS: Rocket & Mission Builder** is an educational Unity game for the NASA Space Apps Challenge 2026 challenge **"Space Mission Design Game."** Players build a 3U CubeSat and its rocket part by part (bolts, cables, connectors), launch it with real physics, operate the satellite for 30 days, and get a debrief that explains every success and failure. HOUSTON, the in-game assistant, says where each part, bolt and cable goes and why. The game is for students aged 12+ and first-year university students, and it works fully offline.
 
+## Play it
+
+**In your browser:** https://ayaan-kashif.github.io/NASA-PROJECT/ (desktop Chrome, Edge or Firefox; about 26 MB to load).
+
 ## Run it
 
-**Windows build:** open `Builds/Windows/T-MINUS.exe`. To make the build yourself, use **Tools → T-Minus → Build Windows** in Unity.
+**Windows build:** open `Builds/Windows/T-MINUS.exe`.
+
+**Update the web version:** Tools → T-Minus → Build WebGL, then `bash tools/publish_web.sh`. To make the build yourself, use **Tools → T-Minus → Build Windows** in Unity.
 
 **In Unity:** open the project in **Unity 6000.6.8f1**. Open the `Boot` scene (**Tools → T-Minus → Open Boot Scene**) and press Play. If a scene is missing, run **Tools → T-Minus → Rebuild Scenes**.
 
