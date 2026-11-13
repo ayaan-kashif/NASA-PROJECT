@@ -24,7 +24,8 @@ namespace TMinus.Core
         public static void Apply(string scene)
         {
             bool flight = scene == SceneNames.Flight;
-            bool lit = flight || scene == SceneNames.IntegrationBay || scene == SceneNames.VAB || scene == SceneNames.AvionicsBay;
+            bool menu = scene == SceneNames.MainMenu;
+            bool lit = flight || menu || scene == SceneNames.IntegrationBay || scene == SceneNames.VAB || scene == SceneNames.AvionicsBay;
 
             var reflection = Resources.Load<Cubemap>("Looks/StudioReflection");
             if (reflection != null)
@@ -35,7 +36,7 @@ namespace TMinus.Core
             }
 
             if (_volume != null) Object.Destroy(_volume);
-            var profile = lit ? Resources.Load<VolumeProfile>(flight ? "Looks/Look_Flight" : "Looks/Look_Interior") : null;
+            var profile = lit ? Resources.Load<VolumeProfile>(flight || menu ? "Looks/Look_Flight" : "Looks/Look_Interior") : null;
             if (profile != null)
             {
                 _volume = new GameObject("[Look Volume]");

@@ -141,3 +141,9 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Bug: HOUSTON's full-screen `houston-root` layer caught every mouse click in all gameplay scenes. USS `pointer-events: none` is not a UI Toolkit property. HoustonPanel now sets PickingMode.Ignore on it, and the invalid lines are removed. Found with the new `UiDebug.PickAt`.
 - Mission cards: Failure Lab jobs ("REPAIR JOB") and Sandbox ("FREE BUILD") open their main-menu panels (`DemoHooks.PendingMenuPanel`). Moonshot and Rehbar stay "COMING NEXT" with a toast. Long titles wrap. BriefingUI is split (mission list in BriefingUI.Missions.cs).
 - Verified: UiDebug.ClickText on Moonshot (toast), FloodWatch-1 (briefing), Apollo 12 (Failure Lab board); 94/94 tests; golden path 3 stars.
+
+## Final audit + Blender models + look pass 2 (Claude, 2026-11-14)
+- Blender MCP: `tools/blender/build_parts.py` models all 7 Pathfinder parts from parts.json/rockets.json (tanks as INT_ internals, 9-engine cluster, fins, raceways, stringers, fairing halves with inner skin) and exports FBX to Art/Models/Parts. Models are visual only: `ProceduralPartFactory.CompleteModel` adds SNAP_*, the bolt flange and BOLT_## from data. The importer now uses exact MeshColliders.
+- Look: neutral, brighter VAB light rig; additive glow flame (Looks/Flame) for exhaust and break-up; main menu has a live 3D backdrop (`UI/MenuBackdrop`: Blue Marble Earth, stars, rotating rocket) and a glass panel; 3D `TorqueWrench` swings on the bolt while tightening.
+- Bug fix: FailureJobTracker destroyed itself during the fade out of the main menu (job bar never showed). Now it only abandons after leaving and returning.
+- Verified: 93 pass + 1 intentional skip (import test guards real models); golden path 3 stars; Judge Mode both flights; mission clicks; both Failure Lab jobs.

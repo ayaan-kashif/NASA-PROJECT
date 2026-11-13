@@ -86,6 +86,8 @@ namespace TMinus.Assembly
             Refresh();
         }
 
+        public Transform Hole(int i) => i >= 0 && i < _holes.Count ? _holes[i] : null;
+        public float BoltSize => _size;
         public Vector3 BoltWorld(int i) => i >= 0 && i < _holes.Count ? _holes[i].position : transform.position;
 
         public Bounds FlangeBounds()

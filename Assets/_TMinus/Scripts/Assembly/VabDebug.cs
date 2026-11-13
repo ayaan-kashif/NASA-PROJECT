@@ -126,6 +126,8 @@ namespace TMinus.Assembly
             return st.GetStatus().ToString();
         }
 
+        public static string Wrench(string bolt) { Bolts?.PreviewWrench(int.Parse(bolt), 0.45f); return "wrench on " + bolt; }
+
         public static string BoltExit(string _) { Bolts?.Exit(); return "ok"; }
 
         public static string Undo(string _) => C?.Current?.Graph?.Undo().ToString();

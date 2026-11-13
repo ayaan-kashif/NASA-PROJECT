@@ -17,6 +17,7 @@ namespace TMinus.Mission
         MissionDef _job;
         int _hintsAtStart;
         float _startTime, _nextCheck;
+        bool _leftMenu;
         Label _status;
         VisualElement _root;
 
@@ -66,7 +67,11 @@ namespace TMinus.Mission
         {
             if (_job == null || _status == null || Time.unscaledTime < _nextCheck) return;
             // Leaving to the main menu without handing back abandons the job.
-            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == SceneNames.MainMenu) { Destroy(gameObject); return; }
+            // (Only after we have actually left the menu: the job starts there, during the fade to the VAB.)
+            bool inMenu = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == SceneNames.MainMenu;
+            if (!inMenu) _leftMenu = true;
+            else if (_leftMenu) { Destroy(gameObject); return; }
+            else return;
             _nextCheck = Time.unscaledTime + 0.5f;
             int fixedCount = FixedCount(out _);
             int hints = HintsUsed() - _hintsAtStart;

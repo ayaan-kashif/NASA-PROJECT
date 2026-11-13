@@ -88,14 +88,14 @@ namespace TMinus.EditorTools
             foreach (CubemapFace f in new[] { CubemapFace.PositiveX, CubemapFace.NegativeX, CubemapFace.PositiveY, CubemapFace.NegativeY, CubemapFace.PositiveZ, CubemapFace.NegativeZ })
             {
                 var px = cube.GetPixels(f);
-                for (int i = 0; i < 900; i++)
+                for (int i = 0; i < 1500; i++)
                 {
                     int x = rnd.Next(size), y = rnd.Next(size);
                     float m = Mathf.Pow((float)rnd.NextDouble(), 5f);
                     float b = 0.25f + 0.75f * m;
                     var tint = rnd.NextDouble() < 0.2 ? new Color(1f, 0.85f, 0.7f) : rnd.NextDouble() < 0.3 ? new Color(0.75f, 0.85f, 1f) : Color.white;
                     px[y * size + x] = tint * b;
-                    if (m > 0.6f)
+                    if (m > 0.93f)
                         foreach (var (dx, dy) in new[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
                         {
                             int xx = Mathf.Clamp(x + dx, 0, size - 1), yy = Mathf.Clamp(y + dy, 0, size - 1);

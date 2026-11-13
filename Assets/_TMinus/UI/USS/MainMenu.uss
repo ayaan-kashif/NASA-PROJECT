@@ -2,27 +2,34 @@
 
 .menu-root {
     flex-grow: 1;
-    background-color: rgb(8, 14, 34);
+    background-color: rgba(0, 0, 0, 0);   /* the live 3D backdrop (MenuBackdrop) shows through */
     justify-content: center;
-    padding-left: 140px;
+    padding-left: 110px;
 }
 
 .stars {
     position: absolute;
     left: 0; right: 0; top: 0; bottom: 0;
-    background-color: rgba(30, 60, 140, 0.12);
+    background-color: rgba(4, 8, 22, 0.25);
 }
 
 .menu-panel {
-    width: 520px;
+    width: 580px;
     flex-direction: column;
+    background-color: rgba(6, 10, 26, 0.78);
+    border-radius: 20px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.12);
+    border-left-width: 4px;
+    border-left-color: rgb(255, 122, 26);
+    padding: 34px 38px 26px 38px;
 }
 
 .title {
-    font-size: 120px;
+    font-size: 92px;
     -unity-font-style: bold;
     color: rgb(255, 255, 255);
-    letter-spacing: 12px;
+    letter-spacing: 8px;
     margin-bottom: 4px;
     padding: 0;
 }

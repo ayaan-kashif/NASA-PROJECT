@@ -22,6 +22,7 @@ namespace TMinus.Assembly
         public static bool IsActive { get; private set; }
         public BoltJointView Joint { get; private set; }
         public bool PresetWrench { get; private set; } = true;
+        TorqueWrench _wrench;
 
         readonly Dictionary<string, BoltJointView> _views = new Dictionary<string, BoltJointView>();
         Camera _cam;
@@ -85,6 +86,7 @@ namespace TMinus.Assembly
         {
             if (!IsActive) return;
             IsActive = false;
+            if (_wrench != null) _wrench.Hide();
             _holding = -1;
             if (Joint != null) { Joint.SetHighlight(-1); Joint.SetCoach(-1); }
             Joint = null;
@@ -153,6 +155,15 @@ namespace TMinus.Assembly
             _presetClicked = false;
         }
 
+        /// <summary>Shows the wrench on bolt i at a torque fraction (screenshots / tutorials).</summary>
+        public void PreviewWrench(int i, float fraction)
+        {
+            var hole = Joint != null ? Joint.Hole(i) : null;
+            if (hole == null) return;
+            if (_wrench == null) _wrench = TorqueWrench.Create(transform);
+            _wrench.Show(hole, Joint.transform.position, Joint.BoltSize, fraction);
+        }
+
         public void Insert(int i)
         {
             Joint.State.Insert(i);
@@ -187,6 +198,12 @@ namespace TMinus.Assembly
                 int notch = Mathf.FloorToInt(_holdTorque / target * 10);
                 if (notch > _lastRatchet) { _lastRatchet = notch; AudioFx.Play("ratchet", 0.7f); }
                 ui?.ShowGauge(_holdTorque, target, (float)Joint.Def.tolerancePct, preset, screen);
+                var hole = Joint.Hole(_holding);
+                if (hole != null)
+                {
+                    if (_wrench == null) _wrench = TorqueWrench.Create(transform);
+                    _wrench.Show(hole, Joint.transform.position, Joint.BoltSize, _holdTorque / target);
+                }
                 ui?.HideDragHint();
                 return;
             }
@@ -198,6 +215,7 @@ namespace TMinus.Assembly
         {
             _holding = -1;
             ui?.HideGauge();
+            if (_wrench != null) _wrench.Hide();
             var loose = Joint.State.ApplyTorque(i, nm);
             var state = Joint.State.StateOf(i);
             if (loose.Count > 0)
