@@ -23,7 +23,7 @@ namespace TMinus.Mission
         void Render(VisualElement root)
         {
             var s = GameState.Instance;
-            if (DebriefDebug.LastOps == null) DebriefDebug.RunMission();
+            if (!DebriefDebug.IsCurrent) DebriefDebug.RunMission();
             var ops = DebriefDebug.LastOps; var score = DebriefDebug.LastScore;
             var page = new ScrollView(); page.AddToClassList("debrief-page"); root.Add(page);
             page.Add(new Label("T-MINUS  /  MISSION DEBRIEF") { name = "eyebrow" });

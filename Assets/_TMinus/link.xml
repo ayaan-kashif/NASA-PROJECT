@@ -1,0 +1,11 @@
+<!-- IL2CPP (WebGL) must keep our data classes: Newtonsoft fills them by reflection. -->
+<linker>
+  <assembly fullname="TMinus.Core" preserve="all"/>
+  <assembly fullname="TMinus.Assembly" preserve="all"/>
+  <assembly fullname="TMinus.Wiring" preserve="all"/>
+  <assembly fullname="TMinus.Spacecraft" preserve="all"/>
+  <assembly fullname="TMinus.Flight" preserve="all"/>
+  <assembly fullname="TMinus.Mission" preserve="all"/>
+  <assembly fullname="TMinus.Houston" preserve="all"/>
+  <assembly fullname="TMinus.UI" preserve="all"/>
+</linker>

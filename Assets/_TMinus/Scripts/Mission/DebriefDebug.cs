@@ -9,8 +9,12 @@ namespace TMinus.Mission
     {
         public static OpsReport LastOps { get; private set; }
         public static MissionScore LastScore { get; private set; }
-        public static void ResetRun() { LastOps = null; LastScore = null; }
-        public static void Run() { if (LastOps == null) RunMission(); SceneFlow.Load(SceneNames.Debrief); }
+        static FlightRecord _forFlight;
+        public static void ResetRun() { LastOps = null; LastScore = null; _forFlight = null; }
+        /// <summary>True when the cached result belongs to the current flight. Every flight gets a new FlightRecord,
+        /// so a second flight (Judge Mode's fix-and-fly, or Redesign) never shows the first flight's operations.</summary>
+        public static bool IsCurrent => LastOps != null && ReferenceEquals(_forFlight, GameState.Instance?.Flight);
+        public static void Run() { if (!IsCurrent) RunMission(); SceneFlow.Load(SceneNames.Debrief); }
         public static OpsReport RunMission()
         {
             var s = GameState.Instance;
@@ -19,6 +23,7 @@ namespace TMinus.Mission
             var rocket = s.Data.GetRocket(s.Vehicle.rocketId);
             var budget = SpacecraftBudget.Compute(s.Spacecraft, s.Data, mission, rocket);
             LastOps = OpsSimulation.Run(s, budget);
+            _forFlight = s.Flight;
             LastScore = MissionScoring.Compute(s, LastOps, budget);
             Debug.Log($"[DebriefDebug] {LastScore.stars} stars, {LastScore.total:0.0}/100; orbit={s.Flight.orbitAchieved}, deployed={s.Flight.deployed}, alive={LastOps.daysAlive}d, images={LastOps.imagesDownlinked}, final SOC={LastOps.finalSoc:P0}");
             return LastOps;

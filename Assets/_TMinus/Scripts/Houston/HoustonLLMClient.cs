@@ -41,6 +41,12 @@ namespace TMinus.Houston
 
         void LoadConfig()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // Browsers have no file system: StreamingAssets is a URL next to the page, so fetch it.
+            _config = new Config();
+            StartCoroutine(LoadConfigWeb());
+            return;
+#endif
             try
             {
                 string path = System.IO.Path.Combine(Application.streamingAssetsPath, "houston.config.json");
@@ -60,6 +66,20 @@ namespace TMinus.Houston
             {
                 Debug.LogWarning($"[HOUSTON LLM] Failed to load config: {ex.Message}");
                 _config = new Config();
+            }
+        }
+
+        System.Collections.IEnumerator LoadConfigWeb()
+        {
+            using (var req = UnityWebRequest.Get(Application.streamingAssetsPath + "/houston.config.json"))
+            {
+                yield return req.SendWebRequest();
+                if (req.result == UnityWebRequest.Result.Success)
+                {
+                    try { _config = JsonConvert.DeserializeObject<Config>(req.downloadHandler.text) ?? new Config(); }
+                    catch (Exception ex) { Debug.LogWarning($"[HOUSTON LLM] Bad config: {ex.Message}"); }
+                }
+                Debug.Log($"[HOUSTON LLM] Web config: endpoint={_config?.endpointUrl}, enabled={_config?.enabled}");
             }
         }
 

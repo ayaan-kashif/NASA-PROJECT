@@ -121,3 +121,6 @@ proxy/node_modules/
 proxy/.vercel/
 proxy/.env*
 .claude/settings.local.json
+
+# Burst output dropped by WebGL builds
+/Data/

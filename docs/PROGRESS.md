@@ -130,3 +130,9 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 ## Blue Marble Earth (Claude, 2026-11-13)
 - NASA Blue Marble Next Generation (topo + bathy, Aug 2004) at 4096x2048 in Resources/Earth/BlueMarble.jpg (credited in CREDITS/README). `FlightView.GlobeRotation` puts the launch site (rules.json lat/lon) under the pad and tilts the pole by the site latitude. The UV sphere's longitude was mirrored and is fixed.
 - The atmosphere glow is a smooth 1.008 R shell. The sun stays fixed in the rocket frame so the ground below stays lit in the 3D view (eclipses remain in the ops sim). New `FlightDebug.RunTo <s>` and play-script `shot3d` (camera render; works when the Game view is hidden).
+
+## WebGL build + playable link (Claude, 2026-11-14)
+- Tools > T-Minus > Build WebGL writes Builds/WebGL. It uses gzip with decompression fallback for static hosts such as GitHub Pages. The build is about 24 MB.
+- IL2CPP fixes: link.xml keeps our data classes, and stripping is Minimal. `-lembind` plus `Plugins/WebGL/EmvalCompat.jslib` stubs let App UI's TextMate .a (from the AI assistant package) link; it is never called in game.
+- HOUSTON loads its config with UnityWebRequest on WebGL.
+- Bug fix: Judge Mode's second debrief (and Redesign flows) showed the first flight's cached operations (0 images). `DebriefDebug.IsCurrent` now ties the cached result to the FlightRecord. Verified in the browser: 96.2/100, 87 images, Landsat unlocked.
