@@ -23,8 +23,11 @@ namespace TMinus.Flight
         RocketView _rocket;
         FlightPad _pad;
         MeshRenderer _earthSphere;
+        FlightSky _sky;
         ParticleSystem _exhaust;
-        readonly Quaternion _toUnity = Quaternion.Euler(0, 0, 90); // sim +X (pad up) -> Unity +Y
+        // Sim plane (x, y) -> Unity, chosen in Build so the launch pad's "up" is exactly Unity +Y.
+        // (A fixed sim +X -> +Y left the pad tilted, so the orbit camera saw the rocket lying sideways.)
+        Quaternion _toUnity = Quaternion.Euler(0, 0, 90), _toUnity0 = Quaternion.identity, _sun0 = Quaternion.identity;
         Vec2d _simPos;
         double _omega, _simTime;
         Vector3 _padDirSim;
@@ -40,6 +43,9 @@ namespace TMinus.Flight
         {
             _omega = FlightConstants.EarthRotationRadS * System.Math.Cos(latitudeDeg * System.Math.PI / 180);
             _padDirSim = new Vector3((float)(startPos.x / startPos.Magnitude), (float)(startPos.y / startPos.Magnitude), 0);
+            float padAngle = Mathf.Atan2(_padDirSim.y, _padDirSim.x) * Mathf.Rad2Deg;
+            _toUnity = _toUnity0 = Quaternion.Euler(0, 0, 90 - padAngle);
+            if (sun != null) _sun0 = sun.transform.rotation;
             BuildEarth();
             _rocket = RocketView.Spawn(rocket, data, transform, false, 0);
             _rocket.name = "FlyingRocket";
@@ -59,9 +65,13 @@ namespace TMinus.Flight
             mat.SetTexture("_BaseMap", EarthTexture());
             mat.SetColor("_BaseColor", Color.white);
             mat.SetFloat("_Smoothness", 0.35f);
+            mat.SetTexture("_BumpMap", null); mat.DisableKeyword("_NORMALMAP");   // the library paint has panel seams
+            mat.SetTextureScale("_BaseMap", Vector2.one);
+            mat.SetFloat("_Metallic", 0f);
             sphere.AddComponent<MeshRenderer>().sharedMaterial = mat;
 
             _earthSphere = sphere.GetComponent<MeshRenderer>();
+            _sky = FlightSky.Build(cam, sun, earthRoot, R);
         }
 
         ParticleSystem MakeExhaust()
@@ -91,18 +101,25 @@ namespace TMinus.Flight
         public void Sync(Vec2d pos, Vec2d vel, double time, double thrustFraction, double altitudeM)
         {
             _simPos = pos; _simTime = time;
+            // Keep the local vertical at the rocket = Unity +Y all the way round the orbit, so the chase camera
+            // always has the planet below it; the sun turns with the frame so day and night stay right.
+            float ang = Mathf.Atan2((float)pos.y, (float)pos.x) * Mathf.Rad2Deg;
+            _toUnity = Quaternion.Euler(0, 0, 90 - ang);
+            var frame = _toUnity * Quaternion.Inverse(_toUnity0);
+            if (sun != null) sun.transform.rotation = frame * _sun0;
             earthRoot.position = ToUnity((new Vec2d() - pos) * 0.001);
-            earthRoot.rotation = Quaternion.AngleAxis((float)(_omega * time * Mathf.Rad2Deg), Vector3.forward);
+            earthRoot.rotation = frame * Quaternion.AngleAxis((float)(_omega * time * Mathf.Rad2Deg), Vector3.forward);
             // Near the ground the 1/1000 globe would sit metres under the rocket: show the real-size pad instead.
             bool low = altitudeM < FlightPad.MaxAltitudeM;
             _pad?.Sync(pos, time, altitudeM, _toUnity);
+            _sky?.Sync(altitudeM);
             if (_earthSphere != null) _earthSphere.enabled = !low;
             RenderSettings.fog = low;
             if (low)
             {
                 RenderSettings.fogMode = FogMode.Linear;
                 RenderSettings.fogStartDistance = 2500; RenderSettings.fogEndDistance = 14000;
-                RenderSettings.fogColor = new Color(0.62f, 0.75f, 0.92f);
+                RenderSettings.fogColor = new Color(0.66f, 0.76f, 0.88f); // matches the procedural sky's horizon
             }
 
             // Nose along the air-relative velocity once moving, else straight up from the ground.
@@ -224,7 +241,7 @@ namespace TMinus.Flight
         /// <summary>Procedural Earth: oceans, land from layered noise, ice caps. Swap for NASA Blue Marble if added.</summary>
         static Texture2D EarthTexture()
         {
-            var blue = Resources.Load<Texture2D>("Earth/BlueMarble");
+            var blue = Resources.Load<Texture2D>("Earth/BlueMarble") ?? Resources.Load<Texture2D>("Earth/EarthProcedural");
             if (blue != null) return blue;
             const int w = 512, h = 256;
             var tex = new Texture2D(w, h, TextureFormat.RGBA32, true) { name = "EarthProcedural", wrapMode = TextureWrapMode.Repeat };

@@ -112,3 +112,17 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Jobs are missions with id `failure_*` (data-driven: `seededFaults`, `consoleChoices`, `clientNote`, `rewardPoints`, `lesson` on MissionDef). There is a main-menu job board (via `DemoHooks.OpenFailureLab`). "Broken Pathfinder" seeds 4 missing bolts on j_interstage_s2, unplugs w_pyro3, and puts the IMU data cable in DATA_3, then opens the VAB with a live job bar (faults fixed, hints). "Hand back" shows a job debrief: fixed/broken, how found, lesson, points. "Apollo 12" is an EECOM console: strikes at T+36.5/52 s, flooding caution lights, garbage telemetry, 20 s per call. SCE to AUX, then FC reset; every choice explains itself; John Aaron is credited.
 - Windows build: Tools > T-Minus > Build Windows succeeded (0 errors, 131 MB, Builds/Windows/T-MINUS.exe). The exe starts with a clean Player.log and shows the main menu.
 - Verified: 94/94 EditMode tests (FailureLabTests: seeding, detection, wrong-port fix, Apollo scoring). Both jobs checked by screenshot; golden path unchanged (3 stars).
+
+## Graphics pass (Claude, 2026-11-13)
+- Tools > T-Minus > Build Look generates everything (no downloads, no paid assets):
+  - Tileable PBR textures + normal maps (riveted panels, spray foam, brushed metal, concrete slabs, PCB traces, ground).
+  - Studio HDR reflection cubemap, procedural-atmosphere and star skyboxes, procedural Earth (2048x1024), atmosphere-rim shader.
+  - Graded post-processing profiles; MSAA 4x on PC_RPAsset.
+- Runtime `Core/SceneLook`: custom reflections, the look volume, SMAA and **Stop NaNs** on every camera. A NaN pixel smeared by bloom was the full-screen cyan wash.
+- Flight:
+  - The world frame is turned so local vertical = Unity +Y. This fixes the chase camera showing the rocket lying sideways, and keeps Earth below in orbit.
+  - `FlightSky`: the sky thins to black with altitude, then stars + atmosphere glow.
+  - `FlightPad`: textured ground and pad, lattice tower with service arm.
+- Avionics Bay: aluminium deck, bulkhead and work lights.
+- `MaterialBuilder.EnsureGlowKeywords` re-asserts _EMISSION, which URP validation keeps stripping, before Build Look and every Windows build.
+- Verified: 94/94 tests, golden path 3 stars, Judge Mode first flight fails at j_s1_interstage; all scenes checked by screenshot (Logs/gfx_before_sheet.jpg vs Logs/gfx_after_final.jpg).

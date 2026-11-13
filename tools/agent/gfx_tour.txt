@@ -1,0 +1,29 @@
+scene Assets/_TMinus/Scenes/MainMenu.unity
+wait 3
+call TMinus.Mission.BriefingDebug.Demo perfect-ready
+call TMinus.Core.SceneFlow.Load IntegrationBay
+wait 5
+shot g_bay
+call TMinus.Core.SceneFlow.Load VAB
+wait 5
+shot g_vab
+call TMinus.Core.SceneFlow.Load AvionicsBay
+wait 5
+shot g_avionics
+call TMinus.Core.SceneFlow.Load Flight
+wait 5
+call TMinus.Flight.FlightDebug.Camera ground
+wait 1
+shot g_pad_ground
+call TMinus.Flight.FlightDebug.Camera chase
+wait 1
+shot g_pad_chase
+call TMinus.Flight.FlightDebug.Launch 3
+wait 14
+call TMinus.Flight.FlightDebug.Camera chase
+wait 2
+shot g_climb
+call TMinus.Flight.FlightDebug.RunToEnd x
+wait 2
+shot g_orbit
+stop

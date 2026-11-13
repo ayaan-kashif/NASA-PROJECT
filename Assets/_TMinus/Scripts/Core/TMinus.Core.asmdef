@@ -1,7 +1,7 @@
 {
     "name": "TMinus.Core",
     "rootNamespace": "TMinus.Core",
-    "references": [],
+    "references": ["Unity.RenderPipelines.Universal.Runtime", "Unity.RenderPipelines.Core.Runtime"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -128,6 +128,7 @@ namespace TMinus.Flight
         void OnOrbit()
         {
             hud.Banner("ORBIT ACHIEVED", true);
+            if (orbit != null) orbit.pitch = Mathf.Max(orbit.pitch, 22f); // look down past the spacecraft at Earth
             S.Events.AddAt(Sim.TimeS, "flight", "orbit_achieved", "Orbit achieved.", null, Severity.Info);
             bool canDeploy = _avionics.FairingSeparationOk;
             if (canDeploy)

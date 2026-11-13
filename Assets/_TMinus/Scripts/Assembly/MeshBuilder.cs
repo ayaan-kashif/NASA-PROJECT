@@ -61,6 +61,7 @@ namespace TMinus.Assembly
             mesh.SetNormals(n);
             mesh.SetUVs(0, uv);
             mesh.SetTriangles(t, 0);
+            mesh.RecalculateTangents(); // normal maps (panel seams, rivets) need tangents
             mesh.RecalculateBounds();
             return mesh;
         }

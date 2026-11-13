@@ -14,6 +14,7 @@ namespace TMinus.EditorTools
         [MenuItem("Tools/T-Minus/Build Windows", priority = 200)]
         public static void Build()
         {
+            MaterialBuilder.EnsureGlowKeywords();
             PlayerSettings.productName = "T-MINUS";
             PlayerSettings.companyName = "T-MINUS Team";
             PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;

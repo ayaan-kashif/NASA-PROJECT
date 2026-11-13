@@ -29,7 +29,7 @@ namespace TMinus.EditorTools
             foreach (var go in scene.GetRootGameObjects()) Object.DestroyImmediate(go);
 
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.45f, 0.5f, 0.62f);
+            RenderSettings.ambientSkyColor = new Color(0.55f, 0.6f, 0.72f);
             RenderSettings.ambientEquatorColor = new Color(0.3f, 0.32f, 0.4f);
             RenderSettings.ambientGroundColor = new Color(0.12f, 0.12f, 0.15f);
             var key = new GameObject("Key Light").AddComponent<Light>();
@@ -42,7 +42,23 @@ namespace TMinus.EditorTools
             panel.name = "Panel"; panel.transform.SetParent(env, false);
             panel.transform.localScale = new Vector3(2.6f, 0.04f, 1.4f);
             panel.transform.localPosition = new Vector3(0, -0.02f, 0);
-            panel.GetComponent<Renderer>().sharedMaterial = M.Get(M.BandBlack);
+            panel.GetComponent<Renderer>().sharedMaterial = M.Get(M.MetalGrey); // brushed aluminium deck
+            var deckEdge = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            deckEdge.name = "DeckFrame"; deckEdge.transform.SetParent(env, false);
+            deckEdge.transform.localScale = new Vector3(2.75f, 0.03f, 1.55f);
+            deckEdge.transform.localPosition = new Vector3(0, -0.05f, 0);
+            deckEdge.GetComponent<Renderer>().sharedMaterial = M.Get(M.BandBlack);
+            var floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            floor.name = "Bulkhead"; floor.transform.SetParent(env, false);
+            floor.transform.localScale = new Vector3(4.6f, 0.05f, 4.6f);
+            floor.transform.localPosition = new Vector3(0, -0.5f, 0);
+            floor.GetComponent<Renderer>().sharedMaterial = M.Get(M.Concrete);
+            foreach (var (pos, col, inten) in new[] { (new Vector3(-1.4f, 1.7f, -1.0f), new Color(1f, 0.82f, 0.62f), 0.9f), (new Vector3(1.5f, 1.5f, 1.1f), new Color(0.6f, 0.75f, 1f), 0.7f) })
+            {
+                var pl = new GameObject("Work Light").AddComponent<Light>();
+                pl.type = LightType.Point; pl.color = col; pl.intensity = inten; pl.range = 4f; pl.shadows = LightShadows.Soft;
+                pl.transform.SetParent(env, false); pl.transform.localPosition = pos;
+            }
             var wall = new GameObject("RingWall"); wall.transform.SetParent(env, false);
             wall.AddComponent<MeshFilter>().sharedMesh = MeshBuilder.Lathe(new[] { new Vector2(2.2f, -0.5f), new Vector2(2.2f, 1.2f) }, 64, doubleSided: true);
             wall.AddComponent<MeshRenderer>().sharedMaterial = M.Get(M.Wall);
@@ -50,7 +66,7 @@ namespace TMinus.EditorTools
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();
             cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.backgroundColor = new Color(0.04f, 0.06f, 0.12f);
+            cam.backgroundColor = new Color(0.07f, 0.09f, 0.14f);
             cam.fieldOfView = 45; cam.nearClipPlane = 0.01f;
             camGo.AddComponent<AudioListener>();
             cam.GetUniversalAdditionalCameraData().renderPostProcessing = true;

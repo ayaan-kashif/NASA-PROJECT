@@ -20,6 +20,24 @@ namespace TMinus.EditorTools
             MaterialLibrary.GhostValid, MaterialLibrary.GhostInvalid, MaterialLibrary.XRay, MaterialLibrary.CableUnlit
         };
 
+        /// <summary>
+        /// URP's material validation keeps stripping _EMISSION from these (even with a non-black emission colour),
+        /// and a build without it drops the hover/selection glow variant. Re-assert it before saving or building.
+        /// </summary>
+        public static void EnsureGlowKeywords()
+        {
+            foreach (var name in Names)
+            {
+                if (MaterialLibrary.IsTransparent(name) || name == MaterialLibrary.CableUnlit) continue;
+                var m = AssetDatabase.LoadAssetAtPath<Material>($"{Dir}/{name}.mat");
+                if (m == null || m.IsKeywordEnabled("_EMISSION")) continue;
+                m.EnableKeyword("_EMISSION");
+                m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                EditorUtility.SetDirty(m);
+            }
+            AssetDatabase.SaveAssets();
+        }
+
         [MenuItem("Tools/T-Minus/Build Materials", priority = 10)]
         public static MaterialLibrary Build()
         {
