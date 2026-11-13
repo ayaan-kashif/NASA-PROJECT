@@ -1,0 +1,6 @@
+{
+  "endpointUrl": "https://nasa-project-proxy.vercel.app/api/houston",
+  "timeoutSec": 15,
+  "language": "en",
+  "enabled": true
+}
