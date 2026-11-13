@@ -310,6 +310,19 @@ namespace TMinus.Houston
             SetVisible(true);
             var ctx = ContextBuilder.Build(GameState.Instance);
 
+            // A part that is already installed/mounted: report its own faults instead of "install it".
+            bool placed = !string.IsNullOrEmpty(partId) &&
+                          ((ctx.CubeSatParts != null && ctx.CubeSatParts.Exists(p => p.partId == partId || p.instanceId == partId)) ||
+                           (ctx.Graph != null && ctx.Graph.PartIdOf(partId) != null && ctx.Graph.IsAttached(partId)));
+            if (placed)
+            {
+                var mine = AssemblyAdvisor.Scan(ctx).FindAll(f => f.where != null && (f.where == partId || f.where.StartsWith(partId + "/") || f.where.Contains(partId)));
+                var name = ctx.Data?.GetPart(partId)?.name ?? partId;
+                if (mine.Count > 0) AddAssistantMessage($"⚠ {mine[0].what} {mine[0].why}", mine[0].codexId, mine[0].where);
+                else AddAssistantMessage($"✓ {name} is in place and its checks pass.", ctx.Data?.GetPart(partId)?.codexId, partId);
+                return;
+            }
+
             if (!string.IsNullOrEmpty(partId))
             {
                 var targets = AssemblyAdvisor.WhereDoesThisGo(partId, ctx);

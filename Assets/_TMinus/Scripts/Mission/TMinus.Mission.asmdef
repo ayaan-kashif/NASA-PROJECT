@@ -1,7 +1,7 @@
 {
     "name": "TMinus.Mission",
     "rootNamespace": "TMinus.Mission",
-    "references": ["TMinus.Core", "TMinus.Wiring", "Unity.InputSystem"],
+    "references": ["TMinus.Core", "TMinus.Wiring", "TMinus.Flight", "TMinus.Spacecraft", "Unity.InputSystem"],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

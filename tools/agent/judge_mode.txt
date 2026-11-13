@@ -1,0 +1,25 @@
+scene Assets/_TMinus/Scenes/MainMenu.unity
+wait 3
+call TMinus.Mission.JudgeDebug.Start x
+wait 4
+shot judge_1_bay
+call TMinus.Mission.JudgeDebug.Next x
+wait 1
+call TMinus.Mission.JudgeDebug.Next x
+wait 5
+shot judge_2_vab
+call TMinus.Mission.JudgeDebug.Next x
+wait 25
+shot judge_3_flight
+call TMinus.Mission.JudgeDebug.State x
+wait 10
+call TMinus.Mission.JudgeDebug.State x
+shot judge_4_debrief
+call TMinus.Mission.JudgeDebug.Next x
+wait 30
+call TMinus.Mission.JudgeDebug.State x
+wait 20
+call TMinus.Mission.JudgeDebug.State x
+shot judge_6_debrief
+call TMinus.Mission.DebriefDebug.RunOps x
+stop

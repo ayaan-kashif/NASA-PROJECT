@@ -20,6 +20,7 @@ namespace TMinus.UI
             if (style != null && !root.styleSheets.Contains(style)) root.styleSheets.Add(style);
 
             Bind(root, "btn-missions", () => SceneFlow.Load(SceneNames.MissionBriefing));
+            Bind(root, "btn-judge", () => { if (DemoHooks.StartJudgeMode != null) DemoHooks.StartJudgeMode(); else Toast("Judge Mode is not available in this build."); });
             Bind(root, "btn-sandbox", () => Toast("Sandbox mode arrives after the first mission works."));
             Bind(root, "btn-codex", () => Toast("The Codex opens once codex.json is filled in (Prompt 2)."));
             Bind(root, "btn-settings", () => Toast("Settings come in the polish pass (Prompt 17)."));
