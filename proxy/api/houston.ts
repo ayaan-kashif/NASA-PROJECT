@@ -50,15 +50,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: 'Missing packet or question' });
   }
 
-  const apiKey = process.env.HOUSTON_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;
+  // Gemini key: env var `gemini_api_key` (as set in the Vercel dashboard) or GEMINI_API_KEY.
+  const geminiKey = process.env.gemini_api_key || process.env.GEMINI_API_KEY;
+  const apiKey = process.env.HOUSTON_API_KEY || process.env.OPENAI_API_KEY || geminiKey;
   if (!apiKey) {
     return res.status(500).json({
       error: 'Proxy is not configured (no API key set).'
     });
   }
 
-  const provider = (process.env.LLM_PROVIDER || 'openai').toLowerCase();
-  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini');
+  // A Gemini key alone means Gemini; LLM_PROVIDER can still override.
+  const provider = (process.env.LLM_PROVIDER || (geminiKey && !process.env.HOUSTON_API_KEY && !process.env.OPENAI_API_KEY ? 'gemini' : 'openai')).toLowerCase();
+  // 'gemini-flash-latest' is Google's alias for the current Flash model, so retired model names can't break it.
+  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-flash-latest' : 'gpt-4o-mini');
 
   const userContent = JSON.stringify({
     packet: packet || {},
@@ -69,7 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let answer = '';
 
     if (provider === 'gemini') {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
       const payload = {
         contents: [
           { role: 'user', parts: [{ text: `${systemPrompt}\n\nContext and Query:\n${userContent}` }] }
@@ -82,7 +86,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, // header, not URL: keys stay out of logs
         body: JSON.stringify(payload)
       });
 

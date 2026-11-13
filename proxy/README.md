@@ -79,3 +79,10 @@ Expected response:
   "text": "Tightening bolts in a star pattern distributes torque evenly across the flange, preventing joint warping and maintaining structural integrity through max-Q. Did you check pass 2?"
 }
 ```
+
+## Gemini setup (T-MINUS team)
+
+1. Vercel project > Settings > General > **Root Directory = `proxy`** (the function is `proxy/api/houston.ts`).
+2. Settings > Environment Variables: **`gemini_api_key`** = your Gemini key (Production + Preview). Nothing else is needed: a Gemini key alone selects Gemini, and the model defaults to `gemini-flash-latest` (override with `LLM_MODEL`).
+3. Use the **production domain** (Project > Domains, e.g. `something.vercel.app`). Preview and `-git-main-` URLs sit behind Vercel Deployment Protection and return a sign-in redirect to the game.
+4. Test: `curl -X POST https://<domain>/api/houston -H "Content-Type: application/json" -d '{"question":"What does the EPS do?"}'`
