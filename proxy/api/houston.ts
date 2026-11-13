@@ -61,8 +61,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // A Gemini key alone means Gemini; LLM_PROVIDER can still override.
   const provider = (process.env.LLM_PROVIDER || (geminiKey && !process.env.HOUSTON_API_KEY && !process.env.OPENAI_API_KEY ? 'gemini' : 'openai')).toLowerCase();
-  // 'gemini-flash-latest' is Google's alias for the current Flash model, so retired model names can't break it.
-  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-flash-latest' : 'gpt-4o-mini');
+  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini');
+  // Gemini fallbacks: a stable model, a lighter one, then Google's moving alias. A busy (503) or slow model is skipped.
+  const geminiModels = [...new Set([model, 'gemini-2.5-flash-lite', 'gemini-flash-latest'])];
 
   const userContent = JSON.stringify({
     packet: packet || {},
@@ -73,31 +74,48 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     let answer = '';
 
     if (provider === 'gemini') {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
       const payload = {
         contents: [
-          { role: 'user', parts: [{ text: `${systemPrompt}\n\nContext and Query:\n${userContent}` }] }
+          { role: 'user', parts: [{ text: `${systemPrompt}
+
+Context and Query:
+${userContent}` }] }
         ],
-        generationConfig: {
-          maxOutputTokens: 300,
-          temperature: 0.4
-        }
+        // Short answers: no hidden "thinking" (it is slow and eats the 300-token budget).
+        generationConfig: { maxOutputTokens: 300, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
       };
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, // header, not URL: keys stay out of logs
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        console.error('Gemini error', response.status, await response.text());
-        // Only the status number goes back (400 bad request/model, 401/403 key, 404 model, 429 quota): never the key or body.
-        return res.status(502).json({ error: 'The AI service is unavailable right now.', upstreamStatus: response.status });
+      let lastStatus = 0;
+      for (const m of geminiModels) {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 4500); // 3 tries fit inside the 15 s function limit
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey }, // header, not URL: keys stay out of logs
+            body: JSON.stringify(payload),
+            signal: ctrl.signal
+          });
+          lastStatus = response.status;
+          if (!response.ok) {
+            console.error('Gemini error', m, response.status, await response.text());
+            if (response.status === 401 || response.status === 403) break; // bad key: other models won't help
+            continue;
+          }
+          const data: any = await response.json(); // provider JSON: shape checked with optional chaining
+          answer = data?.candidates?.[0]?.content?.parts?.map((p: any) => p?.text || '').join('').trim() || '';
+          if (answer) break;
+        } catch (e) {
+          lastStatus = 504;
+          console.error('Gemini timeout/network', m, String(e));
+        } finally {
+          clearTimeout(timer);
+        }
       }
-
-      const data: any = await response.json(); // provider JSON: shape checked with optional chaining below
-      answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (!answer) {
+        // Only the status number goes back (400 request/model, 401/403 key, 429 quota, 503 busy, 504 timeout).
+        return res.status(502).json({ error: 'The AI service is unavailable right now.', upstreamStatus: lastStatus });
+      }
     } else {
       // Default: OpenAI-compatible API
       const baseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
