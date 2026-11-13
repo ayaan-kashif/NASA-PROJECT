@@ -84,5 +84,5 @@ Expected response:
 
 1. Vercel project > Settings > General > **Root Directory = `proxy`** (the function is `proxy/api/houston.ts`).
 2. Settings > Environment Variables: **`gemini_api_key`** = your Gemini key (Production + Preview). Nothing else is needed: a Gemini key alone selects Gemini, and the model defaults to `gemini-flash-latest` (override with `LLM_MODEL`).
-3. Use the **production domain** (Project > Domains, e.g. `something.vercel.app`). Preview and `-git-main-` URLs sit behind Vercel Deployment Protection and return a sign-in redirect to the game.
+3. Production domain for this team: `nasa-project-proxy.vercel.app`. Use the **production domain** (Project > Domains, e.g. `something.vercel.app`). Preview and `-git-main-` URLs sit behind Vercel Deployment Protection and return a sign-in redirect to the game.
 4. Test: `curl -X POST https://<domain>/api/houston -H "Content-Type: application/json" -d '{"question":"What does the EPS do?"}'`
