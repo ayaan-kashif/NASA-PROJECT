@@ -92,7 +92,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (!response.ok) {
         console.error('Gemini error', response.status, await response.text());
-        return res.status(502).json({ error: 'The AI service is unavailable right now.' });
+        // Only the status number goes back (400 bad request/model, 401/403 key, 404 model, 429 quota): never the key or body.
+        return res.status(502).json({ error: 'The AI service is unavailable right now.', upstreamStatus: response.status });
       }
 
       const data: any = await response.json(); // provider JSON: shape checked with optional chaining below
