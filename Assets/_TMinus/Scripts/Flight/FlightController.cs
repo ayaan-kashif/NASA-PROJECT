@@ -233,12 +233,16 @@ namespace TMinus.Flight
             if (CameraMode == "ground" && Launched && Sim.TimeS > 20) SetCamera("chase");
             if (CameraMode == "ground")
             {
-                // A camera on the ground 400 m from the pad, looking at the rocket.
-                var pad = view.earthRoot.Find("PadArea");
-                if (pad != null)
+                // A camera on the ground beside the pad, far enough back to frame the whole rocket.
+                var pad = view.PadArea;
+                if (pad != null && pad.gameObject.activeInHierarchy)
                 {
-                    _cam.transform.position = pad.TransformPoint(new Vector3(-250, 6, -300));
-                    _cam.transform.LookAt(view.RocketBounds().center, pad.up);
+                    // Frame the rocket in the band between the countdown panel and the charts:
+                    // ~2.1 heights back, aiming a little above its middle.
+                    var b = view.RocketBounds();
+                    float h = Mathf.Max(10f, b.size.magnitude), d = 2.1f * h; // diagonal: pad "up" is not world +Y
+                    _cam.transform.position = pad.TransformPoint(new Vector3(-0.55f * d, 2f, -0.83f * d));
+                    _cam.transform.LookAt(b.center + pad.up * (0.23f * h), pad.up);
                 }
             }
             else if (CameraMode == "chase")

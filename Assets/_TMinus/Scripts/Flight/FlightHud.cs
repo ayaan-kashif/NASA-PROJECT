@@ -174,7 +174,7 @@ namespace TMinus.Flight
             _phase.text = sim.Phase.ToString().ToUpperInvariant();
 
             _map.path = _ctrl.Path; _map.pos = sim.Position; _map.vel = sim.Velocity;
-            if (s != null) _map.caption = $"Apoapsis {(s.apoapsisM - FlightConstants.EarthRadiusM) / 1000:0} km · Periapsis {(s.periapsisM - FlightConstants.EarthRadiusM) / 1000:0} km";
+            if (s != null) _map.caption = $"Apoapsis {(s.apoapsisM - FlightConstants.EarthRadiusM) / 1000:0} km · Periapsis {(s.periapsisM < FlightConstants.EarthRadiusM ? "below ground" : $"{(s.periapsisM - FlightConstants.EarthRadiusM) / 1000:0} km")}";
             if (_map.style.display == DisplayStyle.Flex) _map.Refresh();
 
             if (s == null || !_telemetry) return;
@@ -187,7 +187,9 @@ namespace TMinus.Flight
             Set("Thrust/weight", $"{s.thrustToWeight:0.00}");
             Set("Delta-v left", $"{s.deltaVRemainingMs:N0} m/s");
             Set("Apoapsis", s.apoapsisM > 0 ? $"{(s.apoapsisM - FlightConstants.EarthRadiusM) / 1000:0} km" : "—");
-            Set("Periapsis", $"{(s.periapsisM - FlightConstants.EarthRadiusM) / 1000:0} km");
+            double periKm = (s.periapsisM - FlightConstants.EarthRadiusM) / 1000;
+            // Below the surface means the path still hits Earth: say so instead of a confusing "-6362 km".
+            Set("Periapsis", periKm < 0 ? "below ground (suborbital)" : $"{periKm:0} km");
             Set("Stage", $"{s.stageIndex + 1}");
             _altChart.Add((float)s.timeS, (float)(s.altitudeM / 1000), $"{s.altitudeM / 1000:0.0}");
             _speedChart.Add((float)s.timeS, (float)s.orbitalSpeedMs, $"{s.orbitalSpeedMs:0}");

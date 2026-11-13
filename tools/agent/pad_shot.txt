@@ -1,0 +1,21 @@
+scene Assets/_TMinus/Scenes/Flight.unity
+wait 2
+call TMinus.Mission.BriefingDebug.Demo perfect-ready
+call TMinus.Flight.FlightDebug.Reload x
+wait 4
+call TMinus.Flight.FlightDebug.Camera ground
+wait 1
+shot pad
+call TMinus.Flight.FlightDebug.Launch 3
+wait 6
+shot liftoff
+wait 8
+shot climb
+call TMinus.Flight.FlightDebug.Camera chase
+wait 1
+shot chase_low
+call TMinus.Flight.FlightDebug.Warp 4
+wait 10
+call TMinus.Flight.FlightDebug.Report x
+shot chase_high
+stop

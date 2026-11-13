@@ -21,6 +21,8 @@ namespace TMinus.Flight
         public Camera cam;
 
         RocketView _rocket;
+        FlightPad _pad;
+        MeshRenderer _earthSphere;
         ParticleSystem _exhaust;
         readonly Quaternion _toUnity = Quaternion.Euler(0, 0, 90); // sim +X (pad up) -> Unity +Y
         Vec2d _simPos;
@@ -31,6 +33,8 @@ namespace TMinus.Flight
         readonly List<Loose> _loose = new List<Loose>();
 
         public RocketView Rocket => _rocket;
+        /// <summary>The true-scale launch site (null before Build). Only active below FlightPad.MaxAltitudeM.</summary>
+        public Transform PadArea => _pad?.Root;
 
         public void Build(RocketDef rocket, DataRegistry data, Vec2d startPos, double latitudeDeg)
         {
@@ -41,6 +45,7 @@ namespace TMinus.Flight
             _rocket.name = "FlyingRocket";
             foreach (var p in _rocket.Parts) foreach (var c in p.GetComponentsInChildren<Collider>()) Destroy(c);
             _exhaust = MakeExhaust();
+            _pad = FlightPad.Build(transform, startPos, _omega, LowestAttachedY());
             Sync(startPos, new Vec2d(), 0, 0, 0);
         }
 
@@ -56,31 +61,7 @@ namespace TMinus.Flight
             mat.SetFloat("_Smoothness", 0.35f);
             sphere.AddComponent<MeshRenderer>().sharedMaterial = mat;
 
-            // Local pad area, tangent to the sphere at the launch site.
-            var pad = new GameObject("PadArea").transform;
-            pad.SetParent(earthRoot, false);
-            var up = _toUnity * _padDirSim;
-            pad.localPosition = up * (R + 0.02f);
-            pad.localRotation = Quaternion.FromToRotation(Vector3.up, up);
-            Disc(pad, "Ground", 150, new Color(0.45f, 0.42f, 0.32f), 0.0f);
-            Disc(pad, "PadConcrete", 40, new Color(0.55f, 0.55f, 0.55f), 0.05f);
-            var tower = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            tower.name = "Tower"; tower.transform.SetParent(pad, false);
-            tower.transform.localScale = new Vector3(3, 24, 3);
-            // Keep the tower beside the launch axis so the pad camera does not hide the vehicle behind it.
-            tower.transform.localPosition = new Vector3(40, 12, 0);
-            tower.GetComponent<Renderer>().sharedMaterial = M.Get(M.GantryRed);
-        }
-
-        static void Disc(Transform parent, string name, float radius, Color color, float y)
-        {
-            var go = new GameObject(name);
-            go.transform.SetParent(parent, false);
-            go.transform.localPosition = new Vector3(0, y, 0);
-            go.AddComponent<MeshFilter>().sharedMesh = MeshBuilder.Lathe(new[] { new Vector2(0.001f, 0), new Vector2(radius, 0) }, 64, doubleSided: true);
-            var mat = new Material(M.Get(M.Concrete)) { color = color };
-            mat.SetColor("_BaseColor", color);
-            go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+            _earthSphere = sphere.GetComponent<MeshRenderer>();
         }
 
         ParticleSystem MakeExhaust()
@@ -112,6 +93,17 @@ namespace TMinus.Flight
             _simPos = pos; _simTime = time;
             earthRoot.position = ToUnity((new Vec2d() - pos) * 0.001);
             earthRoot.rotation = Quaternion.AngleAxis((float)(_omega * time * Mathf.Rad2Deg), Vector3.forward);
+            // Near the ground the 1/1000 globe would sit metres under the rocket: show the real-size pad instead.
+            bool low = altitudeM < FlightPad.MaxAltitudeM;
+            _pad?.Sync(pos, time, altitudeM, _toUnity);
+            if (_earthSphere != null) _earthSphere.enabled = !low;
+            RenderSettings.fog = low;
+            if (low)
+            {
+                RenderSettings.fogMode = FogMode.Linear;
+                RenderSettings.fogStartDistance = 2500; RenderSettings.fogEndDistance = 14000;
+                RenderSettings.fogColor = new Color(0.62f, 0.75f, 0.92f);
+            }
 
             // Nose along the air-relative velocity once moving, else straight up from the ground.
             var air = new Vec2d(-_omega * pos.y, _omega * pos.x);
