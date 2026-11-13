@@ -13,7 +13,7 @@ namespace TMinus.Flight
         Light _sun;
         bool _inSpace;
 
-        public static FlightSky Build(Camera cam, Light sun, Transform earthRoot, float earthRadius)
+        public static FlightSky Build(Camera cam, Light sun, Transform earthRoot, Mesh shellMesh)
         {
             var s = new FlightSky { _sun = sun };
             var sky = Resources.Load<Material>("Looks/Sky_Earth");
@@ -28,11 +28,11 @@ namespace TMinus.Flight
             if (atmo != null)
             {
                 s._atmo = new Material(atmo);
-                var shell = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                shell.name = "AtmosphereGlow";
-                Object.Destroy(shell.GetComponent<Collider>());
+                // Smooth shell just above the surface (the built-in sphere is too faceted at planet size).
+                var shell = new GameObject("AtmosphereGlow");
                 shell.transform.SetParent(earthRoot, false);
-                shell.transform.localScale = Vector3.one * earthRadius * 2f * 1.018f;
+                shell.AddComponent<MeshFilter>().sharedMesh = shellMesh;
+                shell.AddComponent<MeshRenderer>();
                 var r = shell.GetComponent<MeshRenderer>();
                 r.sharedMaterial = s._atmo; r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }

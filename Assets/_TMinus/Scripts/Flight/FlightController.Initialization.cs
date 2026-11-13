@@ -78,7 +78,7 @@ namespace TMinus.Flight
                 _cam = orbit.GetComponent<Camera>();
                 if (_cam == null) throw new InvalidOperationException("Flight OrbitCamera must be attached to a Camera.");
                 view.cam = _cam;
-                view.Build(_rocket, data, Sim.Position, Sim.Options.latitudeDeg);
+                view.Build(_rocket, data, Sim.Position, Sim.Options.latitudeDeg, Sim.Options.longitudeDeg);
                 S.Events.Added -= OnEvent;
                 S.Events.Added += OnEvent;
 

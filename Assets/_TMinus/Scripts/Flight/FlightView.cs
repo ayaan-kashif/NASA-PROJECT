@@ -39,14 +39,14 @@ namespace TMinus.Flight
         /// <summary>The true-scale launch site (null before Build). Only active below FlightPad.MaxAltitudeM.</summary>
         public Transform PadArea => _pad?.Root;
 
-        public void Build(RocketDef rocket, DataRegistry data, Vec2d startPos, double latitudeDeg)
+        public void Build(RocketDef rocket, DataRegistry data, Vec2d startPos, double latitudeDeg, double longitudeDeg = 0)
         {
             _omega = FlightConstants.EarthRotationRadS * System.Math.Cos(latitudeDeg * System.Math.PI / 180);
             _padDirSim = new Vector3((float)(startPos.x / startPos.Magnitude), (float)(startPos.y / startPos.Magnitude), 0);
             float padAngle = Mathf.Atan2(_padDirSim.y, _padDirSim.x) * Mathf.Rad2Deg;
             _toUnity = _toUnity0 = Quaternion.Euler(0, 0, 90 - padAngle);
             if (sun != null) _sun0 = sun.transform.rotation;
-            BuildEarth();
+            BuildEarth((float)latitudeDeg, (float)longitudeDeg);
             _rocket = RocketView.Spawn(rocket, data, transform, false, 0);
             _rocket.name = "FlyingRocket";
             foreach (var p in _rocket.Parts) foreach (var c in p.GetComponentsInChildren<Collider>()) Destroy(c);
@@ -55,7 +55,7 @@ namespace TMinus.Flight
             Sync(startPos, new Vec2d(), 0, 0, 0);
         }
 
-        void BuildEarth()
+        void BuildEarth(float latDeg, float lonDeg)
         {
             float R = (float)(FlightConstants.EarthRadiusM * 0.001);
             var sphere = new GameObject("Earth");
@@ -71,7 +71,8 @@ namespace TMinus.Flight
             sphere.AddComponent<MeshRenderer>().sharedMaterial = mat;
 
             _earthSphere = sphere.GetComponent<MeshRenderer>();
-            _sky = FlightSky.Build(cam, sun, earthRoot, R);
+            sphere.transform.localRotation = GlobeRotation(latDeg, lonDeg);
+            _sky = FlightSky.Build(cam, sun, earthRoot, UvSphere(R * 1.008f, 192, 96));
         }
 
         ParticleSystem MakeExhaust()
@@ -102,11 +103,11 @@ namespace TMinus.Flight
         {
             _simPos = pos; _simTime = time;
             // Keep the local vertical at the rocket = Unity +Y all the way round the orbit, so the chase camera
-            // always has the planet below it; the sun turns with the frame so day and night stay right.
+            // always has the planet below it. The sun stays put in this frame, so the ground under the rocket
+            // stays in daylight for the camera (eclipses are modelled in the operations sim, not here).
             float ang = Mathf.Atan2((float)pos.y, (float)pos.x) * Mathf.Rad2Deg;
             _toUnity = Quaternion.Euler(0, 0, 90 - ang);
             var frame = _toUnity * Quaternion.Inverse(_toUnity0);
-            if (sun != null) sun.transform.rotation = frame * _sun0;
             earthRoot.position = ToUnity((new Vec2d() - pos) * 0.001);
             earthRoot.rotation = frame * Quaternion.AngleAxis((float)(_omega * time * Mathf.Rad2Deg), Vector3.forward);
             // Near the ground the 1/1000 globe would sit metres under the rocket: show the real-size pad instead.
@@ -210,6 +211,19 @@ namespace TMinus.Flight
             return b;
         }
 
+        /// <summary>
+        /// Turns the textured globe so the real launch site sits under the pad (+Y at lift-off) and the true north
+        /// pole tilts out of the flight plane by the site latitude: launching due east from latitude φ gives an orbit
+        /// inclined by φ, with the site at the ground track's northernmost point. East along the plane is -X.
+        /// </summary>
+        static Quaternion GlobeRotation(float latDeg, float lonDeg)
+        {
+            float lat = latDeg * Mathf.Deg2Rad, b = (180f - lonDeg) * Mathf.Deg2Rad; // mesh longitude angle (see UvSphere)
+            var siteMesh = new Vector3(Mathf.Cos(lat) * Mathf.Cos(b), Mathf.Sin(lat), Mathf.Cos(lat) * Mathf.Sin(b));
+            var north = new Vector3(0, Mathf.Sin(lat), Mathf.Cos(lat));
+            return Quaternion.LookRotation(Vector3.up, north) * Quaternion.Inverse(Quaternion.LookRotation(siteMesh, Vector3.up));
+        }
+
         // ------------------------------------------------------------------ Earth mesh + texture
 
         static Mesh UvSphere(float r, int lon, int lat)
@@ -222,7 +236,7 @@ namespace TMinus.Flight
                 {
                     float b = 2 * Mathf.PI * x / lon;
                     var d = new Vector3(Mathf.Sin(a) * Mathf.Cos(b), Mathf.Cos(a), Mathf.Sin(a) * Mathf.Sin(b));
-                    v.Add(d * r); n.Add(d); uv.Add(new Vector2((float)x / lon, 1 - (float)y / lat));
+                    v.Add(d * r); n.Add(d); uv.Add(new Vector2(1f - (float)x / lon, 1 - (float)y / lat));
                 }
             }
             for (int y = 0; y < lat; y++)

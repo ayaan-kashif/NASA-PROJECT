@@ -92,6 +92,24 @@ namespace TMinus.EditorTools
                     Log("shot " + path);
                     SessionState.SetFloat(KeyWait, (float)(now + 0.8));
                     break;
+                case "shot3d":
+                {
+                    // Renders Camera.main into a texture: works even when the Game view isn't visible (no UI overlay).
+                    Directory.CreateDirectory("Logs/agent-shots");
+                    var cam = Camera.main;
+                    if (cam == null) { Log("shot3d: no main camera"); break; }
+                    var rt = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+                    var prev = cam.targetTexture; cam.targetTexture = rt; cam.Render(); cam.targetTexture = prev;
+                    var was = RenderTexture.active; RenderTexture.active = rt;
+                    var tex = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+                    tex.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0); tex.Apply();
+                    RenderTexture.active = was;
+                    var file = $"Logs/agent-shots/{p[1]}.png";
+                    File.WriteAllBytes(file, tex.EncodeToPNG());
+                    UnityEngine.Object.DestroyImmediate(tex); rt.Release(); UnityEngine.Object.DestroyImmediate(rt);
+                    Log("shot3d " + file);
+                    break;
+                }
                 case "call":
                     Call(p[1], p.Length > 2 ? p[2] : null);
                     break;

@@ -126,3 +126,7 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Avionics Bay: aluminium deck, bulkhead and work lights.
 - `MaterialBuilder.EnsureGlowKeywords` re-asserts _EMISSION, which URP validation keeps stripping, before Build Look and every Windows build.
 - Verified: 94/94 tests, golden path 3 stars, Judge Mode first flight fails at j_s1_interstage; all scenes checked by screenshot (Logs/gfx_before_sheet.jpg vs Logs/gfx_after_final.jpg).
+
+## Blue Marble Earth (Claude, 2026-11-13)
+- NASA Blue Marble Next Generation (topo + bathy, Aug 2004) at 4096x2048 in Resources/Earth/BlueMarble.jpg (credited in CREDITS/README). `FlightView.GlobeRotation` puts the launch site (rules.json lat/lon) under the pad and tilts the pole by the site latitude. The UV sphere's longitude was mirrored and is fixed.
+- The atmosphere glow is a smooth 1.008 R shell. The sun stays fixed in the rocket frame so the ground below stays lit in the 3D view (eclipses remain in the ops sim). New `FlightDebug.RunTo <s>` and play-script `shot3d` (camera render; works when the Game view is hidden).

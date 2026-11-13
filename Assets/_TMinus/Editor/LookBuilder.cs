@@ -39,6 +39,10 @@ namespace TMinus.EditorTools
             LookCubemaps.PaintStars(LookCubemaps.Stars());
             LookCubemaps.Earth("Assets/_TMinus/Resources/Earth/EarthProcedural.jpg", 2048, 1024);
 
+            // NASA Blue Marble (if present): full 4096 px, wraps east-west.
+            if (AssetImporter.GetAtPath("Assets/_TMinus/Resources/Earth/BlueMarble.jpg") is TextureImporter bm)
+            { bm.maxTextureSize = 4096; bm.wrapModeU = TextureWrapMode.Repeat; bm.wrapModeV = TextureWrapMode.Clamp; bm.anisoLevel = 4; bm.SaveAndReimport(); }
+
             var sky = Mat("Sky_Earth", "Skybox/Procedural");
             sky.SetFloat("_SunDisk", 2); sky.SetFloat("_SunSize", 0.035f); sky.SetFloat("_SunSizeConvergence", 6);
             sky.SetFloat("_AtmosphereThickness", 1.05f); sky.SetColor("_SkyTint", new Color(0.48f, 0.52f, 0.6f));
@@ -47,7 +51,7 @@ namespace TMinus.EditorTools
             stars.SetTexture("_Tex", AssetDatabase.LoadAssetAtPath<Cubemap>($"{Looks}/Stars.cubemap"));
             stars.SetColor("_Tint", new Color(0.5f, 0.5f, 0.5f)); stars.SetFloat("_Exposure", 1.6f);
             var atmo = Mat("Atmosphere", "TMinus/AtmosphereRim");
-            atmo.SetColor("_Color", new Color(0.32f, 0.58f, 1f)); atmo.SetFloat("_Power", 5f); atmo.SetFloat("_Intensity", 2.4f);
+            atmo.SetColor("_Color", new Color(0.32f, 0.58f, 1f)); atmo.SetFloat("_Power", 7f); atmo.SetFloat("_Intensity", 1.8f);
             var ground = Mat("Ground", "Universal Render Pipeline/Lit");
             Textures(ground, "Ground", Vector2.one, 0.7f, 0.12f, 0f);
 

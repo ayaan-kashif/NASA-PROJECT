@@ -67,6 +67,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
   - Each third of the image goal returned unlocks one more date.
   - Credit: "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey."
   - Source: [Lake Manchar Is Overflowing](https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/).
+- **Earth from orbit:** NASA Blue Marble: Next Generation (credit "NASA Earth Observatory"). The globe is oriented so the real launch site sits under the pad.
 - **Saturn V:**
   - Stage data cites the [NASA Saturn V News Reference](https://www.nasa.gov/wp-content/uploads/2023/04/saturnvnewsreference.pdf).
   - The model is a procedural representation.

@@ -37,6 +37,15 @@ namespace TMinus.Flight
             return Report(null);
         }
 
+        /// <summary>Runs the sim (no animation) until the given flight time in seconds, then redraws.</summary>
+        public static string RunTo(string seconds)
+        {
+            var c = RequireController(); double t = double.Parse(seconds, System.Globalization.CultureInfo.InvariantCulture);
+            for (int i = 0; i < 400000 && !c.Ended && c.Launched && c.Sim.TimeS < t; i++) c.StepForDebug();
+            c.RefreshDebugView();
+            return Report(null);
+        }
+
         public static string Report(string _)
         {
             if (C == null) return "no flight";
