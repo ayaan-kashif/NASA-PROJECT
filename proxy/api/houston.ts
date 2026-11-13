@@ -25,7 +25,7 @@ const systemPrompt = `You are HOUSTON, a calm, encouraging flight-engineering me
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers for WebGL support
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
@@ -33,6 +33,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // GET ?diag=models: which Gemini models this key may call (names only; the key is never returned).
+  if (req.method === 'GET' && req.query?.diag === 'models') {
+    const key = process.env.gemini_api_key || process.env.GEMINI_API_KEY;
+    if (!key) return res.status(500).json({ error: 'No Gemini key set.' });
+    const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200', { headers: { 'x-goog-api-key': key } });
+    const body: any = await r.json().catch(() => ({}));
+    if (!r.ok) return res.status(502).json({ upstreamStatus: r.status, upstreamReason: body?.error?.status || '' });
+    const names = (body?.models || [])
+      .filter((m: any) => (m?.supportedGenerationMethods || []).includes('generateContent'))
+      .map((m: any) => String(m.name).replace('models/', ''));
+    return res.status(200).json({ models: names });
   }
 
   if (req.method !== 'POST') {
@@ -102,7 +115,7 @@ ${userContent}` }] }
             const body = await response.text();
             console.error('Gemini error', m, response.status, body);
             // Google's one-word error code (e.g. UNAVAILABLE, PERMISSION_DENIED): safe to return, never the key.
-            try { lastReason = `${m}: ${JSON.parse(body)?.error?.status || ''}`; } catch { lastReason = m; }
+            try { lastReason += `${m}: ${response.status} ${JSON.parse(body)?.error?.status || ''}; `; } catch { lastReason += `${m}: ${response.status}; `; }
             if (response.status === 401 || response.status === 403) break; // bad key: other models won't help
             continue;
           }
@@ -111,6 +124,7 @@ ${userContent}` }] }
           if (answer) break;
         } catch (e) {
           lastStatus = 504;
+          lastReason += `${m}: timeout; `;
           console.error('Gemini timeout/network', m, String(e));
         } finally {
           clearTimeout(timer);
