@@ -77,7 +77,7 @@ namespace TMinus.EditorTools
                 sizeOk = true
             };
 
-            string prefabPath = $"Assets/_TMinus/Prefabs/Parts/{partDef.id}.prefab";
+            string prefabPath = $"{TMinus.EditorTools.ImportPostprocessor.PrefabDir}/{partDef.id}.prefab";
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
             res.hasPrefab = prefab != null;
 

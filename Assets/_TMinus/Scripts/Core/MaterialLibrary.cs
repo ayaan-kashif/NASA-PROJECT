@@ -41,6 +41,15 @@ namespace TMinus.Core
             }
         }
 
+        /// <summary>Material from the library only (null if the name isn't one of ours, e.g. Blender's "Material").</summary>
+        public static Material Find(string name)
+        {
+            var lib = Instance;
+            if (lib == null || string.IsNullOrEmpty(name)) return null;
+            foreach (var m in lib.materials) if (m != null && m.name == name) return m;
+            return null;
+        }
+
         /// <summary>Material by name; falls back to a runtime URP Lit material so nothing renders pink.</summary>
         public static Material Get(string name)
         {

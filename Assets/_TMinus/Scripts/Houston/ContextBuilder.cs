@@ -67,6 +67,8 @@ namespace TMinus.Houston
             var bay = TMinus.Spacecraft.BayController.Instance;
             if (bay != null && bay.bench != null)
                 ctx.Wiring = bay.bench.Graph;
+            if (bay != null && bay.Model != null)
+                ctx.FreeMountFor = def => bay.Model.FreeMountFor(def);
 
             // Avionics Bay
             var avBay = AvionicsBayController.Instance;

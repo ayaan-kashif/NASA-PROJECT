@@ -72,7 +72,7 @@ namespace TMinus.Tests
         [Test]
         public void PrefabGeneratedCorrectlyWithComponents()
         {
-            string testDir = "Assets/_TMinus/Prefabs/Parts";
+            string testDir = TMinus.EditorTools.ImportPostprocessor.PrefabDir;
             if (!Directory.Exists(testDir)) Directory.CreateDirectory(testDir);
 
             string testPrefabPath = $"{testDir}/test_part_mock.prefab";
@@ -98,6 +98,35 @@ namespace TMinus.Tests
 
             // Clean up test prefab
             AssetDatabase.DeleteAsset(testPrefabPath);
+        }
+
+        [Test]
+        public void FactoryUsesModelPrefab_WithDataDimensions()
+        {
+            string dir = TMinus.EditorTools.ImportPostprocessor.PrefabDir;
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            string path = $"{dir}/pf_interstage.prefab";
+            bool existed = File.Exists(path);
+            Assume.That(existed, Is.False, "A real pf_interstage model exists; skip so it isn't overwritten.");
+            var root = new GameObject("pf_interstage");
+            var body = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            body.transform.SetParent(root.transform);
+            body.transform.localPosition = new Vector3(0, 0.5f, 0);
+            new GameObject("SNAP_Bottom").transform.SetParent(root.transform);
+            PrefabUtility.SaveAsPrefabAsset(root, path);
+            Object.DestroyImmediate(root);
+            try
+            {
+                PrefabPartProvider.Initialize();
+                var go = ProceduralPartFactory.Create("pf_interstage", TMinus.Core.DataRegistry.LoadFromResources());
+                var part = go.GetComponent<Part>();
+                Assert.That(part.transform.Find("Cylinder"), Is.Not.Null, "the model prefab should be used, not the procedural shape");
+                Assert.That(part.stackLength, Is.EqualTo(1.0f).Within(1e-4), "stack length comes from parts.json");
+                Assert.That(part.diameterM, Is.EqualTo(1.2f).Within(1e-4));
+                Assert.That(part.SnapNodes.Count, Is.EqualTo(1));
+                Object.DestroyImmediate(go);
+            }
+            finally { AssetDatabase.DeleteAsset(path); }
         }
     }
 }

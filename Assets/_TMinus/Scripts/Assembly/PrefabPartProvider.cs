@@ -13,7 +13,9 @@ namespace TMinus.Assembly
     /// </summary>
     public static class PrefabPartProvider
     {
-        public const string PrefabsFolder = "Assets/_TMinus/Prefabs/Parts";
+        static TMinus.Core.DataRegistry _data;
+
+        public const string PrefabsFolder = "Assets/_TMinus/Resources/Prefabs/Parts";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
@@ -28,6 +30,22 @@ namespace TMinus.Assembly
             ProceduralPartFactory.PrefabProvider = GetPrefab;
         }
 #endif
+
+        /// <summary>Stacking needs the data's length/diameter (a fairing adds no height); engine depth comes from the model.</summary>
+        static void ApplyPhysicalData(Part part)
+        {
+            var data = TMinus.Core.GameState.Instance != null ? TMinus.Core.GameState.Instance.Data : (_data ??= TMinus.Core.DataRegistry.LoadFromResources());
+            var def = data?.GetPart(part.partId);
+            if (def == null) return;
+            part.Def = def;
+            if (def.diameterM > 0) part.diameterM = (float)def.diameterM;
+            if (def.lengthM > 0) part.stackLength = def.category == "fairing" ? 0 : (float)def.lengthM;
+            part.isShell = def.category == "rocket_stage" || def.category == "saturn_stage" || def.category == "interstage" || def.category == "fairing";
+            float minY = 0;
+            foreach (var r in part.GetComponentsInChildren<Renderer>(true))
+                minY = Mathf.Min(minY, part.transform.InverseTransformPoint(r.bounds.min).y);
+            part.bellDepth = Mathf.Max(0, -minY);
+        }
 
         public static GameObject GetPrefab(string partId, Transform parent)
         {
@@ -51,11 +69,10 @@ namespace TMinus.Assembly
             go.name = partId;
 
             var part = go.GetComponent<Part>();
-            if (part != null)
-            {
-                part.partId = partId;
-                part.RegisterSockets();
-            }
+            if (part == null) part = go.AddComponent<Part>();
+            part.partId = partId;
+            part.RegisterSockets();
+            ApplyPhysicalData(part);
 
             return go;
         }

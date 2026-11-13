@@ -17,7 +17,8 @@ namespace TMinus.EditorTools
     public sealed class ImportPostprocessor : AssetPostprocessor
     {
         const string ModelDir = "Assets/_TMinus/Art/Models";
-        const string PrefabDir = "Assets/_TMinus/Prefabs/Parts";
+        // Under Resources so the built game can load them (Prefabs outside Resources only exist in the Editor).
+        public const string PrefabDir = "Assets/_TMinus/Resources/Prefabs/Parts";
 
         bool IsTargetFbx => assetPath.Replace('\\', '/').StartsWith(ModelDir, StringComparison.OrdinalIgnoreCase)
                             && assetPath.EndsWith(".fbx", StringComparison.OrdinalIgnoreCase);
@@ -77,7 +78,7 @@ namespace TMinus.EditorTools
                     if (mats[i] != null)
                     {
                         string matName = CleanMaterialName(mats[i].name);
-                        var sharedMat = MaterialLibrary.Get(matName);
+                        var sharedMat = MaterialLibrary.Find(matName); // unknown names keep the FBX's own material
                         if (sharedMat != null && sharedMat != mats[i])
                         {
                             mats[i] = sharedMat;
@@ -130,7 +131,9 @@ namespace TMinus.EditorTools
             }
             if (hasBounds)
             {
-                if (part.stackLength <= 0) part.stackLength = bounds.size.y;
+                // Rough defaults only; PrefabPartProvider sets the real values from parts.json at runtime.
+                part.bellDepth = Mathf.Max(0, -bounds.min.y);
+                if (part.stackLength <= 0) part.stackLength = Mathf.Max(0, bounds.max.y);
                 if (part.diameterM <= 0) part.diameterM = Mathf.Max(bounds.size.x, bounds.size.z);
             }
 

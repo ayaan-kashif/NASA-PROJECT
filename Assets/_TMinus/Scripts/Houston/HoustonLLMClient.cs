@@ -29,6 +29,9 @@ namespace TMinus.Houston
         Config _config;
         readonly Dictionary<string, string> _cache = new Dictionary<string, string>();
 
+        /// <summary>True when the last Ask() answer came from the codex fallback (timeout, error or disabled).</summary>
+        public bool LastAnswerOffline { get; private set; }
+
         public bool IsEnabled => _config != null && _config.enabled && !string.IsNullOrEmpty(_config.endpointUrl);
 
         void Awake()
@@ -65,9 +68,11 @@ namespace TMinus.Houston
         {
             // Build cache key
             string cacheKey = BuildCacheKey(question, advisorRec, ctx);
+            LastAnswerOffline = false;
             if (_cache.TryGetValue(cacheKey, out var cached))
                 return cached;
 
+            LastAnswerOffline = true;
             if (!IsEnabled)
                 return FallbackAnswer(question, advisorRec, ctx);
 
@@ -84,6 +89,7 @@ namespace TMinus.Houston
                     if (!string.IsNullOrEmpty(text))
                     {
                         _cache[cacheKey] = text;
+                        LastAnswerOffline = false;
                         return text;
                     }
                 }

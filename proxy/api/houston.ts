@@ -1,6 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import * as fs from 'fs';
-import * as path from 'path';
 
 // Simple in-memory rate limiting per IP (max 30 requests per minute)
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
@@ -21,22 +19,13 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
-// Load system prompt
-let systemPrompt = "You are HOUSTON, a flight-engineering mentor inside T-MINUS.";
-try {
-  const promptPath = path.join(__dirname, '..', 'houston_system_prompt.txt');
-  if (fs.existsSync(promptPath)) {
-    systemPrompt = fs.readFileSync(promptPath, 'utf8').trim();
-  }
-} catch (e) {
-  // Use fallback system prompt
-}
+// System prompt: embedded so it always ships with the function (the .txt copy is for reading/editing).
+const systemPrompt = `You are HOUSTON, a calm, encouraging flight-engineering mentor inside the T-MINUS education game. Explain the advisor's recommendation and the faults using ONLY the facts in the packet. Never contradict advisorRecommendation, and never invent part names, numbers, ports or rules. If the packet doesn't contain the answer, say so and name the codex entry to read. Audience: students aged 12 and up. At most 70 words, plain language, one idea per sentence, metric units. End with one short question that checks understanding. If language is 'ur', answer in simple Urdu script and keep technical terms in English.`;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers for WebGL support
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
@@ -50,7 +39,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+  const forwarded = (req.headers['x-forwarded-for'] as string) || '';
+  const clientIp = forwarded.split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
   if (isRateLimited(clientIp)) {
     return res.status(429).json({ error: 'Rate limit exceeded. Please wait a moment before asking again.' });
   }
@@ -63,7 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const apiKey = process.env.HOUSTON_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
-      error: 'Proxy server configuration error: No API key set in environment (HOUSTON_API_KEY)'
+      error: 'Proxy is not configured (no API key set).'
     });
   }
 
@@ -97,8 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
       if (!response.ok) {
-        const errText = await response.text();
-        return res.status(502).json({ error: `Gemini API error: ${errText}` });
+        console.error('Gemini error', response.status, await response.text());
+        return res.status(502).json({ error: 'The AI service is unavailable right now.' });
       }
 
       const data = await response.json();
@@ -124,8 +114,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
 
       if (!response.ok) {
-        const errText = await response.text();
-        return res.status(502).json({ error: `Upstream LLM error: ${errText}` });
+        console.error('LLM error', response.status, await response.text());
+        return res.status(502).json({ error: 'The AI service is unavailable right now.' });
       }
 
       const data = await response.json();
@@ -134,6 +124,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json({ text: answer.trim() });
   } catch (err: any) {
-    return res.status(500).json({ error: err?.message || 'Internal proxy error' });
+    console.error('Proxy error', err);
+    return res.status(500).json({ error: 'Internal proxy error' });
   }
 }
