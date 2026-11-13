@@ -40,6 +40,7 @@ namespace TMinus.Mission
             page.Add(BuildTimeline(ops));
             var reward = Card("SCIENCE REWARD  /  LAKE MANCHAR");
             reward.Add(new Label(ops.rewardPlaceholder));
+            reward.Add(RewardGallery.Build(s.Data.GetMission(s.CurrentMissionId), ops));
             var credit = new Label(ops.rewardCredit); credit.AddToClassList("muted"); reward.Add(credit); page.Add(reward);
             AddDesignCompare(page);
             page.Add(new Label("WHAT HAPPENED") { name = "section" });

@@ -35,9 +35,9 @@
       ],
       "scoring": { "success": 40, "science": 25, "budget": 10, "margins": 10, "decisionQuality": 10, "collaboration": 5 },
       "rewardImages": [
-        { "date": "2022-06-25", "title": "Lake Manchar before the floods", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
-        { "date": "2022-08-28", "title": "Lake Manchar overflowing", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
-        { "date": "2022-09-05", "title": "Floodwater spreading across the plain", "resource": "", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" }
+        { "date": "2022-06-25", "title": "Lake Manchar before the floods", "resource": "Images/Landsat/manchar_2022_06_25", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
+        { "date": "2022-08-28", "title": "Lake Manchar overflowing", "resource": "Images/Landsat/manchar_2022_08_28", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" },
+        { "date": "2022-09-05", "title": "Floodwater spreading across the plain", "resource": "Images/Landsat/manchar_2022_09_05", "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/" }
       ],
       "rewardCredit": "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey.",
       "codexIds": [ "landsat", "gsd", "downlink", "eclipse", "battery_dod" ]

@@ -95,8 +95,8 @@ namespace TMinus.Mission
             var imageCriterion = mission?.successCriteria.FirstOrDefault(c => c.metric == "imagesDownlinked");
             report.rewardImageShare = Math.Min(1, imageCriterion != null && imageCriterion.threshold > 0 ? (double)sent / imageCriterion.threshold : 0);
             report.rewardPlaceholder = firstImage == null ? "No reward image metadata is available." : string.IsNullOrEmpty(firstImage.resource)
-                ? $"TODO: add credited Landsat asset. Placeholder reflects {budget.gsdM:0.#} m/pixel GSD, {report.rewardImageQuality:P0} pointing quality and {report.rewardImageShare:P0} of the image goal returned."
-                : $"Reward crop reflects {budget.gsdM:0.#} m/pixel GSD, {report.rewardImageQuality:P0} pointing quality and {report.rewardImageShare:P0} of the image goal returned.";
+                ? "Reward images are not available for this mission yet."
+                : $"Real Landsat images of the 2022 floods, shown at your camera's detail. Your design: {budget.gsdM:0.#} m/pixel GSD, {report.rewardImageQuality:P0} pointing quality and {report.rewardImageShare:P0} of the image goal returned (each third unlocks one more date).";
             state.Events.AddAt(state.Flight.flightTimeS + days * 86400, "operations", "operations_complete", $"Operations ended after {report.daysAlive} days; {sent} images downlinked.", null, Severity.Info);
             return report;
         }
