@@ -86,6 +86,7 @@ ${userContent}` }] }
       };
 
       let lastStatus = 0;
+      let lastReason = '';
       for (const m of geminiModels) {
         const ctrl = new AbortController();
         const timer = setTimeout(() => ctrl.abort(), 4500); // 3 tries fit inside the 15 s function limit
@@ -98,7 +99,10 @@ ${userContent}` }] }
           });
           lastStatus = response.status;
           if (!response.ok) {
-            console.error('Gemini error', m, response.status, await response.text());
+            const body = await response.text();
+            console.error('Gemini error', m, response.status, body);
+            // Google's one-word error code (e.g. UNAVAILABLE, PERMISSION_DENIED): safe to return, never the key.
+            try { lastReason = `${m}: ${JSON.parse(body)?.error?.status || ''}`; } catch { lastReason = m; }
             if (response.status === 401 || response.status === 403) break; // bad key: other models won't help
             continue;
           }
@@ -114,7 +118,7 @@ ${userContent}` }] }
       }
       if (!answer) {
         // Only the status number goes back (400 request/model, 401/403 key, 429 quota, 503 busy, 504 timeout).
-        return res.status(502).json({ error: 'The AI service is unavailable right now.', upstreamStatus: lastStatus });
+        return res.status(502).json({ error: 'The AI service is unavailable right now.', upstreamStatus: lastStatus, upstreamReason: lastReason });
       }
     } else {
       // Default: OpenAI-compatible API
