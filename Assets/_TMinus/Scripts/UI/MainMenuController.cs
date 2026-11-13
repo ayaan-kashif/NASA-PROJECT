@@ -30,6 +30,10 @@ namespace TMinus.UI
             _toast = root.Q<Label>("toast");
             if (_toast != null) _toast.AddToClassList("hidden");
 
+            var pending = DemoHooks.PendingMenuPanel; DemoHooks.PendingMenuPanel = null;
+            if (pending == "failure" && DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root);
+            else if (pending == "sandbox") MenuPanels.ShowSandbox(root);
+
             var version = root.Q<Label>("version");
             if (version != null) version.text = "v" + Application.version + "  ·  NASA Space Apps 2026";
         }

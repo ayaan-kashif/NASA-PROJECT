@@ -15,7 +15,10 @@
 }
 .mission-card:hover { border-color: rgb(255, 122, 26); background-color: rgba(255, 122, 26, 0.08); }
 .mission-card.locked { opacity: 0.55; border-left-color: rgba(255, 255, 255, 0.2); }
-.mission-name { font-size: 26px; color: white; -unity-font-style: bold; padding: 0; }
+.mission-name { font-size: 26px; color: white; -unity-font-style: bold; padding: 0; white-space: normal; flex-shrink: 1; flex-grow: 1; margin-right: 10px; }
+.mission-card .rocket-card-top { align-items: flex-start; }
+.mission-card .badge { flex-shrink: 0; margin-top: 4px; }
+.badge.job { background-color: rgb(120, 200, 255); }
 .mission-diff { font-size: 14px; color: rgb(255, 170, 110); letter-spacing: 1px; padding: 0; margin: 4px 0 8px 0; }
 .mission-obj { font-size: 17px; color: rgb(220, 228, 245); white-space: normal; padding: 0; margin-bottom: 10px; }
 .mission-meta { font-size: 14px; color: rgb(150, 165, 200); white-space: normal; padding: 0; }

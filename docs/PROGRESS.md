@@ -136,3 +136,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - IL2CPP fixes: link.xml keeps our data classes, and stripping is Minimal. `-lembind` plus `Plugins/WebGL/EmvalCompat.jslib` stubs let App UI's TextMate .a (from the AI assistant package) link; it is never called in game.
 - HOUSTON loads its config with UnityWebRequest on WebGL.
 - Bug fix: Judge Mode's second debrief (and Redesign flows) showed the first flight's cached operations (0 images). `DebriefDebug.IsCurrent` now ties the cached result to the FlightRecord. Verified in the browser: 96.2/100, 87 images, Landsat unlocked.
+
+## Click-blocking fix + mission cards (Claude, 2026-11-14)
+- Bug: HOUSTON's full-screen `houston-root` layer caught every mouse click in all gameplay scenes. USS `pointer-events: none` is not a UI Toolkit property. HoustonPanel now sets PickingMode.Ignore on it, and the invalid lines are removed. Found with the new `UiDebug.PickAt`.
+- Mission cards: Failure Lab jobs ("REPAIR JOB") and Sandbox ("FREE BUILD") open their main-menu panels (`DemoHooks.PendingMenuPanel`). Moonshot and Rehbar stay "COMING NEXT" with a toast. Long titles wrap. BriefingUI is split (mission list in BriefingUI.Missions.cs).
+- Verified: UiDebug.ClickText on Moonshot (toast), FloodWatch-1 (briefing), Apollo 12 (Failure Lab board); 94/94 tests; golden path 3 stars.

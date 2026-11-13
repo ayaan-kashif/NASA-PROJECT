@@ -10,5 +10,8 @@ namespace TMinus.Core
 
         /// <summary>Opens the Failure Lab job board inside a menu root (set by TMinus.Mission.FailureLab).</summary>
         public static Action<UnityEngine.UIElements.VisualElement> OpenFailureLab;
+
+        /// <summary>Main-menu panel to open on the next load ("failure" or "sandbox"), set by the mission list.</summary>
+        public static string PendingMenuPanel;
     }
 }

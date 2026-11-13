@@ -52,43 +52,6 @@ namespace TMinus.Mission
             ShowMissionSelect();
         }
 
-        // ------------------------------------------------------------------ mission select
-
-        public void ShowMissionSelect()
-        {
-            _page.Clear();
-            var head = Header("CHOOSE A MISSION", "Every mission is a full build: satellite, rocket, launch and operations.");
-            head.Add(Btn("Main menu", () => SceneFlow.Load(SceneNames.MainMenu), "tool-btn"));
-            _page.Add(head);
-            var grid = new VisualElement(); grid.AddToClassList("mission-grid");
-            foreach (var m in Data.Missions.OrderBy(m => m.locked).ThenBy(m => m.priority))
-            {
-                var card = new VisualElement(); card.AddToClassList("mission-card");
-                card.EnableInClassList("locked", m.locked);
-                var top = new VisualElement(); top.AddToClassList("rocket-card-top");
-                top.Add(L(m.name, "mission-name"));
-                if (m.startHere) top.Add(L("START HERE", "badge"));
-                else if (m.locked) top.Add(L("COMING NEXT", "badge training"));
-                card.Add(top);
-                card.Add(L(m.difficulty, "mission-diff"));
-                card.Add(L(m.objective, "mission-obj"));
-                var meta = new List<string>();
-                if (m.budgetMUSD > 0) meta.Add($"Budget {m.budgetMUSD:0.00} M$");
-                if (m.rocketOptions.Count > 0) meta.Add("Rocket: " + string.Join(", ", m.rocketOptions.Select(r => Data.GetRocket(r)?.name ?? r)));
-                if (m.durationDays > 0) meta.Add($"{m.durationDays} days");
-                card.Add(L(string.Join("  ·  ", meta), "mission-meta"));
-                var id = m.id;
-                card.RegisterCallback<ClickEvent>(_ =>
-                {
-                    if (Data.GetMission(id).locked) { Toast("This mission unlocks after FloodWatch-1 works end to end."); return; }
-                    S.CurrentMissionId = id;
-                    ShowBriefing();
-                });
-                grid.Add(card);
-            }
-            _page.Add(grid);
-        }
-
         // ------------------------------------------------------------------ briefing
 
         public void ShowBriefing()

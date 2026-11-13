@@ -95,6 +95,10 @@ namespace TMinus.Houston
             if (tree != null) tree.CloneTree(_root);
             else Debug.LogWarning("[HOUSTON] Missing Resources/UI/HoustonPanel.uxml");
             if (style != null && !_root.styleSheets.Contains(style)) _root.styleSheets.Add(style);
+            // The overlay layer spans the whole screen; it must let clicks through to the game underneath.
+            // (USS has no pointer-events: picking is set in code. Only the panel and the round button take clicks.)
+            var layer = _root.Q("houston-root");
+            if (layer != null) layer.pickingMode = PickingMode.Ignore;
 
             _panel = _root.Q("houston-panel");
             _toggleFab = _root.Q<Button>("houston-toggle-fab");
