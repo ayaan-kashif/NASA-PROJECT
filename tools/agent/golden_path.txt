@@ -1,0 +1,15 @@
+scene Assets/_TMinus/Scenes/Flight.unity
+wait 2
+call TMinus.Mission.BriefingDebug.Demo perfect-ready
+call TMinus.Flight.FlightDebug.Reload x
+wait 3
+call TMinus.Flight.FlightDebug.Launch 3
+wait 2
+call TMinus.Flight.FlightDebug.RunToEnd x
+wait 2
+shot gp_orbit
+call TMinus.Mission.DebriefDebug.Show x
+wait 4
+shot gp_debrief
+call TMinus.Mission.DebriefDebug.RunOps x
+stop

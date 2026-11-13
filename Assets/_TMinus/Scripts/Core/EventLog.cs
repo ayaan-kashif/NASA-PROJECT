@@ -77,5 +77,8 @@ namespace TMinus.Core
         }
 
         public void Clear() => _events.Clear();
+
+        /// <summary>Remove one system's events (e.g. the previous flight's, before flying again).</summary>
+        public int RemoveSystem(string system) => _events.RemoveAll(e => e.system == system);
     }
 }

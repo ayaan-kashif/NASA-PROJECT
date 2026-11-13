@@ -25,7 +25,7 @@ namespace TMinus.Mission
         /// <param name="missingRf">Leave the antenna cable out (Judge Mode step a).</param>
         /// <param name="badJoint">Bolt joint 1 clockwise in one pass with 3 bolts missing (Judge Mode step b).</param>
         /// <param name="noSeparation">Leave pyro channel 2 unwired.</param>
-        public static void Apply(GameState s, bool missingRf = false, bool badJoint = false, bool noSeparation = false)
+        public static void Apply(GameState s, bool missingRf = false, bool badJoint = false, bool noSeparation = false, bool padReady = false)
         {
             var rules = s.Data.GetRules();
             s.CurrentMissionId = "floodwatch_1";
@@ -56,8 +56,11 @@ namespace TMinus.Mission
             }
             foreach (var l in rules.avionicsWiring)
                 if (!(noSeparation && l.id == "w_pyro2")) v.avionicsCables.Add(new CableLink { fromPort = l.from, toPort = l.to, cableType = l.cableType });
+            sc.rbfPinPulled = padReady;   // pad actions done (pin pulled, Safe/Arm armed)
+            v.armed = padReady;
             s.Vehicle = v;
             s.Launch = new LaunchRecord();
+            s.Flight = new FlightRecord();
         }
 
         static string Mount(string partId)
@@ -80,7 +83,7 @@ namespace TMinus.Mission
         public static string Brief(string id) { GameState.Instance.CurrentMissionId = id; C.ShowBriefing(); return "ok"; }
         public static string Demo(string variant)
         {
-            DemoBuilds.Apply(GameState.Instance, missingRf: variant.Contains("rf"), badJoint: variant.Contains("joint"), noSeparation: variant.Contains("sep"));
+            DemoBuilds.Apply(GameState.Instance, missingRf: variant.Contains("rf"), badJoint: variant.Contains("joint"), noSeparation: variant.Contains("sep"), padReady: variant.Contains("ready"));
             return "applied " + variant;
         }
         public static string Checklist(string _)

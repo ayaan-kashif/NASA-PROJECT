@@ -72,10 +72,6 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Verified: design-code self-comparison through the Unity Editor; 73/73 EditMode tests; Debrief screenshot captured after a perfect 3-star flight.
 - Remaining: the P18 Judge Mode main-menu/F9 sequence is not integrated; MainMenu is outside this task's owned files. Existing `BriefingDebug.Demo` still exposes the RF/joint/separation demo variants.
 
-## P11 — Flight scene + HUD (WORK IN PROGRESS, 2026-11-13)
-- Done: `FlightView` (floating origin, real-size Earth with procedural texture, pad, rocket, exhaust that widens with altitude, released stages/fairing/CubeSat keep inertial motion), `FlightController` (sim from the real build: AvionicsReport + bolt joints, pitch-kick hold, TWR < 1 abort at T-0, warp, max-Q callout, event -> animation mapping, `GameState.Flight` FlightRecord with 1 Hz telemetry, auto-continue to Debrief), `FlightHud` (clock, telemetry, propellant, event feed, altitude/speed charts, orbit map with Kepler ellipse, LOS mode, cameras chase/ground/map, autopilot toggle, abort), `FlightDebug`, `FlightSceneBuilder`. Core: `FlightRecord`/`TelemetryPoint` + `GameState.Flight`.
-- Fixes to Codex's P10: fairing_stuck no longer logs every step; surface/orbital speed labels were swapped.
-- NOT verified: Launch hook NRE in play test (see COORDINATION.md). EditMode tests last run 60/60 before P11 files.
 
 ## P13 — HOUSTON advisor: where bolts, wires and parts go (2026-11-13)
 - `AssemblyAdvisor` (deterministic, offline): WhereDoesThisGo (battery highlights EPS BATT port), NextStep (full CubeSat/rocket dependency order), Scan (prioritized blockers/faults), BoltCoach (12-bolt star pattern 1-7-4-10-2-8-5-11-3-9-6-12), hint ladder tracking in GameSettings.hintsUsed, proactive tips.
@@ -91,3 +87,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - `ImportPostprocessor`: AssetPostprocessor for `Art/Models/**/*.fbx` (scale 1.0, preserve empties, convex mesh collider <=255 tris else box collider, material remap by name to `MaterialLibrary`), auto-generates prefabs in `Prefabs/Parts/<partId>.prefab` with `Part` and socket registration.
 - `PrefabPartProvider`: runtime bridge setting `ProceduralPartFactory.PrefabProvider` hook; `ModelValidatorWindow` (Tools > T-Minus > Validate Models) inspecting part models against `parts.json` specs.
 - Verified: `ImportTests.cs` (4/4 tests pass: hook registration, missing model detection, socket registration, mock prefab creation). 69/69 EditMode tests passing in project.
+
+## Audit + merge (Claude, 2026-11-13)
+- Reviewed Codex (P11 fix, P12, P18 compare, README/CREDITS/SUBMISSION on main) and Antigravity (P13, P14, P16 on branch houston, which was created in this same folder, not a clone). Merged houston into main (only PROGRESS.md conflicted). 81/81 EditMode tests pass on the merge.
+- Fixes: restored 10 material assets whose _EMISSION keyword had been stripped (hover/selection glow); new flights clear the previous flight's events (EventLog.RemoveSystem) so "Fly again" debriefs aren't polluted; DemoBuilds padReady option (RBF pin pulled + armed).
+- Verified golden path in play mode: perfect build -> orbit 542x545 km, max-Q 40.6 kPa, CubeSat deployed -> 30 days, 87 images, 3 stars (96.2/100). Known follow-ups: AssemblyAdvisor.cs (696 lines) and HoustonPanel.cs (493) exceed the 300-line rule; Houston UXML/USS duplicated in Resources/UI and UI/; flight ground disc renders cyan; Landsat reward images still a placeholder.
