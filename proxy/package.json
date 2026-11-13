@@ -4,7 +4,7 @@
   "description": "Vercel serverless proxy for HOUSTON AI mentor in T-MINUS",
   "main": "api/houston.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --noEmit"
   },
   "dependencies": {
     "@vercel/node": "^3.0.0"

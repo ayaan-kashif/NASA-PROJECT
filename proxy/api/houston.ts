@@ -95,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(502).json({ error: 'The AI service is unavailable right now.' });
       }
 
-      const data = await response.json();
+      const data: any = await response.json(); // provider JSON: shape checked with optional chaining below
       answer = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } else {
       // Default: OpenAI-compatible API
@@ -122,7 +122,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(502).json({ error: 'The AI service is unavailable right now.' });
       }
 
-      const data = await response.json();
+      const data: any = await response.json(); // provider JSON: shape checked with optional chaining below
       answer = data?.choices?.[0]?.message?.content || '';
     }
 
