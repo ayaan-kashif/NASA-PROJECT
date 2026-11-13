@@ -1,40 +1,85 @@
 # T-MINUS
 
-**T-MINUS: Rocket & Mission Builder** is an educational Unity game for the NASA Space Apps Challenge 2026 challenge **“Space Mission Design Game.”** Players integrate a CubeSat, assemble and wire its launch vehicle, fly an ascent, operate the satellite, and learn from a causal mission debrief. The game is aimed at students aged 12 and up and is designed to work offline.
+**T-MINUS: Rocket & Mission Builder** is an educational Unity game for the NASA Space Apps Challenge 2026 challenge **"Space Mission Design Game."** Players build a 3U CubeSat and its rocket part by part (bolts, cables, connectors), launch it with real physics, operate the satellite for 30 days, and get a debrief that explains every success and failure. HOUSTON, the in-game assistant, says where each part, bolt and cable goes and why. The game is for students aged 12+ and first-year university students, and it works fully offline.
 
-## How to play
+## Run it
 
-Open the Unity project in Unity **6000.6.8f1**. Run **Tools → T-Minus → Rebuild Scenes** if the editor asks for the project scenes, then open `Boot` and press Play. Choose the FloodWatch-1 mission, build and wire the CubeSat in the Integration Bay, assemble and bolt the Pathfinder in the VAB, complete the pad checklist and GO/NO-GO poll, then launch. The Debrief summarizes flight events, operations, scoring and suggested fixes.
+**Windows build:** open `Builds/Windows/T-MINUS.exe`. To make the build yourself, use **Tools → T-Minus → Build Windows** in Unity.
 
-### Controls
+**In Unity:** open the project in **Unity 6000.6.8f1**. Open the `Boot` scene (**Tools → T-Minus → Open Boot Scene**) and press Play. If a scene is missing, run **Tools → T-Minus → Rebuild Scenes**.
 
-- VAB: drag parts onto the stack or off it to detach; right-drag to orbit the camera, middle-drag to pan, scroll to zoom. `Alt` + left-drag also orbits. `Ctrl+Z` / `Ctrl+Y` undo and redo assembly changes.
-- Integration Bay: select components and ports in the interface to install and wire them; use the on-screen cable guidance and wiring check.
-- Flight: use the HUD buttons for ignition/countdown, camera, autopilot, abort and time warp. Keyboard shortcuts: `C` changes camera; `1`/`2`/`3`/`4` select x1/x2/x4/x100 warp.
-- Bolts and cables: follow the highlighted bolt sequence and connection prompts; inspect the checklist before launch.
+## Judge Mode (3-minute demo)
 
-## Scenes and technology
+Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the whole story in six steps:
+1. A build with a hidden fault.
+2. HOUSTON finds the fault.
+3. A launch that fails because of it, with the cause.
+4. The fix.
+5. A launch that reaches orbit.
+6. 30 days of operations and the debrief with the Landsat reward.
 
-MissionBriefing → IntegrationBay → VAB → Flight → Debrief. Unity UI Toolkit builds the interfaces; flight dynamics use a fixed-step, double-precision C# solver in a 2D flight plane around a rotating Earth. Buildable scenes have idempotent `Tools → T-Minus` Editor menu builders. Mission and part definitions are data-driven JSON under `Assets/_TMinus/Resources/Data/`.
+**Space** goes to the next step and **Esc** exits.
+
+## The loop
+
+| Stage | What you do |
+|---|---|
+| Mission Briefing | Read the FloodWatch-1 brief (map the 2022 Pakistan floods), budget 7.72 M USD, success criteria. |
+| Integration Bay | Install EPS, battery, deployment switch, computer, radio, antenna, ADCS, camera and solar panels; wire every power and data cable. Live power, data and mass budgets. |
+| VAB | Stack Pathfinder (2 stages + fairing), fit and torque every bolt in star order over 3 passes, mount the CubeSat. Saturn V can be inspected. |
+| Avionics Bay | Wire the flight computer, batteries, pyro separation, Safe/Arm plug and telemetry (11 cables). |
+| Pad | Pre-launch checklist, pull the Remove-Before-Flight pin, arm, GO/NO-GO poll with 1–4 crew roles. |
+| Flight | Double-precision physics ascent: gravity turn, max-Q, staging, fairing, orbit insertion, CubeSat deploy. |
+| Operations + Debrief | 30 simulated days of power, storage and downlink; score with the cause of every failure; real Landsat images of Lake Manchar shown at your camera's resolution. |
+
+**Failure Lab** has repair jobs from real history:
+- *Broken Pathfinder:* find 3 seeded faults (missing bolts, an unplugged pyro cable, a cable in the wrong port), fix them, and hand the rocket back for a job debrief.
+- *Apollo 12, 1969:* you are EECOM after the lightning strikes. Make the right calls in 20 seconds ("SCE to AUX", then reset the fuel cells). Every wrong call is explained.
+
+**Main menu extras:**
+- **Codex:** 28 searchable science topics, each with its source.
+- **Settings:** HOUSTON on, hints only or off; HOUSTON answers in Urdu; volume; fullscreen.
+- **Sandbox:** open any workshop directly.
+
+## Controls
+
+| Where | Keys and mouse |
+|---|---|
+| Everywhere | **H** HOUSTON panel · **N** next step · **Shift+S** scan the build · **F9** Judge Mode |
+| VAB | Drag parts onto or off the stack · right-drag orbit · middle-drag pan · scroll zoom · **F** focus selected part · **Esc** deselect · **Ctrl+Z / Ctrl+Y** undo/redo |
+| Bolting | Click a hole to fit a bolt, then torque it · follow the star order · **Esc** leaves the bolt tool |
+| Wiring benches | Click a port, then another port, to run a cable · **Esc** cancels |
+| Flight | **C** cycle camera (chase / ground / map) · **1 2 3 4** time warp x1/x2/x4/x100 · with autopilot off: **A/D** pitch, **Left Shift/Left Ctrl** throttle |
+
+## Technology
+
+- Unity 6000.6.8f1 with URP, C#, UI Toolkit, the new Input System and Newtonsoft JSON. No paid assets.
+- **Data-driven:** parts, rockets, bolt patterns, missions, rules and the Codex live in JSON under `Assets/_TMinus/Resources/Data/`.
+- **Flight physics:** a pure C#, double-precision, fixed-step solver. It flies in a 2D plane around a round, rotating Earth. Unity only displays the result.
+- **Tests:** EditMode tests live in `Assets/_TMinus/Tests/EditMode/`. Run them in Window → General → Test Runner.
+- **Scene builders:** every scene is built by an idempotent menu command under **Tools → T-Minus**.
+- **HOUSTON's advice:** deterministic, and it works offline. Optional AI explanations go through a small proxy (`proxy/`), configured in `Assets/StreamingAssets/houston.config.json`. That file is git-ignored, and no API keys are stored in this repository.
 
 ## NASA and science data
 
-- **Landsat / Lake Manchar (2022 floods):** [NASA Earth Observatory — Lake Manchar Is Overflowing](https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/). The debrief currently uses a design-scaled placeholder; the image files have not been added to the repository.
-- **Saturn V:** stage data and history cite the [NASA Saturn V News Reference](https://www.nasa.gov/wp-content/uploads/2023/04/saturnvnewsreference.pdf) and [NASA's Saturn V page](https://www.nasa.gov/history/afj/ap11fj/launch.html). The project uses a procedural Saturn V representation; it does not currently bundle the NASA model.
-- **Rehbar-I:** mission history and launch context are documented in the in-game codex; see the [NASA History overview of Pakistan's space cooperation](https://history.nasa.gov/). Verify and replace this general reference with a mission-specific source before public submission.
+- **Landsat / Lake Manchar (2022 floods):**
+  - The debrief shows the three NASA Earth Observatory images (25 June, 28 August and 5 September 2022), downsampled to the player's camera GSD.
+  - Each third of the image goal returned unlocks one more date.
+  - Credit: "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey."
+  - Source: [Lake Manchar Is Overflowing](https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/).
+- **Saturn V:**
+  - Stage data cites the [NASA Saturn V News Reference](https://www.nasa.gov/wp-content/uploads/2023/04/saturnvnewsreference.pdf).
+  - The model is a procedural representation.
+- **Rehbar-I:** the history is in the in-game Codex. Verify it against a mission-specific source before public submission.
 
 ## Credits and AI use
 
-See [CREDITS.md](CREDITS.md) for image credit, project acknowledgements, sound/model notes and AI-tool disclosure. AI coding assistants (Claude Code, OpenAI Codex and Antigravity) were used to draft and implement code, documentation and test support. Human team members reviewed and tested changes. HOUSTON provides deterministic in-game engineering guidance; optional AI explanations use a configurable proxy and are not required for gameplay. No provider API keys are stored in this repository.
+See [CREDITS.md](CREDITS.md). AI coding assistants (Claude Code, OpenAI Codex and Antigravity) were used to draft and implement code, documentation and tests. The human team reviewed and tested the changes.
 
 ## Known limits
 
-- Flight is a 2D plane with a simplified atmosphere, drag and ground track.
-- Part performance, spacecraft costs, mass budgets and some engineering thresholds are illustrative game values; check the data notes before treating them as flight-qualified design data.
-- The Lake Manchar reward is a placeholder until licensed/credited Landsat image assets are added and visually processed.
-- The local leaderboard is stored on the current machine and is not an online service.
-- Windows x64 is the primary target; WebGL is a stretch target.
-
-## License and sources
-
-Project code and original assets are provided for the NASA Space Apps Challenge project demonstration. NASA imagery and referenced factual data remain subject to their source terms and credits. See [CREDITS.md](CREDITS.md) and the JSON `source` / `sourceUrl` fields for item-level attribution.
+- Flight runs in a 2D plane with a simplified atmosphere.
+- Near the ground, a real-scale launch site is drawn. From altitude, the globe is shown at 1/1000 scale.
+- Part performance, costs and some thresholds are illustrative game values, not flight-qualified data.
+- The leaderboard is local to the machine.
+- Windows x64 is the main target. WebGL is a stretch target.

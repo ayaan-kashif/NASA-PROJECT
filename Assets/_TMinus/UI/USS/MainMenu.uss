@@ -141,3 +141,23 @@
 .codex-source { font-size: 15px; color: rgb(140, 190, 255); background-color: rgba(0, 0, 0, 0); border-width: 0; -unity-text-align: middle-left; padding: 2px 0; }
 .settings-row { margin: 10px 0 18px 0; font-size: 22px; color: rgb(255, 255, 255); }
 .sandbox-room { height: auto; padding-top: 12px; padding-bottom: 12px; white-space: normal; }
+
+/* ---- Failure Lab ---- */
+.job-card { background-color: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px 20px; margin-bottom: 14px; border-left-width: 4px; border-left-color: rgb(255, 122, 26); }
+#job-title { font-size: 26px; -unity-font-style: bold; color: rgb(255, 255, 255); }
+.job-note { white-space: normal; color: rgb(220, 228, 245); font-size: 19px; margin: 6px 0 10px 0; }
+.job-card .menu-button { height: 52px; margin: 4px 0 0 0; width: 260px; }
+.a12-clock { font-size: 26px; -unity-font-style: bold; color: rgb(255, 255, 255); margin-bottom: 6px; }
+.a12-prompt { white-space: normal; font-size: 20px; color: rgb(255, 196, 140); margin-bottom: 12px; }
+.a12-lights { flex-direction: row; flex-wrap: wrap; width: 55%; margin-right: 20px; }
+.a12-light { width: 31%; margin: 0 2% 8px 0; padding: 8px 4px; font-size: 16px; -unity-text-align: middle-center; color: rgb(120, 110, 90); background-color: rgb(40, 34, 24); border-radius: 4px; }
+.a12-light.a12-on { color: rgb(30, 18, 0); background-color: rgb(255, 190, 60); -unity-font-style: bold; }
+.a12-tlm { flex-grow: 1; background-color: rgb(4, 10, 6); border-radius: 6px; padding: 10px 14px; }
+.a12-tlm-row { color: rgb(120, 255, 150); font-size: 19px; margin-bottom: 4px; }
+.a12-feedback { white-space: normal; font-size: 19px; margin: 12px 0; min-height: 52px; }
+.a12-good { color: rgb(150, 255, 170); }
+.a12-bad { color: rgb(255, 150, 130); }
+.a12-switches { flex-direction: row; flex-wrap: wrap; }
+.a12-switch { width: 31%; height: 56px; margin: 0 2% 10px 0; font-size: 19px; color: rgb(255, 255, 255); background-color: rgb(52, 58, 72); border-color: rgb(120, 130, 150); border-width: 2px; border-radius: 8px; }
+.a12-switch:hover { border-color: rgb(255, 122, 26); }
+.overlay-card.a12-flash { background-color: rgb(235, 240, 255); }

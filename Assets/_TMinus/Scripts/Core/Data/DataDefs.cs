@@ -207,6 +207,21 @@ namespace TMinus.Core.Data
         public string rewardCredit;
         public string storyCard;
         public List<string> codexIds = new List<string>();
+
+        // Failure Lab jobs (Prompt 15): new jobs need data only, no code.
+        public string clientNote;                                       // short note on the job card
+        public int rewardPoints;
+        public List<string> seededFaults = new List<string>();          // "bolts_missing:<jointId>:<n>", "unplugged:<linkId>", "wrong_port:<linkId>:<port>"
+        public List<JobChoiceDef> consoleChoices = new List<JobChoiceDef>(); // scripted console jobs (Apollo 12)
+        public string lesson;                                           // the real-world lesson in the job debrief
+    }
+
+    public sealed class JobChoiceDef
+    {
+        public string id;
+        public string label;
+        public int correctAtStep;   // 1 or 2 = the right call at that step; 0 = never right
+        public string why;          // shown when picked (right or wrong)
     }
 
     // ---------------------------------------------------------------- codex.json

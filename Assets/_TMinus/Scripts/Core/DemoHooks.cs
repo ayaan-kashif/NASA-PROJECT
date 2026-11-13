@@ -7,5 +7,8 @@ namespace TMinus.Core
     {
         /// <summary>Starts the scripted Judge Mode demo (set by TMinus.Mission.JudgeMode).</summary>
         public static Action StartJudgeMode;
+
+        /// <summary>Opens the Failure Lab job board inside a menu root (set by TMinus.Mission.FailureLab).</summary>
+        public static Action<UnityEngine.UIElements.VisualElement> OpenFailureLab;
     }
 }

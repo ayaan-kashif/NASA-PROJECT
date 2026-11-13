@@ -21,6 +21,7 @@ namespace TMinus.UI
 
             Bind(root, "btn-missions", () => SceneFlow.Load(SceneNames.MissionBriefing));
             Bind(root, "btn-judge", () => { if (DemoHooks.StartJudgeMode != null) DemoHooks.StartJudgeMode(); else Toast("Judge Mode is not available in this build."); });
+            Bind(root, "btn-failure", () => { if (DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root); else Toast("The Failure Lab is not available in this build."); });
             Bind(root, "btn-sandbox", () => MenuPanels.ShowSandbox(root));
             Bind(root, "btn-codex", () => MenuPanels.ShowCodex(root));
             Bind(root, "btn-settings", () => MenuPanels.ShowSettings(root));

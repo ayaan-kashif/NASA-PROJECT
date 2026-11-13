@@ -67,9 +67,10 @@ namespace TMinus.EditorTools
             m.SetFloat("_Smoothness", name == MaterialLibrary.MetalGrey || name == MaterialLibrary.EngineDark ? 0.55f : 0.3f);
             m.SetFloat("_Metallic", name == MaterialLibrary.MetalGrey || name == MaterialLibrary.EngineDark ? 0.6f : 0f);
 
-            // Emission on with black, so hover/selection can tint via property blocks.
+            // Emission on, so hover/selection can tint via property blocks. Near-black (1/255), not black:
+            // URP turns _EMISSION off for pure black, and the player build would then strip the glow variant.
             m.EnableKeyword("_EMISSION");
-            m.SetColor("_EmissionColor", Color.black);
+            m.SetColor("_EmissionColor", new Color(0.004f, 0.004f, 0.004f));
             m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
             m.enableInstancing = true;
 

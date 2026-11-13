@@ -96,7 +96,35 @@
       "payloadType": "apollo",
       "launchSites": [ "cape_canaveral" ],
       "seed": 1114,
-      "codexIds": [ "apollo12_lightning", "telemetry" ]
+      "codexIds": [ "apollo12_lightning", "telemetry" ],
+      "clientNote": "EECOM console, 14 Nov 1969. Lightning just hit the stack. Telemetry is garbage. You have 20 seconds.",
+      "rewardPoints": 300,
+      "consoleChoices": [
+        { "id": "sce_aux", "label": "SCE to AUX", "correctAtStep": 1, "why": "Right. The Signal Conditioning Equipment had dropped off its normal supply. On auxiliary power it reads the sensors again and telemetry comes back." },
+        { "id": "fc_reset", "label": "Fuel cells: RESET", "correctAtStep": 2, "why": "Right. With good data you can see the fuel cells tripped offline. Resetting them brings the spacecraft's main power back." },
+        { "id": "abort", "label": "ABORT (launch escape)", "correctAtStep": 0, "why": "Too early. The Saturn V's own guidance was flying perfectly on its separate systems. Aborting would end the mission for a spacecraft problem you can fix." },
+        { "id": "pcm_cycle", "label": "Telemetry PCM: cycle", "correctAtStep": 0, "why": "The radio link is fine. The garbage comes from the sensors' signal conditioner losing power, so cycling the transmitter changes nothing." },
+        { "id": "bus_tie", "label": "Main bus tie: OFF", "correctAtStep": 0, "why": "That would cut the batteries that are keeping the spacecraft alive right now. Never remove power you still have." },
+        { "id": "wait", "label": "Wait and watch", "correctAtStep": 0, "why": "Every second without data is a second you can't see what failed. The call has to be made now." }
+      ],
+      "lesson": "Redundancy saved Apollo 12. The rocket's instrument unit kept steering on its own power while the spacecraft recovered. Flight controller John Aaron recognised the strange telemetry pattern from a test a year earlier and made the call: 'Try SCE to AUX.'"
+    },
+    {
+      "id": "failure_broken_pathfinder",
+      "name": "Failure Lab: Broken Pathfinder",
+      "priority": "P1",
+      "difficulty": "Beginner",
+      "locked": true,
+      "objective": "A Pathfinder came back from the pad with three faults. Find and fix them before it flies.",
+      "rocketOptions": [ "pathfinder" ],
+      "payloadType": "cubesat_3u",
+      "launchSites": [ "sonmiani" ],
+      "seed": 2026,
+      "codexIds": [ "star_pattern", "pyro_separation", "torque" ],
+      "clientNote": "Pad crew report: 'Something rattled on the interstage and stage 2 never lit in the last test.' Three faults. Find them all.",
+      "rewardPoints": 300,
+      "seededFaults": [ "bolts_missing:j_interstage_s2:4", "unplugged:w_pyro3", "wrong_port:w_fc_imu:av_flight_computer/DATA_3" ],
+      "lesson": "Most launch failures are small integration mistakes: a missing bolt, a connector in the wrong socket. Real teams catch them with checklists, inspection and a second pair of eyes, never by assuming."
     },
     {
       "id": "sandbox",
