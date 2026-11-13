@@ -74,9 +74,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // A Gemini key alone means Gemini; LLM_PROVIDER can still override.
   const provider = (process.env.LLM_PROVIDER || (geminiKey && !process.env.HOUSTON_API_KEY && !process.env.OPENAI_API_KEY ? 'gemini' : 'openai')).toLowerCase();
-  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini');
-  // Gemini fallbacks: a stable model, a lighter one, then Google's moving alias. A busy (503) or slow model is skipped.
-  const geminiModels = [...new Set([model, 'gemini-2.5-flash-lite', 'gemini-flash-latest'])];
+  const model = process.env.LLM_MODEL || (provider === 'gemini' ? 'gemini-3.5-flash-lite' : 'gpt-4o-mini');
+  // Gemini fallbacks, fastest first (checked against GET ?diag=models for this key, Nov 2026). Busy/missing models are skipped.
+  const geminiModels = [...new Set([model, 'gemini-3.5-flash', 'gemini-3.1-flash-lite', 'gemini-flash-lite-latest', 'gemini-flash-latest'])];
 
   const userContent = JSON.stringify({
     packet: packet || {},
@@ -94,15 +94,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 Context and Query:
 ${userContent}` }] }
         ],
-        // Short answers: no hidden "thinking" (it is slow and eats the 300-token budget).
-        generationConfig: { maxOutputTokens: 300, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+        generationConfig: { maxOutputTokens: 300, temperature: 0.4 } as any
       };
 
       let lastStatus = 0;
       let lastReason = '';
+      const started = Date.now();
       for (const m of geminiModels) {
+        if (Date.now() - started > 11000) break;                // stay inside the 15 s function limit
+        // Short answers: no hidden "thinking" on 2.5 models (slow, eats the token budget). 3.x keep their default.
+        payload.generationConfig.thinkingConfig = m.startsWith('gemini-2.5') ? { thinkingBudget: 0 } : undefined;
         const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), 4500); // 3 tries fit inside the 15 s function limit
+        const timer = setTimeout(() => ctrl.abort(), 5000);
         try {
           const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`, {
             method: 'POST',
