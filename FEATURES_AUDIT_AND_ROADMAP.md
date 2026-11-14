@@ -6,7 +6,7 @@ Method: every feature below was found by reading the C# scripts, UXML, JSON data
 
 ### Implementation status (updated after the fixes were written)
 
-Done in code: I1 to I9, I13, I15 and the Judge Mode / Failure Lab protection; features F1, F3, F4, F5, F6, F8, F9, F11, F12 (two variants, Tight budget and Featherweight) and F13 (three more jobs). Not done: I10 to I12, I14, I16, the dead mission cards for Moonshot and Rehbar-I, and features F2, F7, F10, F14 to F26.
+Done in code: I1 to I9, I10 (Urdu font added), I11, I13, I14, I15 and the Judge Mode / Failure Lab protection; features F1 to F16, F19 (data field), F20 (offline CSV), F21, F22, F23, F24 (jump to the cause), F10 (text size, low graphics, reduce motion), F12 (two variants), F13 (three jobs) and F17 (about page, link previews, phone notice). Not done: I12, I16, the Moonshot and Rehbar-I cards, touch support, the slow-motion replay, a live class dashboard, F18 (school licence), F25 (live crew) and F26 (real-data missions). The last three need a server, database or business set-up that code alone cannot provide; the two missions need new vehicles and Unity to test them.
 
 **These changes have not been compiled, tested or played**: no Unity was available. See the last entry in `docs/PROGRESS.md` and the status note in `COMPLETE_PROJECT_AUDIT.md`.
 
@@ -656,11 +656,11 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] I7 Single countdown
 - [x] I8 Debrief timeline uses days for operations
 - [x] I9 Proxy locked down
-- [ ] I10 Urdu renders correctly, or is relabelled
-- [ ] I11 Seeded random events
+- [x] I10 Urdu renders correctly, or is relabelled
+- [x] I11 Seeded random events
 - [ ] I12 Sources upgraded; `needsReview` cleared
 - [x] I13 No auto-advance from the flight end card
-- [ ] I14 Sandbox removes limits
+- [x] I14 Sandbox removes limits
 - [x] I15 WebGL: Quit hidden, clipboard toast correct
 - [ ] I16 Web build size checked after post-processing stripping was turned off
 - [x] Confirm before Judge Mode / Failure Lab replaces a build (done as an automatic backup and restore instead of a dialog)
@@ -668,29 +668,29 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 
 **New features**
 - [x] F1 Autosave and Continue
-- [ ] F2 Guided first build
+- [x] F2 Guided first build
 - [x] F3 Wiring faults change the mission
 - [x] F4 Pause menu
 - [x] F5 Success criteria in the debrief
 - [x] F6 Controls overlay
-- [ ] F7 Undo everywhere
+- [x] F7 Undo everywhere (parts and cables in the two bays; stacking keeps its own undo; torque is deliberately not undoable)
 - [x] F8 Engine sound and ambient audio
 - [x] F9 Flight charts in the debrief
-- [ ] F10 Accessibility options
+- [x] F10 Accessibility options (text size, low graphics and reduce motion)
 - [x] F11 Mission log and personal bests
 - [x] F12 Engineering challenges
 - [x] F13 More Failure Lab jobs
-- [ ] F14 Space Guide progress and quiz cards
-- [ ] F15 Shareable mission card
-- [ ] F16 Design links
-- [ ] F17 Web page and touch support
+- [x] F14 Space Guide progress and quiz cards
+- [x] F15 Shareable mission card
+- [x] F16 Design links
+- [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
 - [ ] F18 School licence
-- [ ] F19 Grants and sponsored packs
-- [ ] F20 Classroom Mode
-- [ ] F21 Privacy-safe analytics
-- [ ] F22 AI debrief narration
-- [ ] F23 "What if?" explainer
-- [ ] F24 Failure replay
+- [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
+- [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
+- [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
+- [x] F22 AI debrief narration
+- [x] F23 "What if?" explainer
+- [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
 - [ ] F25 Live crew mode
 - [ ] F26 Real-data missions
 - [ ] Rehbar-I mission

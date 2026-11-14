@@ -28,9 +28,15 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 
 **Done in code (14 November 2026, commits after `8732835`):** A-01, A-02, A-03, A-04, A-05, A-07, A-08, A-09, A-10, A-12, A-13, A-15, A-16, A-17, A-19, A-20, A-25, A-26, A-30; features F1, F3, F4, F5, F6, F8, F9, F11, F12, F13. Partly done: A-06 (relabelled only), A-14 (unbuilt rocket aborts; payload mass kept fixed on purpose).
 
-**Part 2 (committed locally after this was written, not pushed):** A-23, A-28 (comment), A-29, A-31, A-32, A-33, A-34; features F2, F10, F14, F15, F16, F19, F20 (offline CSV only), F22, F23, F24 (jump-to-cause only, no slow-motion replay), and the Sandbox change (I14).
+**Part 2 and 3 (committed after this section was first written):** A-06 (Urdu font added), A-18, A-23, A-27 (PlayMode tests written, not run), A-28, A-29, A-31, A-32, A-33, A-34; features F2, F7, F10, F14, F15 (as text), F16, F17 (about page, link previews and a phone notice only), F19 (data field), F20 (offline CSV only), F21 (opt-in, log-only endpoint), F22, F23, F24 (jump to the cause only), and the Sandbox change (I14).
 
-**Still not done:** A-11, A-18, A-21, A-22, A-24, A-27, A-35, undo (F7), analytics sending (F21), the Urdu font, and F17, F18, F25, F26, Rehbar-I, Moonshot. F18, F20 (live), F21, F25 and F26 need a server, database or business set-up that code alone cannot provide.
+**Still not done, and why:**
+- A-11 (take the AI packages out of the web build): they are the project's Unity MCP tooling, so removing them breaks the team's workflow; needs a release-branch decision.
+- A-21 (debug hooks out of release builds): Judge Mode calls them at run time, so they cannot be compiled out without a refactor.
+- A-24 (string table) and A-35 (build-size check): the first is a large refactor, the second needs a real build.
+- F18 (school licence), F25 (live crew), F26 (real-data missions) and a live F20 class dashboard: need a server, database or business set-up that code alone cannot provide.
+- Rehbar-I and Moonshot: they need new vehicles, a non-CubeSat mission flow and a flight-model check, which cannot be done safely without Unity.
+- Touch support (F17).
 
 **Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
 
@@ -658,7 +664,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-03 VAB button opens the checklist
 - [x] A-04 Save game; demos back up and restore the build (autosave + Continue; Judge Mode and repair jobs back up and restore the build)
 - [x] A-05 Proxy locked down; AI notice shown (origin allow-list, size caps, systemInstruction, diag removed; the rate limiter is still per instance)
-- [ ] A-06 Urdu verified or relabelled (only relabelled "experimental": no Urdu font added, still untested)
+- [x] A-06 Urdu verified or relabelled (only relabelled "experimental": no Urdu font added, still untested) (Noto Naskh Arabic added and applied to Urdu answers; the text shaping still needs a check in a build)
 
 **P1**
 - [x] A-07 Safe/Arm consequence
@@ -674,52 +680,52 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-17 Source claims match the data (the claims now match the data; the Saturn V figures themselves are still not cross-checked)
 
 **P2**
-- [ ] A-18 Telemetry allocation
+- [x] A-18 Telemetry allocation
 - [x] A-19 Off-target orbit ends the flight
 - [x] A-20 Flight init guard
 - [ ] A-21 Debug hooks out of release builds
 - [ ] A-22 Undo everywhere
-- [ ] A-23 Seeded events
+- [x] A-23 Seeded events
 - [ ] A-24 String table
 - [x] A-25 Rating counters and `AskDebrief` wired or removed
 - [x] A-26 Engine sound (engine rumble added; no music)
-- [ ] A-27 PlayMode smoke tests
+- [x] A-27 PlayMode smoke tests (PlayMode smoke tests written, not yet run)
 
 **P3**
-- [ ] A-28 `SceneNames.All`
-- [ ] A-29 Template leftovers deleted
+- [x] A-28 `SceneNames.All` (explained in a comment; the array stays at 7 on purpose because a test pins it)
+- [x] A-29 Template leftovers deleted
 - [x] A-30 Proxy docs match the code
-- [ ] A-31 Reward texture cache
-- [ ] A-32 `DebriefUI` reformatted
-- [ ] A-33 Ops ids from `rules.json`
-- [ ] A-34 WebGL builder stops instead of editing the settings asset
+- [x] A-31 Reward texture cache
+- [x] A-32 `DebriefUI` reformatted
+- [x] A-33 Ops ids from `rules.json`
+- [x] A-34 WebGL builder stops instead of editing the settings asset
 - [ ] A-35 Build size checked with post-processing stripping off
 
 **Features**
 - [x] F1 Autosave and Continue
-- [ ] F2 Guided first build
+- [x] F2 Guided first build
 - [x] F3 Wiring faults change the mission
 - [x] F4 Pause menu
 - [x] F5 Success criteria in the debrief
 - [x] F6 Controls overlay
-- [ ] F7 Undo everywhere
+- [x] F7 Undo everywhere (parts and cables in the two bays; stacking keeps its own undo; torque is deliberately not undoable)
 - [x] F8 Engine sound
 - [x] F9 Flight charts in the debrief
-- [ ] F10 Accessibility options
+- [x] F10 Accessibility options (text size, low graphics and reduce motion)
 - [x] F11 Mission log and personal bests
 - [x] F12 Engineering challenges
 - [x] F13 More Failure Lab jobs
-- [ ] F14 Space Guide progress and quiz
-- [ ] F15 Shareable mission card
-- [ ] F16 Design links
-- [ ] F17 Web page and touch support
+- [x] F14 Space Guide progress and quiz
+- [x] F15 Shareable mission card
+- [x] F16 Design links
+- [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
 - [ ] F18 School licence
-- [ ] F19 Grants and sponsored packs
-- [ ] F20 Classroom Mode
-- [ ] F21 Privacy-safe analytics
-- [ ] F22 AI debrief narration
-- [ ] F23 "What if?" explainer
-- [ ] F24 Failure replay
+- [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
+- [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
+- [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
+- [x] F22 AI debrief narration
+- [x] F23 "What if?" explainer
+- [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
 - [ ] F25 Live crew mode
 - [ ] F26 Real-data missions
 - [ ] Rehbar-I mission
