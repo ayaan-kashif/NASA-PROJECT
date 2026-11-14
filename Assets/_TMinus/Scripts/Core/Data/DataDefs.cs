@@ -110,6 +110,20 @@ namespace TMinus.Core.Data
         public bool illustrative;
     }
 
+    /// <summary>
+    /// Autopilot profile for one rocket (audit: Moonshot). The defaults are the profile Pathfinder was tuned with. A heavy rocket whose upper
+    /// stage cannot lift its own weight (Saturn V's S-II, thrust-to-weight below 1) needs altitudeHold: tilt the thrust up just enough to cancel sinking.
+    /// </summary>
+    public sealed class GuidanceDef
+    {
+        public double turnSpanM = 44000;     // the gravity turn is spread over this much height above 1 km
+        public double turnEndM = 45000;      // above this the thrust follows the horizon (or altitude hold takes over)
+        public double turnDeg = 60;          // how far the turn tips the rocket from vertical, on top of the pitch kick
+        public bool altitudeHold;
+        public double maxClimb = 0.8;        // largest share of thrust the altitude hold may point upward
+        public double vrGain = 0.02;         // damping on the climb rate
+    }
+
     public sealed class RocketDef : DefBase
     {
         public bool real;
@@ -125,6 +139,8 @@ namespace TMinus.Core.Data
         public double liftoffMassMaxKg;
         public List<StageDef> stages = new List<StageDef>();
         public List<RocketComponentDef> components = new List<RocketComponentDef>();
+        /// <summary>How the autopilot flies this rocket. Null = the original Pathfinder profile.</summary>
+        public GuidanceDef guidance;
         /// <summary>Assembly parts (parts.json ids) in stack order, bottom first.</summary>
         public List<string> partIds = new List<string>();
 

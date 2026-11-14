@@ -11,6 +11,7 @@ namespace TMinus.Mission
         {
             var m = s.Data.GetMission(s.CurrentMissionId);
             var w = m?.scoring ?? new ScoringWeights();
+            if (!MissionKinds.IsCubeSat(m)) return ComputeFlightOnly(s, m, w);
             var score = new MissionScore();
             Add(score, "success", "Mission success", w.success, s.Flight.deployed && ops.survived ? 1 : s.Flight.deployed ? 0.45 : 0);
             double science = m?.successCriteria.FirstOrDefault(c => c.metric == "imagesDownlinked")?.threshold ?? 20;
@@ -20,17 +21,45 @@ namespace TMinus.Mission
             Add(score, "budget", "Budget", w.budget, budget.budgetM <= 0 ? 1 : cost);
             int healthy = new[] { budget.power, budget.battery, budget.data, budget.pointing, budget.mass }.Count(x => x != BudgetStatus.Red);
             Add(score, "margins", "Design margins", w.margins, healthy / 5.0);
-            double decision = s.Launch.knownFailures.Count == 0 ? 1 : Math.Max(0, 1 - s.Launch.knownFailures.Distinct().Count() * 0.2);
-            decision *= 1.0 / (1 + Math.Max(0, s.Launch.noGoRounds) * 0.05);
-            int hints = s.Settings?.hintsUsed?.Where(x => x > 0).Sum() ?? 0;
-            decision *= Math.Max(0.75, 1 - hints * 0.02);
-            Add(score, "decision", "Decision quality", w.decisionQuality, decision);
+            Add(score, "decision", "Decision quality", w.decisionQuality, DecisionFraction(s));
             Add(score, "crew", "Team roles", w.collaboration, CollaborationFraction(s.Crew, s.Launch.poll));
             score.total = Math.Round(score.breakdown.Sum(x => x.points), 1);
             score.stars = StarsForScore(score.total);
             BuildFixes(score, s, ops, budget);
             return score;
         }
+        /// <summary>Known FAILs at launch, NO-GO rounds and hints used, as one fraction.</summary>
+        static double DecisionFraction(GameState s)
+        {
+            double decision = s.Launch.knownFailures.Count == 0 ? 1 : Math.Max(0, 1 - s.Launch.knownFailures.Distinct().Count() * 0.2);
+            decision *= 1.0 / (1 + Math.Max(0, s.Launch.noGoRounds) * 0.05);
+            int hints = s.Settings?.hintsUsed?.Where(x => x > 0).Sum() ?? 0;
+            return decision * Math.Max(0.75, 1 - hints * 0.02);
+        }
+
+        /// <summary>
+        /// A flight-only mission (Moonshot): reaching the target orbit is the success, the propellant left for the next burn is the margin, and
+        /// decision quality is the same as everywhere. There is no CubeSat, so no science, budget or crew-role lines.
+        /// </summary>
+        static MissionScore ComputeFlightOnly(GameState s, MissionDef m, ScoringWeights w)
+        {
+            var score = new MissionScore();
+            var f = s.Flight;
+            var goals = MissionGoals.Evaluate(m, f, new OpsReport(), null);
+            double met = goals.Count == 0 ? (f.orbitAchieved ? 1 : 0) : goals.Count(g => g.met) / (double)goals.Count;
+            Add(score, "success", "Mission success", w.success, f.orbitAchieved ? Math.Max(0.5, met) : met * 0.5);
+            double need = m != null && m.requiredDeltaVLeftMs > 0 ? m.requiredDeltaVLeftMs : 1;
+            Add(score, "margins", "Propellant margin", w.margins, f.orbitAchieved ? Math.Min(1, f.deltaVLeftMs / need) : 0);
+            Add(score, "decision", "Decision quality", w.decisionQuality, DecisionFraction(s));
+            score.total = Math.Round(score.breakdown.Sum(x => x.points), 1);
+            score.stars = StarsForScore(score.total);
+            if (!f.orbitAchieved) score.fixes.Add(string.IsNullOrEmpty(f.failureCode)
+                ? "Fly again: reach the parking orbit first."
+                : $"The flight ended with {f.failureCode}. Read the timeline for the cause, then try a different pitch kick.");
+            else if (f.deltaVLeftMs < need) score.fixes.Add($"Only {f.deltaVLeftMs:N0} m/s were left for the Moon burn and {need:N0} are needed. Try a different pitch kick: a poor climb wastes propellant on gravity and drag.");
+            return score;
+        }
+
         static void Add(MissionScore s, string id, string label, double max, double fraction)
         { max = Math.Max(0, max); fraction = Math.Max(0, Math.Min(1, fraction)); s.breakdown.Add(new ScoreLine { id = id, label = label, maximum = max, points = Math.Round(max * fraction, 1) }); }
         static void BuildFixes(MissionScore s, GameState state, OpsReport ops, SpacecraftReport budget)

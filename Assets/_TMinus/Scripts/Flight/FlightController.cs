@@ -249,7 +249,9 @@ namespace TMinus.Flight
                 maxQKPa = Sim.Outcome.maxQPa / 1000, maxQTimeS = Sim.Outcome.maxQTimeS,
                 apoapsisKm = last != null ? (last.apoapsisM - FlightConstants.EarthRadiusM) / 1000 : 0,
                 periapsisKm = last != null ? (last.periapsisM - FlightConstants.EarthRadiusM) / 1000 : 0,
-                flightTimeS = Sim.TimeS
+                flightTimeS = Sim.TimeS,
+                flightOnly = !_rocket.buildable,
+                deltaVLeftMs = last != null ? last.deltaVRemainingMs : 0
             };
             double next = 0;
             foreach (var t in Sim.Outcome.telemetry)

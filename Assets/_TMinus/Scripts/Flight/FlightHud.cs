@@ -127,7 +127,7 @@ namespace TMinus.Flight
             var p = Box("end-panel", _end);
             p.AddToClassList(r.orbitAchieved ? "good" : "bad");
             L(r.orbitAchieved ? "ORBIT ACHIEVED" : r.outcome == "Aborted" ? "ABORTED" : "MISSION LOST", "end-title", p);
-            L(r.orbitAchieved ? $"{r.periapsisKm:0} × {r.apoapsisKm:0} km orbit · max-Q {r.maxQKPa:0.0} kPa · {(r.deployed ? "CubeSat deployed" : "CubeSat NOT deployed")}"
+            L(r.orbitAchieved ? $"{r.periapsisKm:0} × {r.apoapsisKm:0} km orbit · max-Q {r.maxQKPa:0.0} kPa · {(r.flightOnly ? $"{r.deltaVLeftMs:N0} m/s left for the Moon burn" : r.deployed ? "CubeSat deployed" : "CubeSat NOT deployed")}"
                               : $"{r.failureCode} at T+{r.flightTimeS:0} s · max-Q {r.maxQKPa:0.0} kPa", "check-detail", p);
             Btn(Strings.Get("flight.continue_to_operations_debrief", "Continue to operations + debrief  ›"), () => _ctrl.ContinueToDebrief(), "card-btn accent", p);
         }

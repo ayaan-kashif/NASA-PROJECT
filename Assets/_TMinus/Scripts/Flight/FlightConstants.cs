@@ -25,6 +25,11 @@ namespace TMinus.Flight
         {
             if (rocket == null) throw new ArgumentNullException(nameof(rocket));
             var v = new FlightVehicle { id = rocket.id };
+            if (rocket.guidance != null)
+            {
+                v.turnSpanM = rocket.guidance.turnSpanM; v.turnEndM = rocket.guidance.turnEndM; v.turnDeg = rocket.guidance.turnDeg;
+                v.altitudeHold = rocket.guidance.altitudeHold; v.maxClimb = rocket.guidance.maxClimb; v.vrGain = rocket.guidance.vrGain;
+            }
             foreach (var s in rocket.stages) v.stages.Add(FlightStage.From(s));
             foreach (var c in rocket.components)
                 v.components.Add(new FlightComponent { id = c.id, dropWithStage = c.dropWithStage, massKg = c.massKg,

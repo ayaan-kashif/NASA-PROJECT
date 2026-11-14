@@ -52,7 +52,7 @@ namespace TMinus.Tests
         public void LockedOrUnknownMissionFallsBackToFloodWatch()
         {
             var b = Good();
-            b.missionId = "moonshot";
+            b.missionId = "rehbar_1962";   // still a locked "coming next" mission
             Assert.Greater(DesignValidator.Clean(b, TestData.Registry), 0);
             Assert.AreEqual("floodwatch_1", b.missionId);
             b.missionId = "does_not_exist";

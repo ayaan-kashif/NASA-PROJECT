@@ -96,7 +96,8 @@
         "saturnv_iu",
         "saturnv_spacecraft"
       ],
-      "extraNotes": "launchCostMUSD is an illustrative game value.",
+      "guidance": { "turnSpanM": 30000, "turnEndM": 130000, "turnDeg": 60, "altitudeHold": true, "maxClimb": 0.4, "vrGain": 0.01 },
+      "extraNotes": "launchCostMUSD is an illustrative game value. The guidance profile was found with tools/sim (a port of the flight solver): with it the autopilot reaches a 185 km parking orbit; the original profile cannot, because the S-II is below thrust-to-weight 1.",
       "stages": [
         {
           "id": "s_ic",

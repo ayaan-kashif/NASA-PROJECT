@@ -81,6 +81,19 @@ namespace TMinus.Tests
         }
 
         [Test]
+        public void MoonshotHasNoCubeSatItems_AndAnEmptyBuildIsReadyToGo()
+        {
+            var input = new PrelaunchChecklist.Input
+            {
+                Data = TestData.Registry, CurrentMissionId = "moonshot", Spacecraft = new SpacecraftDesign(),
+                Vehicle = new VehicleDesign { rocketId = "saturn_v", launchSiteId = "cape_canaveral" }
+            };
+            var items = PrelaunchChecklist.Build(input);
+            Assert.IsEmpty(items.Where(i => i.id.StartsWith("sc_") || i.id.StartsWith("sb_") || i.id.StartsWith("pad_")), Dump(items));
+            Assert.IsTrue(items.All(i => i.pass), Dump(items));
+        }
+
+        [Test]
         public void SonmianiBoost_IsAbout420()
         {
             Assert.AreEqual(420, PrelaunchChecklist.EarthBoostMs(25.2), 6);

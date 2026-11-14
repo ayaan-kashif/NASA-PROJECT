@@ -45,6 +45,10 @@ namespace TMinus.Mission
                         g.met = flight != null && flight.periapsisKm >= c.threshold;
                         g.measured = flight != null ? $"{flight.periapsisKm:0} km" : "n/a";
                         break;
+                    case "deltaVLeftMs":
+                        g.met = flight != null && flight.orbitAchieved && flight.deltaVLeftMs >= c.threshold;
+                        g.measured = flight != null ? $"{flight.deltaVLeftMs:N0} m/s" : "n/a";
+                        break;
                     case "apogeeKm":
                         g.met = flight != null && flight.apoapsisKm >= c.threshold;
                         g.measured = flight != null ? $"{flight.apoapsisKm:0} km" : "n/a";

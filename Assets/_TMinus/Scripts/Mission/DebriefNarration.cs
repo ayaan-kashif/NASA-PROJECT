@@ -11,7 +11,7 @@ namespace TMinus.Mission
     /// </summary>
     public static class DebriefNarration
     {
-        public static string Offline(string missionName, FlightRecord f, OpsReport ops, MissionScore score, IList<GoalResult> goals)
+        public static string Offline(string missionName, FlightRecord f, OpsReport ops, MissionScore score, IList<GoalResult> goals, bool flightOnly = false)
         {
             string fix = score.fixes.Count > 0 ? score.fixes[0] : null;
             int met = goals?.Count(g => g.met) ?? 0, total = goals?.Count ?? 0;
@@ -26,6 +26,10 @@ namespace TMinus.Mission
                 return $"{what}.{cause} A mission is lost at the weakest connection, which is why the checklist exists. " +
                        (fix != null ? "Next: " + fix : "Next: fix what the timeline names and fly again.");
             }
+
+            if (flightOnly)
+                return $"{missionName} reached its parking orbit with {f.deltaVLeftMs:N0} m/s left for the next burn ({met} of {total} goals met, {score.stars} star{(score.stars == 1 ? "" : "s")}). " +
+                       (fix != null ? "To score higher: " + fix : "A good flight: the climb wasted little propellant.");
 
             if (!f.deployed)
                 return $"{missionName} reached orbit, but the CubeSat never left the rocket. " +

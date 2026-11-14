@@ -152,6 +152,26 @@ namespace TMinus.Tests.Flight
         }
 
         [Test]
+        public void SaturnVReachesTheParkingOrbitWithPropellantLeftForTheMoonBurn()
+        {
+            // The Moonshot mission. The profile in rockets.json was found with tools/sim (a JavaScript port of this solver), which gives about a
+            // 185 x 175 km orbit with roughly 2,980 m/s left. If this test fails, the C# and the port disagree: compare them step by step.
+            var data = LoadData();
+            Assert.IsTrue(data.GetRocket("saturn_v").guidance.altitudeHold, "Saturn V needs the altitude-hold profile");
+            Assert.IsNull(data.GetRocket("pathfinder").guidance, "Pathfinder keeps the original profile");
+
+            var sim = FlightRuntime.Create(data, new VehicleDesign { rocketId = "saturn_v", launchSiteId = "cape_canaveral" },
+                new PerfectAvionicsReport(), null, new EventLog(), "moonshot");
+            sim.Options.pitchKickDeg = 3;
+            sim.RunForSimSeconds(2400);
+
+            Assert.That(sim.Phase, Is.EqualTo(FlightPhase.Orbit), "ended as " + sim.Phase + " " + sim.Outcome.failureCode);
+            var last = sim.Outcome.telemetry[sim.Outcome.telemetry.Count - 1];
+            Assert.That((last.periapsisM - FlightConstants.EarthRadiusM) / 1000, Is.GreaterThan(170), "periapsis in km");
+            Assert.That(last.deltaVRemainingMs, Is.GreaterThan(2800), "propellant left for the Moon burn, m/s");
+        }
+
+        [Test]
         public void PartOfAStepIsKeptSoNormalSpeedFlightAdvances()
         {
             // At 60 frames a second one frame is 0.0167 s, less than one 0.05 s step. Dropping the remainder froze x1 and x2 flights.

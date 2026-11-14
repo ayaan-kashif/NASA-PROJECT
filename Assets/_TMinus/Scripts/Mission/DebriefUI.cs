@@ -29,25 +29,40 @@ namespace TMinus.Mission
             var page = new ScrollView(); page.AddToClassList("debrief-page"); root.Add(page);
             page.Add(new Label("T-MINUS  /  MISSION DEBRIEF") { name = "eyebrow" });
             page.Add(new Label($"{s.Data.GetMission(s.CurrentMissionId)?.name ?? "Mission"}  ·  {new string('★', score.stars)}{new string('☆', 3 - score.stars)}") { name = "title" });
-            page.Add(new Label($"{score.total:0.0} / 100 points     ·     {(s.Flight.deployed ? "DEPLOYED" : "NOT DEPLOYED")}     ·     {ops.daysAlive} / {ops.timeline.Count} days alive") { name = "summary" });
+            bool flightOnly = !MissionKinds.IsCubeSat(s.Data.GetMission(s.CurrentMissionId));
+            page.Add(new Label(flightOnly
+                ? $"{score.total:0.0} / 100 points     ·     {(s.Flight.orbitAchieved ? $"ORBIT {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km" : "NO ORBIT")}     ·     {s.Flight.deltaVLeftMs:N0} m/s left"
+                : $"{score.total:0.0} / 100 points     ·     {(s.Flight.deployed ? "DEPLOYED" : "NOT DEPLOYED")}     ·     {ops.daysAlive} / {ops.timeline.Count} days alive") { name = "summary" });
             AddGoals(page, s, ops);
             AddNarration(page, s, ops, score);
             AddHistory(page, s, score);
             var grid = new VisualElement(); grid.AddToClassList("debrief-grid"); page.Add(grid);
             var scoreCard = Card("SCORE BREAKDOWN"); grid.Add(scoreCard);
             foreach (var line in score.breakdown) scoreCard.Add(new Label($"{line.label}     {line.points:0.#} / {line.maximum:0.#}"));
-            var opsCard = Card("OPERATIONS"); grid.Add(opsCard);
-            opsCard.Add(new Label($"Images captured     {ops.imagesTaken}")); opsCard.Add(new Label($"Images downlinked   {ops.imagesDownlinked}"));
-            opsCard.Add(new Label($"Data returned       {ops.downlinkedMB:0.#} MB")); opsCard.Add(new Label($"Storage remaining   {ops.storedMB:0.#} MB"));
-            opsCard.Add(new Label($"Battery final       {ops.finalSoc:P0}"));
-            AddFlightCharts(page, s.Flight);
-            page.Add(new Label("STATE OF CHARGE  ·  ORBIT SAMPLES") { name = "section" });
-            page.Add(BuildTimeline(ops));
-            var reward = Card("SCIENCE REWARD  /  LAKE MANCHAR");
-            reward.Add(new Label(ops.rewardPlaceholder));
-            reward.Add(RewardGallery.Build(s.Data.GetMission(s.CurrentMissionId), ops));
-            var credit = new Label(ops.rewardCredit); credit.AddToClassList("muted"); reward.Add(credit); page.Add(reward);
-            AddLiveView(page, ops);
+            if (flightOnly)
+            {
+                var flightCard = Card("FLIGHT"); grid.Add(flightCard);
+                flightCard.Add(new Label($"Orbit              {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km"));
+                flightCard.Add(new Label($"Max-Q              {s.Flight.maxQKPa:0.0} kPa at T+{s.Flight.maxQTimeS:0} s"));
+                flightCard.Add(new Label($"Propellant left    {s.Flight.deltaVLeftMs:N0} m/s of delta-v"));
+                flightCard.Add(new Label($"Flight time        {s.Flight.flightTimeS:0} s"));
+                AddFlightCharts(page, s.Flight);
+            }
+            else
+            {
+                var opsCard = Card("OPERATIONS"); grid.Add(opsCard);
+                opsCard.Add(new Label($"Images captured     {ops.imagesTaken}")); opsCard.Add(new Label($"Images downlinked   {ops.imagesDownlinked}"));
+                opsCard.Add(new Label($"Data returned       {ops.downlinkedMB:0.#} MB")); opsCard.Add(new Label($"Storage remaining   {ops.storedMB:0.#} MB"));
+                opsCard.Add(new Label($"Battery final       {ops.finalSoc:P0}"));
+                AddFlightCharts(page, s.Flight);
+                page.Add(new Label("STATE OF CHARGE  ·  ORBIT SAMPLES") { name = "section" });
+                page.Add(BuildTimeline(ops));
+                var reward = Card("SCIENCE REWARD  /  LAKE MANCHAR");
+                reward.Add(new Label(ops.rewardPlaceholder));
+                reward.Add(RewardGallery.Build(s.Data.GetMission(s.CurrentMissionId), ops));
+                var credit = new Label(ops.rewardCredit); credit.AddToClassList("muted"); reward.Add(credit); page.Add(reward);
+                AddLiveView(page, ops);
+            }
             AddDesignCompare(page);
             page.Add(new Label("WHAT HAPPENED") { name = "section" });
             var events = s.Events.All.Where(e => e.system == "operations" || (e.system == "flight" && (e.severity >= Severity.Warning || e.code == "orbit_achieved" || e.code == "cubesat_deployed")))
@@ -89,7 +104,7 @@ namespace TMinus.Mission
             var budget = SpacecraftBudget.Compute(s.Spacecraft, s.Data, mission, s.Data.GetRocket(s.Vehicle.rocketId));
             var goals = MissionGoals.Evaluate(mission, s.Flight, ops, budget);
             var card = Card("HOUSTON'S SUMMARY"); page.Add(card);
-            string offline = DebriefNarration.Offline(mission?.name ?? "The mission", s.Flight, ops, score, goals);
+            string offline = DebriefNarration.Offline(mission?.name ?? "The mission", s.Flight, ops, score, goals, !MissionKinds.IsCubeSat(mission));
             var text = new Label(offline); text.style.whiteSpace = WhiteSpace.Normal; card.Add(text);
             if (s.Settings.houstonMode != HoustonMode.On || DemoHooks.NarrateDebrief == null) return;
             var events = s.Events.All.Where(e => e.system == "operations" || e.system == "flight" || e.system == "Pad").OrderBy(e => e.time).TakeLast(14);

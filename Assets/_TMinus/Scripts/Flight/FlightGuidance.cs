@@ -45,9 +45,11 @@ namespace TMinus.Flight
                 else
                 {
                     if (!sim.PitchKicked) sim.MarkPitchKick();
-                    double turn = Math.Max(0, Math.Min(1, (h - 1000) / 44000.0));
-                    double pitchFromVertical = (sim.Options.pitchKickDeg + turn * 60) * Math.PI / 180.0;
-                    direction = h >= 45000 ? east : radial * Math.Cos(pitchFromVertical) + east * Math.Sin(pitchFromVertical);
+                    var v = sim.Vehicle;
+                    double turn = Math.Max(0, Math.Min(1, (h - 1000) / v.turnSpanM));
+                    double pitchFromVertical = (sim.Options.pitchKickDeg + turn * v.turnDeg) * Math.PI / 180.0;
+                    direction = h >= v.turnEndM ? east : radial * Math.Cos(pitchFromVertical) + east * Math.Sin(pitchFromVertical);
+                    if (v.altitudeHold && h >= v.turnEndM) direction = AltitudeHold(sim, radial, east, relative, h, v);
                 }
             }
 
@@ -75,6 +77,25 @@ namespace TMinus.Flight
             if (sim.Phase == FlightPhase.Orbit || sim.Phase == FlightPhase.Failed || sim.Phase == FlightPhase.Aborted)
                 throttle = 0;
             return new GuidanceCommand { throttle = throttle, thrustDirection = direction.Normalized };
+        }
+
+        /// <summary>
+        /// For a stage whose thrust cannot hold its weight: tilt the thrust up from the horizon just enough to cancel the sinking
+        /// (gravity minus the centrifugal lift of the sideways speed, minus a little damping on the climb rate).
+        /// </summary>
+        static Vec2d AltitudeHold(FlightSim sim, Vec2d radial, Vec2d east, Vec2d relative, double h, FlightVehicle v)
+        {
+            int index = Math.Max(0, Math.Min(sim.StageIndex, v.stages.Count - 1));
+            var s = v.stages[index];
+            double isp = s.ispVac - (s.ispVac - s.ispSeaLevel) * FlightPhysics.Pressure(h) / FlightConstants.SeaLevelPressurePa;
+            double accel = s.thrustVacN * isp / Math.Max(1, s.ispVac) / Math.Max(1, sim.MassKg);
+            double r = sim.Position.Magnitude;
+            double g = FlightConstants.Mu / (r * r);
+            double sideways = relative.Dot(east), climb = relative.Dot(radial);
+            double need = g - sideways * sideways / r - v.vrGain * climb;   // upward acceleration still needed
+            double sin = Math.Max(0, Math.Min(v.maxClimb, need / accel));
+            if (accel < 1.5 * g || sin > 0.05) return radial * sin + east * Math.Sqrt(1 - sin * sin);
+            return east;
         }
 
         public static GuidanceCommand Manual(FlightSim sim)

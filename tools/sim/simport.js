@@ -53,6 +53,15 @@ function fly(rocketId, opts) {
         const turn = Math.max(0, Math.min(1, (h - 1000) / (opts.turnSpan || 44000)));
         const pitch = ((opts.kick) + turn * (opts.turnDeg || 60)) * Math.PI / 180;
         dir = h >= (opts.turnEnd || 45000) ? east : V.add(V.mul(rad, Math.cos(pitch)), V.mul(east, Math.sin(pitch)));
+        if (opts.altHold && h >= (opts.turnEnd || 45000) && stage < stages.length) {
+          // Thrust-to-weight below 1: pointing the thrust level makes the vehicle sink. Tilt it up just enough to cancel the sinking.
+          const s = stages[stage], isp = s.ispVac - (s.ispVac - s.ispSl) * pressure(h) / C.P0;
+          const a = (s.thrustVac * isp / s.ispVac) / Math.max(1, mass);
+          const r = V.mag(p), g = C.Mu / (r * r), vh = V.dot(rel, east), vr = V.dot(rel, rad);
+          const need = g - vh * vh / r - (opts.vrGain || 0.02) * vr;       // upward acceleration still needed
+          const sin = Math.max(0, Math.min(opts.maxClimb || 0.8, need / a));
+          if (a < 1.5 * g || sin > 0.05) dir = V.add(V.mul(rad, sin), V.mul(east, Math.sqrt(1 - sin * sin)));
+        }
       }
     }
     if (phase === 'Coast') {

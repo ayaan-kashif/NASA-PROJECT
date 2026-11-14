@@ -22,7 +22,8 @@ namespace TMinus.Mission
             var mission = s.Data.GetMission(s.CurrentMissionId);
             var rocket = s.Data.GetRocket(s.Vehicle.rocketId);
             var budget = SpacecraftBudget.Compute(s.Spacecraft, s.Data, mission, rocket);
-            LastOps = OpsSimulation.Run(s, budget);
+            // A flight-only mission has no satellite to operate, so there is nothing to simulate after the flight.
+            LastOps = MissionKinds.IsCubeSat(mission) ? OpsSimulation.Run(s, budget) : new OpsReport { survived = true };
             _forFlight = s.Flight;
             LastScore = MissionScoring.Compute(s, LastOps, budget);
             Debug.Log($"[DebriefDebug] {LastScore.stars} stars, {LastScore.total:0.0}/100; orbit={s.Flight.orbitAchieved}, deployed={s.Flight.deployed}, alive={LastOps.daysAlive}d, images={LastOps.imagesDownlinked}, final SOC={LastOps.finalSoc:P0}");

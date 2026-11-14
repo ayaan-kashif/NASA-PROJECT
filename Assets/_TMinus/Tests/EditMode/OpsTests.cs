@@ -94,6 +94,20 @@ namespace TMinus.Tests
             Assert.IsTrue(goals.First(g => g.text.Contains("deploy")).met);
         }
 
+        [Test] public void MoonshotGoalsReadTheOrbitAndThePropellantLeft()
+        {
+            var m = TestData.Registry.GetMission("moonshot");
+            Assert.IsFalse(m.locked, "Moonshot is playable");
+            var win = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { flown = true, orbitAchieved = true, periapsisKm = 175, apoapsisKm = 185, deltaVLeftMs = 2950 }, new OpsReport(), null);
+            Assert.AreEqual(2, win.Count);
+            Assert.IsTrue(win.All(g => g.met), string.Join(" | ", win.Select(g => g.text + "=" + g.measured)));
+            var low = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { flown = true, orbitAchieved = true, periapsisKm = 175, deltaVLeftMs = 2600 }, new OpsReport(), null);
+            Assert.IsTrue(low[0].met);
+            Assert.IsFalse(low[1].met, "not enough propellant left");
+            Assert.IsFalse(TMinus.Core.MissionKinds.IsCubeSat(m));
+            Assert.IsTrue(TMinus.Core.MissionKinds.IsCubeSat(TestData.Registry.GetMission("floodwatch_1")));
+        }
+
         [Test] public void TeamScoreGrowsWithRealPlayersAndNeedsEveryRoleInThePoll()
         {
             var solo = TMinus.Mission.PrelaunchChecklist.AssignRoles(new[] { "A" });

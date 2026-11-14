@@ -109,6 +109,10 @@ namespace TMinus.Core
         public double maxQKPa, maxQTimeS;
         public double apoapsisKm, periapsisKm;
         public double flightTimeS;
+        /// <summary>True for a flight with no CubeSat to operate (Moonshot): the debrief judges the flight alone.</summary>
+        public bool flightOnly;
+        /// <summary>Propellant left in the stages that are still attached, as delta-v (m/s), when the flight ended.</summary>
+        public double deltaVLeftMs;
         public List<TelemetryPoint> telemetry = new List<TelemetryPoint>();
     }
 

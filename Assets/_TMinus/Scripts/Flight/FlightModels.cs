@@ -47,6 +47,9 @@ namespace TMinus.Flight
         public readonly List<FlightStage> stages = new List<FlightStage>();
         public readonly List<FlightComponent> components = new List<FlightComponent>();
         public readonly Dictionary<string, string> separationJoints = new Dictionary<string, string>();
+        // Autopilot profile (see GuidanceDef). Defaults are Pathfinder's.
+        public double turnSpanM = 44000, turnEndM = 45000, turnDeg = 60, maxClimb = 0.8, vrGain = 0.02;
+        public bool altitudeHold;
         public double MaxDiameterM => Math.Max(0.01, Math.Max(MaxStageDiameter(), MaxComponentDiameter()));
         double MaxStageDiameter() { double d = 0; foreach (var s in stages) d = Math.Max(d, s.diameterM); return d; }
         double MaxComponentDiameter() { double d = 0; foreach (var c in components) d = Math.Max(d, c.diameterM); return d; }

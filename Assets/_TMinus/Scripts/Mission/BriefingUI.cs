@@ -90,7 +90,7 @@ namespace TMinus.Mission
 
             // Column 2: orbit, rocket, launch site.
             var c2 = Col(cols, "CHOICES");
-            BuildOrbit(c2, m);
+            if (m.orbitOptionsKm.Count > 0) BuildOrbit(c2, m);
             BuildRockets(c2, m);
             BuildSites(c2, m);
             if (m.rewardImages.Count > 0) BuildTarget(c2);
@@ -99,8 +99,8 @@ namespace TMinus.Mission
             var c3 = Col(cols, "CREW");
             BuildCrew(c3);
             c3.Add(L(Strings.Get("briefing.build_and_fly", "BUILD AND FLY"), "brief-sub"));
-            c3.Add(Btn(Strings.Get("briefing.1_build_the_spacecraft", "1.  Build the spacecraft  >"), () => SceneFlow.Load(SceneNames.IntegrationBay), "flow-btn"));
-            c3.Add(Btn(Strings.Get("briefing.2_build_the_rocket", "2.  Build the rocket  >"), () => SceneFlow.Load(SceneNames.VAB), "flow-btn"));
+            if (MissionKinds.IsCubeSat(m)) c3.Add(Btn(Strings.Get("briefing.1_build_the_spacecraft", "1.  Build the spacecraft  >"), () => SceneFlow.Load(SceneNames.IntegrationBay), "flow-btn"));
+            c3.Add(Btn(MissionKinds.IsCubeSat(m) ? Strings.Get("briefing.2_build_the_rocket", "2.  Build the rocket  >") : "1.  Inspect the rocket  >", () => SceneFlow.Load(SceneNames.VAB), "flow-btn"));
             c3.Add(Btn(Strings.Get("briefing.3_go_to_the_pad", "3.  Go to the pad  >"), ShowChecklist, "flow-btn accent"));
             BuildDesignCode(c3);
         }

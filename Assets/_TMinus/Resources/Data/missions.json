@@ -286,22 +286,21 @@
     {
       "id": "moonshot",
       "name": "Moonshot",
-      "priority": "P1",
+      "priority": "P0",
       "difficulty": "Advanced",
-      "locked": true,
-      "objective": "Fly the Saturn V to a 185 km parking orbit with at least 3,100 m/s left in the S-IVB for trans-lunar injection.",
+      "objective": "Fly the Saturn V to a 185 km parking orbit with at least 2,800 m/s left in the S-IVB for trans-lunar injection.",
       "description": "Recreate the first half of an Apollo launch with the real Saturn V stage data.",
       "rocketOptions": [ "saturn_v" ],
       "payloadType": "apollo",
       "parkingOrbitKm": 185,
-      "requiredDeltaVLeftMs": 3100,
+      "requiredDeltaVLeftMs": 2800,
       "launchSites": [ "cape_canaveral" ],
       "seed": 1969,
       "illustrative": true,
-      "notes": "3,100 m/s is a game threshold, tuned after a test flight. The lumped interstage + escape-tower mass drops with the S-II; the 2,000 kg Instrument Unit stays.",
+      "notes": "2,800 m/s is a game threshold, tuned with tools/sim: the autopilot profile in rockets.json leaves about 2,960 to 2,990 m/s for pitch kicks of 2 to 6 degrees and about 2,665 m/s for 1 degree. The lumped interstage + escape-tower mass drops with the S-II; the 2,000 kg Instrument Unit stays.",
       "successCriteria": [
-        { "id": "parking_orbit", "text": "Reach a 185 km parking orbit", "metric": "periapsisKm", "threshold": 180 },
-        { "id": "tli_margin", "text": "Keep 3,100 m/s in the S-IVB for TLI", "metric": "deltaVLeftMs", "threshold": 3100 }
+        { "id": "parking_orbit", "text": "Reach a 185 km parking orbit", "metric": "periapsisKm", "threshold": 170 },
+        { "id": "tli_margin", "text": "Keep 2,800 m/s in the S-IVB for TLI", "metric": "deltaVLeftMs", "threshold": 2800 }
       ],
       "scoring": { "success": 60, "science": 0, "budget": 0, "margins": 25, "decisionQuality": 15, "collaboration": 0 },
       "codexIds": [ "saturn_v", "f1_engine", "j2_engine", "delta_v" ]

@@ -126,6 +126,10 @@ namespace TMinus.Mission
                 detail = s.Vehicle.armed ? "Pyro circuits live. Ready for terminal count." : "Still SAFE: nothing can ignite or separate.",
                 action = s.Vehicle.armed ? null : "arm", codexId = "safe_arm"
             });
+            // A flight-only mission (Moonshot) has no CubeSat to check, and the Saturn V's circuits are armed for you.
+            if (!MissionKinds.IsCubeSat(mission))
+                items.RemoveAll(i => i.id.StartsWith("sc_") || i.id == "pad_rbf" || i.id.StartsWith("sb_"));
+            if (rocket != null && !rocket.buildable) items.RemoveAll(i => i.id == "pad_arm");
             return items;
         }
 

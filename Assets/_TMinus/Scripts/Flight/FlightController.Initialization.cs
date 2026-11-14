@@ -71,7 +71,7 @@ namespace TMinus.Flight
                 var joints = _rocket.buildable ? BoltJointState.AllStatuses(rules, S.Vehicle).Select(j => (IJointStatus)j).ToList() : null;
 
                 S.Events.RemoveSystem("flight"); // a new flight replaces the last one's events (Fly again)
-                Sim = FlightRuntime.Create(data, S.Vehicle, _avionics, joints, S.Events);
+                Sim = FlightRuntime.Create(data, S.Vehicle, _avionics, joints, S.Events, S.CurrentMissionId);
                 if (S.Spacecraft.orbitAltitudeKm > 0 && _rocket.buildable) Sim.Options.targetAltitudeKm = S.Spacecraft.orbitAltitudeKm;
                 Sim.Options.pitchKickDeg = S.Vehicle.pitchKickDeg > 0 ? S.Vehicle.pitchKickDeg : 3;
 
