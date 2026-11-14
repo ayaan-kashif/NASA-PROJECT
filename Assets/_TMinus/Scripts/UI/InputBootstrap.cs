@@ -18,7 +18,9 @@ namespace TMinus.UI
             var go = new GameObject("[EventSystem]");
             Object.DontDestroyOnLoad(go);
             go.AddComponent<EventSystem>();
-            go.AddComponent<InputSystemUIInputModule>();
+            var module = go.AddComponent<InputSystemUIInputModule>();
+            // A finger is also fed in as a virtual mouse (TouchMouse): treat mouse and touch as one pointer so a button is not clicked twice.
+            module.pointerBehavior = UIPointerBehavior.SingleUnifiedPointer;
         }
     }
 }
