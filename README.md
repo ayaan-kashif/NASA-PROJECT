@@ -42,6 +42,8 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 - *Broken Pathfinder:* find 3 seeded faults (missing bolts, an unplugged pyro cable, a cable in the wrong port), fix them, and hand the rocket back for a job debrief.
 - *Apollo 12, 1969:* you are EECOM after the lightning strikes. Make the right calls in 20 seconds ("SCE to AUX", then reset the fuel cells). Every wrong call is explained.
 
+**Moonshot** is a flight-only mission: fly the real Saturn V (NASA stage data, with game values where marked) to a 185 km parking orbit and keep enough propellant in the S-IVB for the Moon burn. Your one choice is the pitch kick.
+
 **Main menu extras:**
 - **Space Guide:** 28 searchable science topics, each with its source.
 - **Settings:** HOUSTON on, hints only or off; HOUSTON answers in Urdu; volume; fullscreen.

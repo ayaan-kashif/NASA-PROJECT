@@ -34,7 +34,8 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 - A-11 (take the AI packages out of the web build): they are the project's Unity MCP tooling, so removing them breaks the team's workflow; it needs a release-branch decision, not a code change.
 - F18 (school licence): a business and billing set-up, not code.
 - F25 and F20 in their live forms: a true real-time crew console and a server-backed class dashboard need a realtime server and database with credentials that this project does not have. What exists instead needs no server: remote crew by pad and vote codes (F25) and a browser-only class results page, `teacher.html` (F20).
-- Rehbar-I and Moonshot: they need new vehicles and a flight-only mission flow (no CubeSat operations or checklist). For Moonshot the flight model was checked with a JavaScript port of the solver (`tools/sim`, which reproduces Pathfinder's orbit and max-Q): **Saturn V cannot reach orbit with the current autopilot** (the S-II has thrust-to-weight below 1 and the autopilot steers it horizontally, so it sinks). It needs a new altitude-holding guidance law first; until then the mission stays a "coming next" card rather than an unwinnable one.
+- Rehbar-I: it needs a new rocket (Nike-Cajun) with parts the 3D scenes can build, a suborbital flight ending at apogee, and a mission flow. The flight-only machinery built for Moonshot (checklist, scoring, debrief without a CubeSat) is reusable, but the rocket, its models and the apogee ending are not written and cannot be checked without Unity.
+- Moonshot is now implemented: a JavaScript port of the solver (`tools/sim`, which reproduces Pathfinder's orbit and max-Q) showed that Saturn V could not reach orbit with the old autopilot (the S-II has thrust-to-weight below 1 and was steered level, so it sank). rockets.json now carries a per-rocket guidance profile with an altitude hold; Pathfinder has none and flies as before.
 - I12: the NASA Saturn V link was dead (404) and no readable NASA figures could be fetched here, so the "being fact-checked" flags stay.
 
 **Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
@@ -728,4 +729,4 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [ ] F25 Live crew mode
 - [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
 - [ ] Rehbar-I mission
-- [ ] Moonshot mission
+- [x] Moonshot mission (flight-only mission: the Saturn V reaches the 185 km parking orbit with the altitude-hold guidance profile found with tools/sim; the C# flight is covered by a test that has never been run)
