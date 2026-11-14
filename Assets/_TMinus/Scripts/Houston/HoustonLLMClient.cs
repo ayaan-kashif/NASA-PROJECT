@@ -24,6 +24,8 @@ namespace TMinus.Houston
             public int timeoutSec = 8;
             /// <summary>Optional: sent as x-houston-token when the proxy has HOUSTON_CLIENT_TOKEN set. Not a secret.</summary>
             public string clientToken = "";
+            /// <summary>Optional address for the opt-in anonymous stats (proxy/api/event.ts). Empty = never send.</summary>
+            public string analyticsUrl = "";
             public string language = "en";
             public bool enabled;
         }
@@ -56,6 +58,7 @@ namespace TMinus.Houston
                 {
                     string json = System.IO.File.ReadAllText(path);
                     _config = JsonConvert.DeserializeObject<Config>(json);
+                    Analytics.EndpointUrl = _config?.analyticsUrl;
                     Debug.Log($"[HOUSTON LLM] Config loaded: endpoint={_config?.endpointUrl}, enabled={_config?.enabled}");
                 }
                 else
@@ -78,7 +81,7 @@ namespace TMinus.Houston
                 yield return req.SendWebRequest();
                 if (req.result == UnityWebRequest.Result.Success)
                 {
-                    try { _config = JsonConvert.DeserializeObject<Config>(req.downloadHandler.text) ?? new Config(); }
+                    try { _config = JsonConvert.DeserializeObject<Config>(req.downloadHandler.text) ?? new Config(); Analytics.EndpointUrl = _config.analyticsUrl; }
                     catch (Exception ex) { Debug.LogWarning($"[HOUSTON LLM] Bad config: {ex.Message}"); }
                 }
                 Debug.Log($"[HOUSTON LLM] Web config: endpoint={_config?.endpointUrl}, enabled={_config?.enabled}");

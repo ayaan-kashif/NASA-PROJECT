@@ -92,3 +92,7 @@ Expected response:
 2. Settings > Environment Variables: **`gemini_api_key`** = your Gemini key (Production + Preview). Nothing else is needed: a Gemini key alone selects Gemini, and the model defaults to `gemini-flash-latest` (override with `LLM_MODEL`).
 3. Production domain for this team: `nasa-project-proxy.vercel.app`. Use the **production domain** (Project > Domains, e.g. `something.vercel.app`). Preview and `-git-main-` URLs sit behind Vercel Deployment Protection and return a sign-in redirect to the game.
 4. Test: `curl -X POST https://<domain>/api/houston -H "Content-Type: application/json" -d '{"question":"What does the EPS do?"}'`
+
+## Anonymous stats (optional, opt-in)
+
+`api/event.ts` accepts the game's opt-in gameplay events (`room_entered`, `flight_ended`, `tutorial_done`). It stores nothing: each valid event is written as one JSON line to the function log (Vercel > project > Logs). The game only sends them when the player turns on "Share anonymous gameplay stats" in Settings **and** `analyticsUrl` in `houston.config.json` points at this function, for example `https://<domain>/api/event`. Events carry an event name, a random per-launch session id and a few short labels (room name, flight outcome); never typed text, names or design codes. Same `ALLOWED_ORIGINS` rule as HOUSTON.

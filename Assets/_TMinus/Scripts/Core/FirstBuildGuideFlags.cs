@@ -15,6 +15,7 @@ namespace TMinus.Core
         {
             PlayerPrefs.SetInt(Key(room), 1);
             PlayerPrefs.Save();
+            Analytics.Track("tutorial_done", "room", room);
         }
 
         /// <summary>Settings > "Replay the guided first build".</summary>

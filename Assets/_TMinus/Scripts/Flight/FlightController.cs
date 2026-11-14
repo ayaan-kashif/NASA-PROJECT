@@ -227,6 +227,7 @@ namespace TMinus.Flight
                 rec.telemetry.Add(new TelemetryPoint { t = (float)t.timeS, altitudeKm = (float)(t.altitudeM / 1000), speedMs = (float)t.orbitalSpeedMs, qKPa = (float)(t.dynamicPressurePa / 1000) });
             }
             S.Flight = rec;
+            Analytics.Track("flight_ended", "outcome", outcome, "failure", code ?? "none");
             hud.ShowEnd(rec);
             _endTimer = AutoAdvance ? (outcome == "Orbit" ? 9f : 7f) : -1f;
         }
