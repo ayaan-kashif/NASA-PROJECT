@@ -164,3 +164,8 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Proxy: origin allow-list (`ALLOWED_ORIGINS`), optional `HOUSTON_CLIENT_TOKEN` / `clientToken` in houston.config.json, size caps, systemInstruction + safety settings, `?diag=models` removed. **Redeploying the proxy changes who can call it: check the live site still reaches HOUSTON.**
 - CI: `.github/workflows/ci.yml` (proxy typecheck; Unity tests once UNITY_LICENSE secrets exist).
 - Not done (see COMPLETE_PROJECT_AUDIT.md): Urdu font, removing the AI packages from the web build, PlayMode tests, string table, classroom mode and the larger features.
+
+## Audit fixes, part 2 (Claude, 2026-11-14) — still NOT compiled or run in Unity
+- Fixed a compile error I had pushed in `DebriefUI.cs` (a line break inside the leaderboard string). Part 2 is committed locally, not pushed.
+- Added: guided first build (`Houston/FirstBuildGuide.cs`), Space Guide ticks + quick checks (`quiz.json`, `Core/CodexProgress.cs`), accessibility settings (text size, low graphics, reduce motion, stats opt-in switch), what-if answers (`Houston/WhatIf.cs`), debrief summary (`Mission/DebriefNarration.cs`), Show me why (`Mission/WhyTarget.cs`, `Core/FocusRequest.cs`), Share result and CSV export, design links (`#d=`), Sandbox with no limits, seeded event days, texture release, template files removed.
+- Not done: undo for cables/parts, analytics sending (only the opt-in switch exists), PlayMode tests, Urdu font, telemetry sampling, package removal, classroom/crew/real-data/Rehbar/Moonshot, custom web page, touch.

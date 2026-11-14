@@ -28,7 +28,9 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 
 **Done in code (14 November 2026, commits after `8732835`):** A-01, A-02, A-03, A-04, A-05, A-07, A-08, A-09, A-10, A-12, A-13, A-15, A-16, A-17, A-19, A-20, A-25, A-26, A-30; features F1, F3, F4, F5, F6, F8, F9, F11, F12, F13. Partly done: A-06 (relabelled only), A-14 (unbuilt rocket aborts; payload mass kept fixed on purpose).
 
-**Not done:** A-11, A-18, A-21, A-22, A-23, A-24, A-27, A-28, A-29, A-31 to A-35, and features F2, F7, F10, F14 to F26, Rehbar-I, Moonshot.
+**Part 2 (committed locally after this was written, not pushed):** A-23, A-28 (comment), A-29, A-31, A-32, A-33, A-34; features F2, F10, F14, F15, F16, F19, F20 (offline CSV only), F22, F23, F24 (jump-to-cause only, no slow-motion replay), and the Sandbox change (I14).
+
+**Still not done:** A-11, A-18, A-21, A-22, A-24, A-27, A-35, undo (F7), analytics sending (F21), the Urdu font, and F17, F18, F25, F26, Rehbar-I, Moonshot. F18, F20 (live), F21, F25 and F26 need a server, database or business set-up that code alone cannot provide.
 
 **Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
 
