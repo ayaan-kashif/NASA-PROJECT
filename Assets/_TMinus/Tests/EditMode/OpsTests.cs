@@ -75,6 +75,37 @@ namespace TMinus.Tests
             Assert.IsNotNull(fx.DeadCause);
         }
 
+        [Test] public void AllGoalsMetForAPerfectFloodWatchRun()
+        {
+            var m = TestData.Registry.GetMission("floodwatch_1");
+            var goals = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { deployed = true },
+                new OpsReport { daysAlive = 30, imagesDownlinked = 87 }, new TMinus.Core.SpacecraftReport { totalCostM = 7.6 });
+            Assert.AreEqual(m.successCriteria.Count, goals.Count);
+            Assert.IsTrue(goals.All(g => g.met), string.Join(" | ", goals.Select(g => g.text + "=" + g.measured)));
+        }
+
+        [Test] public void GoalsShowWhichCriterionFailed()
+        {
+            var m = TestData.Registry.GetMission("floodwatch_1");
+            var goals = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { deployed = true },
+                new OpsReport { daysAlive = 30, imagesDownlinked = 5 }, new TMinus.Core.SpacecraftReport { totalCostM = 7.9 });
+            Assert.IsFalse(goals.First(g => g.text.Contains("20 usable images")).met);
+            Assert.IsFalse(goals.First(g => g.text.Contains("budget")).met);
+            Assert.IsTrue(goals.First(g => g.text.Contains("deploy")).met);
+        }
+
+        [Test] public void TeamScoreGrowsWithRealPlayersAndNeedsEveryRoleInThePoll()
+        {
+            var solo = TMinus.Mission.PrelaunchChecklist.AssignRoles(new[] { "A" });
+            var four = TMinus.Mission.PrelaunchChecklist.AssignRoles(new[] { "A", "B", "C", "D" });
+            Assert.AreEqual(0.4, MissionScoring.CollaborationFraction(solo, null), 1e-9);
+            Assert.AreEqual(1.0, MissionScoring.CollaborationFraction(four, null), 1e-9);
+            var fullPoll = new System.Collections.Generic.List<string> { "Flight Director: GO", "Propulsion & Structures: GO", "Spacecraft & Comms: GO", "Science & Budget: GO" };
+            Assert.AreEqual(1.0, MissionScoring.CollaborationFraction(four, fullPoll), 1e-9);
+            var partial = new System.Collections.Generic.List<string> { "Flight Director: GO", "Science & Budget: NO-GO" };
+            Assert.AreEqual(0.5, MissionScoring.CollaborationFraction(four, partial), 1e-9);
+        }
+
         [TestCase(0, 0)] [TestCase(35, 1)] [TestCase(60, 2)] [TestCase(85, 3)] [TestCase(100, 3)]
         public void StarsFollowMissionScoreThresholds(double points, int stars)
         { Assert.AreEqual(stars, MissionScoring.StarsForScore(points)); }

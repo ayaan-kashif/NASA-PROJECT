@@ -59,6 +59,16 @@ namespace TMinus.Core
             Events.Clear();
         }
 
+        /// <summary>
+        /// A new attempt (Redesign / Fly again): hints and NO-GO calls from the last attempt must not lower this attempt's
+        /// decision-quality score (audit A-08).
+        /// </summary>
+        public void BeginAttempt()
+        {
+            if (Settings.hintsUsed != null) System.Array.Clear(Settings.hintsUsed, 0, Settings.hintsUsed.Length);
+            Launch.noGoRounds = 0;
+        }
+
         /// <summary>Reload all JSON (e.g. after editing data during Play mode).</summary>
         public void ReloadData()
         {

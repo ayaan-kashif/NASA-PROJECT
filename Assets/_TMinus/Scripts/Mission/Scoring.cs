@@ -25,7 +25,7 @@ namespace TMinus.Mission
             int hints = s.Settings?.hintsUsed?.Where(x => x > 0).Sum() ?? 0;
             decision *= Math.Max(0.75, 1 - hints * 0.02);
             Add(score, "decision", "Decision quality", w.decisionQuality, decision);
-            Add(score, "crew", "Team roles", w.collaboration, Math.Min(1, s.Crew.Select(c => c.role).Distinct().Count() / 4.0));
+            Add(score, "crew", "Team roles", w.collaboration, CollaborationFraction(s.Crew, s.Launch.poll));
             score.total = Math.Round(score.breakdown.Sum(x => x.points), 1);
             score.stars = StarsForScore(score.total);
             BuildFixes(score, s, ops, budget);
@@ -52,6 +52,21 @@ namespace TMinus.Mission
             if (!joint && state.Flight.deployed && ops.imagesDownlinked < goal && s.fixes.Count < 3) s.fixes.Add("Increase downlink capacity or image quality/power margin so more usable images reach the ground.");
             while (s.fixes.Count > 3) s.fixes.RemoveAt(s.fixes.Count - 1);
         }
+        /// <summary>
+        /// Team collaboration (audit A-08). It used to be "distinct roles / 4", which is always 100% because roles are always
+        /// all assigned. Now: more real people sharing the four roles scores higher (1 player 40%, 2 = 60%, 3 = 80%, 4 = 100%),
+        /// and every role must have taken part in the GO/NO-GO poll. A run with no poll (demos, sandbox) counts all roles.
+        /// </summary>
+        public static double CollaborationFraction(System.Collections.Generic.IList<CrewMember> crew, System.Collections.Generic.IList<string> poll)
+        {
+            int players = Math.Max(1, Math.Min(4, (crew ?? new System.Collections.Generic.List<CrewMember>()).Select(c => c.name).Distinct().Count()));
+            double people = 0.4 + 0.6 * (players - 1) / 3.0;
+            int votes = poll?.Count ?? 0;
+            int polled = votes == 0 ? 0 : poll.Select(p => p.Split(':')[0]).Distinct().Count();
+            double roles = votes == 0 ? 1.0 : Math.Min(1.0, polled / 4.0);
+            return people * roles;
+        }
+
         public static int StarsForScore(double score) => score >= 85 ? 3 : score >= 60 ? 2 : score >= 35 ? 1 : 0;
     }
 }
