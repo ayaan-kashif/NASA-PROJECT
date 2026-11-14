@@ -151,6 +151,21 @@ namespace TMinus.Tests.Flight
             Assert.That(sim.Phase, Is.EqualTo(FlightPhase.Pad));
         }
 
+        [Test]
+        public void PartOfAStepIsKeptSoNormalSpeedFlightAdvances()
+        {
+            // At 60 frames a second one frame is 0.0167 s, less than one 0.05 s step. Dropping the remainder froze x1 and x2 flights.
+            var vehicle = new FlightVehicle { id = "advance-test" };
+            vehicle.stages.Add(new FlightStage { id = "s", dryMassKg = 900, propMassKg = 100, thrustVacN = 5000, ispVac = 300, ispSeaLevel = 250, diameterM = 1 });
+            var sim = new FlightSim(vehicle, new LaunchOptions { payloadMassKg = 0 }) { RecordTelemetry = false };
+            for (int i = 0; i < 60; i++) sim.Advance(1.0 / 60.0, 1);
+            Assert.That(sim.TimeS, Is.EqualTo(1.0).Within(0.06), "one real second at x1 is about one simulated second");
+
+            var fast = new FlightSim(vehicle, new LaunchOptions { payloadMassKg = 0 }) { RecordTelemetry = false };
+            for (int i = 0; i < 60; i++) fast.Advance(1.0 / 60.0, 4);
+            Assert.That(fast.TimeS, Is.EqualTo(4.0).Within(0.1), "x4 is about four simulated seconds per real second");
+        }
+
         sealed class FakeJoint : IJointStatus
         {
             public string JointId { get; }

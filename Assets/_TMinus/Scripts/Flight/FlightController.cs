@@ -57,7 +57,26 @@ namespace TMinus.Flight
             if (S != null) S.Events.Added -= OnEvent;
         }
 
-        void Start() => EnsureInitialized();
+        // Replay of a failed flight (audit F24): the flight is deterministic, so flying the same design again shows the same failure.
+        bool _replay;
+        float _timeFactor = 1f;
+        double _replaySlowFrom;
+
+        void Start()
+        {
+            EnsureInitialized();
+            if (DemoHooks.ReplayFailure && _initialized) { DemoHooks.ReplayFailure = false; BeginReplay(); }
+        }
+
+        /// <summary>Launch the saved design at x4, then drop to one fifth of real time 8 seconds before the failure.</summary>
+        void BeginReplay()
+        {
+            _replay = true;
+            _replaySlowFrom = Mathf.Max(0f, (float)S.Flight.flightTimeS - 8f);
+            Warp = 4;
+            Launch(S.Vehicle.pitchKickDeg > 0 ? S.Vehicle.pitchKickDeg : 3);
+            hud.Banner("REPLAY: it will slow down just before the failure", true);
+        }
 
         public double TwrAtLiftoff()
         {
@@ -114,7 +133,12 @@ namespace TMinus.Flight
             HandleKeys();
             if (Launched && !Ended)
             {
-                Sim.Advance(Time.deltaTime, Warp);
+                if (_replay && _timeFactor >= 1f && Sim.TimeS >= _replaySlowFrom)
+                {
+                    _timeFactor = 0.2f; Warp = 1;
+                    hud.Banner("SLOW MOTION", false);
+                }
+                Sim.Advance(Time.deltaTime * _timeFactor, Warp);
                 AfterStep();
             }
             var last = Sim.Outcome.telemetry.Count > 0 ? Sim.Outcome.telemetry[Sim.Outcome.telemetry.Count - 1] : null;
@@ -226,8 +250,11 @@ namespace TMinus.Flight
                 next = t.timeS + 1;
                 rec.telemetry.Add(new TelemetryPoint { t = (float)t.timeS, altitudeKm = (float)(t.altitudeM / 1000), speedMs = (float)t.orbitalSpeedMs, qKPa = (float)(t.dynamicPressurePa / 1000) });
             }
-            S.Flight = rec;
-            Analytics.Track("flight_ended", "outcome", outcome, "failure", code ?? "none");
+            if (!_replay)
+            {
+                S.Flight = rec;   // a replay shows the same flight again; it must not become a new attempt in the log or the score
+                Analytics.Track("flight_ended", "outcome", outcome, "failure", code ?? "none");
+            }
             hud.ShowEnd(rec);
             _endTimer = AutoAdvance ? (outcome == "Orbit" ? 9f : 7f) : -1f;
         }

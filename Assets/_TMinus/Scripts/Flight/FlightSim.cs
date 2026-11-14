@@ -19,6 +19,7 @@ namespace TMinus.Flight
         readonly double _rotationRate;
         bool _pitchKicked, _fairingChecked, _guidanceFailureLogged;
         const int TelemetryEveryNSteps = 4;
+        double _advanceRemainder;
         int _sampleCounter;
         bool _stageIgnited = true;
         double _mass, _time, _maxQ, _guidanceErrorDeg;
@@ -96,7 +97,11 @@ namespace TMinus.Flight
             int maxWarp = FlightPhysics.Altitude(_position) < FlightConstants.AtmosphereLimitM ? 4 : 100;
             int warp = requestedWarp >= 100 ? 100 : requestedWarp >= 4 ? 4 : requestedWarp >= 2 ? 2 : 1;
             warp = Math.Min(warp, maxWarp);
-            int count = (int)Math.Floor(Math.Max(0, realSeconds) * warp / FlightConstants.Dt + 1e-9);
+            // Keep the part of a step that did not fit this frame. Without it, at 60 frames a second the normal-speed (x1) and x2 flights
+            // never advanced (each frame is under one 0.05 s step), and slow motion was impossible.
+            _advanceRemainder += Math.Max(0, realSeconds) * warp;
+            int count = Math.Min(2000, (int)Math.Floor(_advanceRemainder / FlightConstants.Dt + 1e-9));
+            _advanceRemainder = Math.Min(FlightConstants.Dt, Math.Max(0, _advanceRemainder - count * FlightConstants.Dt));
             for (int i = 0; i < count && !Terminal(); i++) Step();
         }
 

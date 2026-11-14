@@ -59,6 +59,8 @@ namespace TMinus.Mission
             var why = WhyTarget.For(s.Flight, s.Events.All, s.Data.GetRules());
             if (why != null)
                 AddButton(buttons, "Show me why", () => { FocusRequest.Set(why.scene, why.target, why.note); SceneFlow.Load(why.scene); });
+            if (s.Flight.flown && s.Flight.outcome == "Failed" && s.Flight.flightTimeS > 10)
+                AddButton(buttons, "Watch the failure again", () => { DemoHooks.ReplayFailure = true; SceneFlow.Load(SceneNames.Flight); });
             AddButton(buttons, "Redesign", () => { s.BeginAttempt(); SceneFlow.Load(SceneNames.MissionBriefing); });
             AddButton(buttons, "Fly again", () => { s.BeginAttempt(); DebriefDebug.ResetRun(); SceneFlow.Load(SceneNames.Flight); });
             AddButton(buttons, "Save design code", SaveCode);

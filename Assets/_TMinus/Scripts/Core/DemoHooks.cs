@@ -23,5 +23,8 @@ namespace TMinus.Core
 
         /// <summary>A design code that arrived in the page link (#d=...). The briefing puts it in the code box, ready to Load.</summary>
         public static string PendingDesignCode;
+
+        /// <summary>The debrief's "Watch the failure again": the Flight scene replays the same flight, then slows down before the failure.</summary>
+        public static bool ReplayFailure;
     }
 }
