@@ -44,17 +44,17 @@ namespace TMinus.Mission
             {
                 var flightCard = Card("FLIGHT"); grid.Add(flightCard);
                 flightCard.Add(new Label(s.Flight.outcome == "Apogee" ? $"Highest point      {s.Flight.apoapsisKm:0} km" : $"Orbit              {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km"));
-                flightCard.Add(new Label($"Max-Q              {s.Flight.maxQKPa:0.0} kPa at T+{s.Flight.maxQTimeS:0} s"));
-                if (s.Flight.outcome != "Apogee") flightCard.Add(new Label($"Propellant left    {s.Flight.deltaVLeftMs:N0} m/s of delta-v"));
-                flightCard.Add(new Label($"Flight time        {s.Flight.flightTimeS:0} s"));
+                flightCard.Add(new Label(Strings.Format("debrief.max_q_kpa_at_t", "Max-Q              {0:0.0} kPa at T+{1:0} s", s.Flight.maxQKPa, s.Flight.maxQTimeS)));
+                if (s.Flight.outcome != "Apogee") flightCard.Add(new Label(Strings.Format("debrief.propellant_left_m_s_of", "Propellant left    {0:N0} m/s of delta-v", s.Flight.deltaVLeftMs)));
+                flightCard.Add(new Label(Strings.Format("debrief.flight_time_s", "Flight time        {0:0} s", s.Flight.flightTimeS)));
                 AddFlightCharts(page, s.Flight);
             }
             else
             {
                 var opsCard = Card("OPERATIONS"); grid.Add(opsCard);
-                opsCard.Add(new Label($"Images captured     {ops.imagesTaken}")); opsCard.Add(new Label($"Images downlinked   {ops.imagesDownlinked}"));
-                opsCard.Add(new Label($"Data returned       {ops.downlinkedMB:0.#} MB")); opsCard.Add(new Label($"Storage remaining   {ops.storedMB:0.#} MB"));
-                opsCard.Add(new Label($"Battery final       {ops.finalSoc:P0}"));
+                opsCard.Add(new Label(Strings.Format("debrief.images_captured", "Images captured     {0}", ops.imagesTaken))); opsCard.Add(new Label(Strings.Format("debrief.images_downlinked", "Images downlinked   {0}", ops.imagesDownlinked)));
+                opsCard.Add(new Label(Strings.Format("debrief.data_returned_mb", "Data returned       {0:0.#} MB", ops.downlinkedMB))); opsCard.Add(new Label(Strings.Format("debrief.storage_remaining_mb", "Storage remaining   {0:0.#} MB", ops.storedMB)));
+                opsCard.Add(new Label(Strings.Format("debrief.battery_final", "Battery final       {0:P0}", ops.finalSoc)));
                 AddFlightCharts(page, s.Flight);
                 page.Add(new Label("STATE OF CHARGE  ·  ORBIT SAMPLES") { name = "section" });
                 page.Add(BuildTimeline(ops));

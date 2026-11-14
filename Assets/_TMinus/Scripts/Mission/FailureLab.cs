@@ -37,7 +37,7 @@ namespace TMinus.Mission
             {
                 var row = new VisualElement(); row.AddToClassList("job-card"); body.Add(row);
                 row.Add(new Label($"{job.name.Replace("Failure Lab: ", "")}") { name = "job-title" });
-                var meta = new Label($"{job.difficulty}  ·  reward {job.rewardPoints} pts"); meta.AddToClassList("muted"); row.Add(meta);
+                var meta = new Label(Strings.Format("failure.reward_pts", "{0}  ·  reward {1} pts", job.difficulty, job.rewardPoints)); meta.AddToClassList("muted"); row.Add(meta);
                 var note = new Label("Client note: " + (job.clientNote ?? job.objective)); note.AddToClassList("job-note"); row.Add(note);
                 var take = new Button(() => Begin(root, job)) { text = Strings.Get("failure.take_the_job", "Take the job ›") };
                 take.AddToClassList("menu-button"); take.AddToClassList("primary"); row.Add(take);

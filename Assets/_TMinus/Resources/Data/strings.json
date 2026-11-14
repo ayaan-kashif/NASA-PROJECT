@@ -92,6 +92,23 @@
     "briefing.join_a_crew": "Join a crew",
     "pad.remote_crew": "Remote crew",
     "debrief.your_teacher_s_results_page": "Your teacher's results page shows a class code. Type it here and press the button. This sends your team name, the mission, your score and how the flight ended to anyone who has that code.",
-    "debrief.send_result_to_my_class": "Send result to my class"
+    "debrief.send_result_to_my_class": "Send result to my class",
+    "briefing.budget_m_launch_spacecraft": "Budget {0:0.00} M$ (launch + spacecraft)",
+    "briefing.3u_cubesat_at_most_kg": "3U CubeSat, at most {0:0.0} kg",
+    "briefing.days_of_operations_ground_passes": "{0} days of operations, {1} ground passes/day × {2:0} min",
+    "briefing.km": "{0:0} km",
+    "briefing.is_for_another_mission": "{0} is for another mission.",
+    "pad.are_you_go_for_launch": "{0}, are you GO for launch?",
+    "debrief.max_q_kpa_at_t": "Max-Q              {0:0.0} kPa at T+{1:0} s",
+    "debrief.propellant_left_m_s_of": "Propellant left    {0:N0} m/s of delta-v",
+    "debrief.flight_time_s": "Flight time        {0:0} s",
+    "debrief.images_captured": "Images captured     {0}",
+    "debrief.images_downlinked": "Images downlinked   {0}",
+    "debrief.data_returned_mb": "Data returned       {0:0.#} MB",
+    "debrief.storage_remaining_mb": "Storage remaining   {0:0.#} MB",
+    "debrief.battery_final": "Battery final       {0:P0}",
+    "failure.reward_pts": "{0}  ·  reward {1} pts",
+    "flight.t_s": "T+{0:0}s  {1}",
+    "flight.stage": "Stage {0}"
   }
 }

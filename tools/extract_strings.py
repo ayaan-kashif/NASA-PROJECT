@@ -7,8 +7,10 @@ Moves plain on-screen text out of the C# UI scripts into Assets/_TMinus/Resource
 
 It only touches text that is passed straight to a UI call as one plain quoted piece of text:
   new Label("..."), L("...", ...), Btn("...", ...), Toast("..."), AddButton(x, "...", ...), { text = "..." }
-Interpolated text ($"..."), text built with +, constants, switch cases and CSS class names are left alone, so the script never
-changes what the game does: `Strings.Get(key, original)` returns the original text when the key is missing.
+Interpolated text ($"...") is moved too when every {hole} is a plain name, member or index (optionally with a format such as :0.0):
+`$"Score {s.total:0.0}"` becomes `Strings.Format("key", "Score {0:0.0}", s.total)`, which formats the same way. Holes with a ternary,
+a call with arguments, `{{` escapes or a nested quote are left alone, as are text built with +, constants, switch cases and CSS class names,
+so the script never changes what the game does: the second argument is the original text, used when the key is missing.
 Run it again after adding new UI; it skips text it has already moved. It does not need Unity.
 """
 import json
@@ -46,6 +48,17 @@ PATTERNS = [
     re.compile(r'(\bAddButton\(\w+, )"((?:[^"\\\n])+)"(,)'),
     re.compile(r'(\{ text = )"((?:[^"\\\n])+)"( \})'),
 ]
+BODY = r'((?:[^"\\\n{}]|\{[^{}"\\\n]*\})+)'
+INTERPOLATED = [
+    re.compile(r'(new Label\()\$"' + BODY + r'"(\))'),
+    re.compile(r'(\bL\()\$"' + BODY + r'"(,)'),
+    re.compile(r'(\bBtn\()\$"' + BODY + r'"(,)'),
+    re.compile(r'(\bToast\()\$"' + BODY + r'"([,)])'),
+    re.compile(r'(\bAddButton\(\w+, )\$"' + BODY + r'"(,)'),
+    re.compile(r'(\{ text = )\$"' + BODY + r'" (\})'),
+]
+HOLE = re.compile(r'\{([^{}]*)\}')
+SIMPLE = re.compile(r'^([A-Za-z_]\w*(?:\.\w+|\[\w+\])*(?:\(\))?)(:[^{}:,]*)?$')
 SKIP_LINE = re.compile(r'\bconst\b|static readonly|\bcase\b|\[SerializeField\]|Debug\.|\bname = "')
 
 
@@ -97,6 +110,42 @@ def main():
                     esc = text.replace('"', '\\"')
                     return f'{m.group(1)}Strings.Get("{key}", "{esc}"){m.group(3)}'
                 line = pat.sub(sub, line)
+            for pat in INTERPOLATED:
+                def sub_i(m):
+                    nonlocal added, file_changed
+                    body = m.group(2)
+                    args, template, bad = [], body, False
+                    pieces = []
+                    last = 0
+                    for h in HOLE.finditer(body):
+                        sm = SIMPLE.match(h.group(1))
+                        if not sm:
+                            bad = True
+                            break
+                        expr, spec = sm.group(1), sm.group(2) or ''
+                        if expr not in args:
+                            args.append(expr)
+                        pieces.append(body[last:h.start()] + '{' + str(args.index(expr)) + spec + '}')
+                        last = h.end()
+                    if bad or not args:
+                        return m.group(0)
+                    template = ''.join(pieces) + body[last:]
+                    if not looks_like_text(template):
+                        return m.group(0)
+                    key = by_text.get(template)
+                    if key is None:
+                        words = slug(re.sub(r'[{][^}]*[}]', ' ', template))
+                        base = prefix + '.' + words
+                        key, n = base, 2
+                        while key in en:
+                            key = f'{base}_{n}'
+                            n += 1
+                        en[key] = template
+                        by_text[template] = key
+                        added += 1
+                    file_changed += 1
+                    return f'{m.group(1)}Strings.Format("{key}", "{template}", {", ".join(args)}){m.group(3)}'
+                line = pat.sub(sub_i, line)
             out.append(line)
         if file_changed:
             changed_files += 1

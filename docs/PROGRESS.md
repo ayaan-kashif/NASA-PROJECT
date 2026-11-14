@@ -196,3 +196,6 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 
 ## Replay scrub (Claude, 2026-11-14) - still NOT compiled or run in Unity
 - F24: `FlightController.ScrubTo` + `ReplayScrubber` (a Slider on the replay end card). It builds a fresh `FlightSim` with a throwaway `EventLog`, runs it to the chosen second and swaps it in, so the score, event log and attempt history are untouched. Test: `ScrubbingARewoundFlightShowsTheSameMomentAsTheOriginal`.
+
+## A-24 interpolated text (Claude, 2026-11-14) - still NOT compiled or run in Unity
+- `tools/extract_strings.py` now also converts `$"..."` UI text whose holes are plain names/members/indexes (optionally with a format like :0.0) into `Strings.Format(key, template, args)`. 17 more entries; `StringsTests` checks Get and Format calls against the table.

@@ -143,7 +143,7 @@ namespace TMinus.Flight
 
         public void Feed(double t, string message, Severity sev)
         {
-            var l = L($"T+{t:0}s  {message}", "feed-line", null);
+            var l = L(Strings.Format("flight.t_s", "T+{0:0}s  {1}", t, message), "feed-line", null);
             l.EnableInClassList("bad", sev >= Severity.Fault);
             l.EnableInClassList("warn", sev == Severity.Warning);
             _feed.Insert(1, l);
@@ -200,7 +200,7 @@ namespace TMinus.Flight
                 while (_fuel.childCount < s.propellantPercent.Length)
                 {
                     var row = Box("fuel-row", _fuel);
-                    L($"Stage {_fuel.childCount}", "stat-key", row);
+                    L(Strings.Format("flight.stage", "Stage {0}", _fuel.childCount), "stat-key", row);
                     var track = Box("budget-track", row);
                     Box("budget-fill green", track);
                 }

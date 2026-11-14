@@ -34,7 +34,7 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
   - F20's class dashboard is a browser page (`tools/web/teacher.html`) that listens to a class room on the public ntfy.sh relay (or reads pasted CSV); it is not our own server with accounts, so there is no login and results are kept only about 12 hours.
   - F25's live crew uses the free public relay ntfy.sh for votes (plus copy-and-paste codes), not a server of ours.
   - F15 has the text and a "Save picture" screenshot button, not a designed 1200x630 card; F24 jumps to the cause, replays the failure in slow motion and lets you scrub the replay with a time slider (the 3D model keeps dropped stages); F17's touch support is experimental.
-  - A-24 moves plain on-screen text into `strings.json` (88 entries, by `tools/extract_strings.py`); text built at run time is still in the scripts.
+  - A-24 moves on-screen text into `strings.json` (about 115 entries, by `tools/extract_strings.py`), including interpolated text whose holes are plain names (`Strings.Format`); text with a ternary or a call with arguments, and text in files the tool does not list, is still in the scripts, and no Urdu table has been written.
   - A-11 is a release script (`tools/build_release.sh`) rather than a change to the development project, which keeps the AI packages for the Unity MCP tooling.
   - I12: the figures were checked against the Wikipedia articles the data cites; NASA's own Saturn V document could not be reached.
 - **Needs a live service that was never contacted:** NASA Worldview imagery (F26), the ntfy.sh relay (F25), the HOUSTON proxy after its lock-down (A-05).
@@ -688,7 +688,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-21 Debug hooks out of release builds (ten hook classes now compile only in the Editor and development builds; DebriefDebug stays because the debrief uses it as state)
 - [x] A-22 Undo everywhere (parts and cables in both bays, and the VAB keeps its stacking undo; bolt torque is deliberately not undoable)
 - [x] A-23 Seeded events
-- [x] A-24 String table (the string table and the pause menu and menu messages are moved; the rest of the game text can follow the same way)
+- [x] A-24 String table (menus, briefing, debrief, failure lab, flight HUD, bay, VAB and Houston panel texts are moved, including interpolated ones through `Strings.Format`; a test checks that every call matches the table; texts with ternaries or calls in the holes stay in the scripts; no translation exists yet)
 - [x] A-25 Rating counters and `AskDebrief` wired or removed
 - [x] A-26 Engine sound (engine rumble added; no music)
 - [x] A-27 PlayMode smoke tests (PlayMode smoke tests written, not yet run)

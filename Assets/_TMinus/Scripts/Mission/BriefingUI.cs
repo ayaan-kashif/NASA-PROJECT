@@ -84,9 +84,9 @@ namespace TMinus.Mission
             c1.Add(L(Strings.Get("briefing.success_criteria", "SUCCESS CRITERIA"), "brief-sub"));
             foreach (var c in m.successCriteria) c1.Add(L("☐  " + c.text, "brief-item"));
             c1.Add(L(Strings.Get("briefing.constraints", "CONSTRAINTS"), "brief-sub"));
-            if (m.budgetMUSD > 0) c1.Add(L($"Budget {m.budgetMUSD:0.00} M$ (launch + spacecraft)", "brief-item"));
-            if (m.massLimitKg > 0) c1.Add(L($"3U CubeSat, at most {m.massLimitKg:0.0} kg", "brief-item"));
-            if (m.durationDays > 0) c1.Add(L($"{m.durationDays} days of operations, {m.groundContactsPerDay} ground passes/day × {m.contactMinutes:0} min", "brief-item"));
+            if (m.budgetMUSD > 0) c1.Add(L(Strings.Format("briefing.budget_m_launch_spacecraft", "Budget {0:0.00} M$ (launch + spacecraft)", m.budgetMUSD), "brief-item"));
+            if (m.massLimitKg > 0) c1.Add(L(Strings.Format("briefing.3u_cubesat_at_most_kg", "3U CubeSat, at most {0:0.0} kg", m.massLimitKg), "brief-item"));
+            if (m.durationDays > 0) c1.Add(L(Strings.Format("briefing.days_of_operations_ground_passes", "{0} days of operations, {1} ground passes/day × {2:0} min", m.durationDays, m.groundContactsPerDay, m.contactMinutes), "brief-item"));
 
             // Column 2: orbit, rocket, launch site.
             var c2 = Col(cols, "CHOICES");
@@ -117,7 +117,7 @@ namespace TMinus.Mission
             foreach (var km in m.orbitOptionsKm)
             {
                 var k = km;
-                var b = Btn($"{km:0} km", () => { S.Spacecraft.orbitAltitudeKm = k; ShowBriefing(); }, "bin-chip");
+                var b = Btn(Strings.Format("briefing.km", "{0:0} km", km), () => { S.Spacecraft.orbitAltitudeKm = k; ShowBriefing(); }, "bin-chip");
                 b.EnableInClassList("on", System.Math.Abs(S.Spacecraft.orbitAltitudeKm - km) < 1);
                 chips.Add(b);
             }
@@ -143,7 +143,7 @@ namespace TMinus.Mission
                 card.Add(top);
                 card.Add(L($"{(r.payloadLeoKg > 0 ? PartStatsText.Mass(r.payloadLeoKg) + " to orbit" : "Sounding rocket, no orbit")}  ·  {r.launchCostMUSD:0.#} M$", "brief-text"));
                 var id = r.id;
-                card.RegisterCallback<ClickEvent>(_ => { if (allowed) { S.Vehicle.rocketId = id; ShowBriefing(); } else Toast($"{r.name} is for another mission."); });
+                card.RegisterCallback<ClickEvent>(_ => { if (allowed) { S.Vehicle.rocketId = id; ShowBriefing(); } else Toast(Strings.Format("briefing.is_for_another_mission", "{0} is for another mission.", r.name)); });
                 col.Add(card);
             }
         }

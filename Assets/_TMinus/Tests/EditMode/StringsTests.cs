@@ -23,7 +23,7 @@ namespace TMinus.Tests
         {
             // tools/extract_strings.py moves text into the table; this catches a key that was typed wrong or text that drifted apart.
             var en = Strings.Parse(Resources.Load<TextAsset>("Data/strings").text, "en");
-            var call = new System.Text.RegularExpressions.Regex("Strings\\.Get\\(\"([^\"]+)\", \"((?:[^\"\\\\]|\\\\.)*)\"\\)");
+            var call = new System.Text.RegularExpressions.Regex("Strings\\.(?:Get|Format)\\(\"([^\"]+)\", \"((?:[^\"\\\\]|\\\\.)*)\"[,)]");
             var problems = new System.Collections.Generic.List<string>();
             int calls = 0;
             foreach (var file in System.IO.Directory.GetFiles(Application.dataPath + "/_TMinus/Scripts", "*.cs", System.IO.SearchOption.AllDirectories))

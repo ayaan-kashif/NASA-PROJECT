@@ -79,7 +79,7 @@ namespace TMinus.Mission
             _modal.Add(panel);
             panel.Add(L($"GO / NO-GO POLL  ·  {index + 1} of {PollOrder.Length}", "info-category"));
             panel.Add(L(PrelaunchChecklist.RoleName(role), "poll-role"));
-            panel.Add(L($"{who}, are you GO for launch?", "pad-title"));
+            panel.Add(L(Strings.Format("pad.are_you_go_for_launch", "{0}, are you GO for launch?", who), "pad-title"));
             var mine = PrelaunchChecklist.Build(S).Where(i => i.role == role && !i.pass).ToList();
             panel.Add(L(mine.Count == 0 ? "All your items PASS." : "Your open items: " + string.Join("; ", mine.Select(i => i.title)), mine.Count == 0 ? "check-detail" : "poll-warn"));
             var row = new VisualElement(); row.AddToClassList("poll-buttons");
