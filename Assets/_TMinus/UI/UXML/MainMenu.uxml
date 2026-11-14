@@ -5,6 +5,7 @@
             <ui:Label text="T-MINUS" class="title" />
             <ui:Label text="Build it bolt by bolt. Wire it pin by pin. Launch it for real." class="tagline" />
             <ui:VisualElement class="accent-line" />
+            <ui:Button name="btn-continue" text="Continue" class="menu-button primary" style="display: none;" />
             <ui:Button name="btn-missions" text="Missions" class="menu-button primary" />
             <ui:Button name="btn-judge" text="Judge Mode  ·  3-min demo (F9)" class="menu-button" />
             <ui:Button name="btn-failure" text="Failure Lab  ·  repair jobs" class="menu-button" />

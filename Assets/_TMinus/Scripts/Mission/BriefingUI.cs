@@ -208,7 +208,13 @@ namespace TMinus.Mission
             }, "bin-chip"));
             row.Add(Btn("Load code", () =>
             {
-                if (DesignCode.TryDecode(field.value, out var b, out var err)) { DesignCode.Apply(b, S); Toast("Design loaded."); ShowBriefing(); }
+                if (DesignCode.TryDecode(field.value, out var b, out var err))
+                {
+                    int dropped = DesignValidator.Clean(b, Data);
+                    DesignCode.Apply(b, S);
+                    Toast(dropped > 0 ? $"Design loaded. {dropped} invalid item{(dropped > 1 ? "s were" : " was")} ignored." : "Design loaded.");
+                    ShowBriefing();
+                }
                 else Toast(err);
             }, "bin-chip"));
             col.Add(row);

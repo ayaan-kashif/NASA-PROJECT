@@ -19,6 +19,18 @@ namespace TMinus.UI
             if (root == null) return;
             if (style != null && !root.styleSheets.Contains(style)) root.styleSheets.Add(style);
 
+            var cont = root.Q<Button>("btn-continue");
+            if (cont != null && SaveService.HasSave)
+            {
+                string when = SaveService.Describe();
+                cont.text = when != null ? $"Continue  ·  {when}" : "Continue";
+                cont.style.display = DisplayStyle.Flex;
+                cont.clicked += () =>
+                {
+                    if (SaveService.TryLoad(GameState.Instance, out string msg)) { DemoHooks.PendingBriefingPanel = "briefing"; SceneFlow.Load(SceneNames.MissionBriefing); }
+                    else Toast(msg ?? "Could not load the save.");
+                };
+            }
             Bind(root, "btn-missions", () => SceneFlow.Load(SceneNames.MissionBriefing));
             Bind(root, "btn-judge", () => { if (DemoHooks.StartJudgeMode != null) DemoHooks.StartJudgeMode(); else Toast("Judge Mode is not available in this build."); });
             Bind(root, "btn-failure", () => { if (DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root); else Toast("The Failure Lab is not available in this build."); });

@@ -18,6 +18,7 @@ namespace TMinus.Mission
             comparison = null;
             if (state?.Data == null) { error = "Mission data is not ready."; return false; }
             if (!DesignCode.TryDecode(code, out var bundle, out error)) return false;
+            DesignValidator.Clean(bundle, state.Data);
             var mission = state.Data.GetMission(state.CurrentMissionId) ?? state.Data.GetMission(bundle.missionId);
             var currentRocket = state.Data.GetRocket(state.Vehicle?.rocketId);
             var candidateRocket = state.Data.GetRocket(bundle.vehicle?.rocketId) ?? currentRocket;

@@ -79,6 +79,7 @@ namespace TMinus.Mission
                 _row = row;
             }
             SceneManager.sceneLoaded += OnSceneLoaded;
+            SaveService.BeginScript(GameState.Instance);   // the player's own build comes back when the demo ends
             DemoBuilds.Apply(GameState.Instance, missingRf: true, badJoint: true, padReady: true);
             GameState.Instance.Events.Clear();
             Go(0);
@@ -89,7 +90,7 @@ namespace TMinus.Mission
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
             FlightController.AutoAdvance = false;
-            if (Active == this) Active = null;
+            if (Active == this) { Active = null; SaveService.EndScript(GameState.Instance); }
         }
 
         void Go(int step)

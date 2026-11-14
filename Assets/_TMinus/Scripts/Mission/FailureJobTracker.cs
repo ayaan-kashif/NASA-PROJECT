@@ -18,12 +18,13 @@ namespace TMinus.Mission
         int _hintsAtStart;
         float _startTime, _nextCheck;
         bool _leftMenu;
+        bool _replaced;
         Label _status;
         VisualElement _root;
 
         public static void Start(MissionDef job)
         {
-            if (Active != null) Destroy(Active.gameObject);
+            if (Active != null) { Active._replaced = true; Destroy(Active.gameObject); }   // the new job takes over the saved-build hand-back
             var go = new GameObject("[FailureJob]");
             DontDestroyOnLoad(go);
             Active = go.AddComponent<FailureJobTracker>();
@@ -125,6 +126,10 @@ namespace TMinus.Mission
             parent.Add(l);
         }
 
-        void OnDestroy() { if (Active == this) Active = null; }
+        void OnDestroy()
+        {
+            if (Active == this) Active = null;
+            if (!_replaced) SaveService.EndScript(GameState.Instance);   // job over or abandoned: give the player's build back
+        }
     }
 }

@@ -46,6 +46,7 @@ namespace TMinus.Core
             Data = DataRegistry.LoadFromResources();
             SettingsStore.Load(Settings);
             gameObject.AddComponent<SceneFader>();
+            gameObject.AddComponent<AutoSave>();
         }
 
         void OnDestroy()

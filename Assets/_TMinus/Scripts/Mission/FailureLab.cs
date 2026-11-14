@@ -50,6 +50,7 @@ namespace TMinus.Mission
             root?.Q("menu-overlay")?.RemoveFromHierarchy();
             if (job.consoleChoices.Count > 0) { Apollo12Console.Show(root, job); return; }
             var s = GameState.Instance;
+            if (FailureJobTracker.Active == null) SaveService.BeginScript(s);   // keep the player's own build; it returns after the job
             DemoBuilds.Apply(s);          // a complete, correct Pathfinder + CubeSat...
             SeedFaults(s.Vehicle, s.Data.GetRules(), job.seededFaults); // ...then break it
             s.CurrentMissionId = "floodwatch_1";
