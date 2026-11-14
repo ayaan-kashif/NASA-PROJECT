@@ -40,6 +40,32 @@ namespace TMinus.Tests
         }
 
         [Test]
+        public void EverySeededJob_StartsFixedOnACorrectBuild_AndEveryFaultIsDetectedWhenSeeded()
+        {
+            var data = TestData.Registry; var rules = data.GetRules();
+            var jobs = FailureLab.Jobs(data).Where(j => j.seededFaults.Count > 0).ToList();
+            Assert.GreaterOrEqual(jobs.Count, 4, "Broken Pathfinder plus the three added jobs");
+            foreach (var job in jobs)
+            {
+                var v = new VehicleDesign { rocketId = "pathfinder" };
+                foreach (var l in rules.avionicsWiring) v.avionicsCables.Add(new CableLink { fromPort = l.from, toPort = l.to, cableType = l.cableType });
+                foreach (var j in rules.boltJoints)
+                {
+                    var st = new BoltJointState(j);
+                    for (int i = 0; i < j.boltCount; i++) st.Insert(i);
+                    for (int pass = 1; pass <= 3; pass++) foreach (var i in BoltMath.StarOrder(j.boltCount)) st.ApplyTorque(i, st.PassTargetNm(pass));
+                    st.SaveTo(v);
+                }
+                Assert.IsTrue(job.seededFaults.All(f => FailureLab.IsFixed(f, v, rules)), job.id + ": a correct build has no faults");
+                FailureLab.SeedFaults(v, rules, job.seededFaults);
+                foreach (var f in job.seededFaults)
+                    Assert.IsFalse(FailureLab.IsFixed(f, v, rules), job.id + ": fault '" + f + "' must be detected once seeded");
+                Assert.IsFalse(string.IsNullOrEmpty(job.lesson), job.id + " needs a lesson");
+                Assert.IsFalse(string.IsNullOrEmpty(job.clientNote), job.id + " needs a client note");
+            }
+        }
+
+        [Test]
         public void Apollo12_SceToAuxThenFuelCells_WrongCallsCostPoints()
         {
             var job = TestData.Registry.GetMission("failure_apollo12");
