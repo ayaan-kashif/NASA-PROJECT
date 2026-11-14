@@ -36,7 +36,17 @@ namespace TMinus.Core
             }
 
             if (_volume != null) Object.Destroy(_volume);
-            var profile = lit ? Resources.Load<VolumeProfile>(flight || menu ? "Looks/Look_Flight" : "Looks/Look_Interior") : null;
+            bool bay = scene == SceneNames.IntegrationBay || scene == SceneNames.AvionicsBay;
+            string grade = flight || menu ? "Looks/Look_Flight" : bay ? "Looks/Look_Bay" : "Looks/Look_Interior";
+            var profile = lit ? Resources.Load<VolumeProfile>(grade) : null;
+            // Light fog gives the VAB depth (the far end of the hangar softens); off everywhere else.
+            RenderSettings.fog = scene == SceneNames.VAB;
+            if (RenderSettings.fog)
+            {
+                RenderSettings.fogMode = FogMode.Linear;
+                RenderSettings.fogStartDistance = 35f; RenderSettings.fogEndDistance = 170f;
+                RenderSettings.fogColor = new Color(0.07f, 0.1f, 0.17f);
+            }
             if (profile != null)
             {
                 _volume = new GameObject("[Look Volume]");

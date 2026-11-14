@@ -65,6 +65,8 @@ namespace TMinus.EditorTools
 
             Profile("Look_Interior", contrast: 14, saturation: 8, exposure: 0.15f, bloom: 0.55f, vignette: 0.24f, temperature: -4);
             Profile("Look_Flight", contrast: 10, saturation: 14, exposure: 0f, bloom: 0.9f, vignette: 0.16f, temperature: 0);
+            // Integration Bay and Avionics Bay: a cool, clean product-photo grade (the bench reads as a clean room).
+            Profile("Look_Bay", contrast: 12, saturation: 4, exposure: 0.1f, bloom: 0.45f, vignette: 0.18f, temperature: -10);
 
             // The PC quality level's pipeline asset (there is no project-wide default asset here).
             var pc = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>("Assets/Settings/PC_RPAsset.asset");
