@@ -154,3 +154,13 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Antigravity's code: `CodexMatcher` keyword matching (questions now carry the right Space Guide facts); answer cache is language-aware; web-safe request wait. Proxy: 1500-token headroom, skips reasoning parts, retries next model on truncation.
 - WebGL: the 3D view was black because URP's UberPost shader is unsupported there; `SceneLook` now falls back to plain rendering when it is. Post-processing stripping is off.
 - Verified: 97 pass + 1 intentional skip; golden path 100/100; Judge Mode; Sandbox rooms from an empty save; live link menu + VAB + launch in a browser; exe rebuilt.
+
+## Audit fixes (Claude, 2026-11-14) — NOT yet compiled or run in Unity
+- Written without Unity open (static edits only). **First thing to do: open the project, let it compile, run Window > General > Test Runner > EditMode, then play the golden path and Judge Mode.** Fix any compile error before anything else.
+- Gameplay: VAB button opens the checklist + poll (not Flight); one countdown (in Flight); no forced jump to the debrief (Judge Mode keeps it via `FlightController.AutoAdvance`); manual flight leaves the pad; Safe/Arm gates ignition (SAFE launch aborts, cause `av_safe_arm`); an unstacked rocket aborts on the pad (`abort_unbuilt`); a stranded stable orbit ends as Orbit.
+- Simulation/score: CubeSat wiring faults change operations (`Mission/OpsWiring.cs`: no downlink, no images, no solar, dead on deployment); team score depends on real players and the poll; hints/NO-GO reset per attempt (`GameState.BeginAttempt`); debrief shows mission goals ticked, flight charts, history vs last attempt (`MissionLog`), days instead of seconds, Main menu button; leaderboard one row per flight.
+- Player data: autosave + Continue (`Core/SaveService.cs`, `AutoSave`); Judge Mode and repair jobs back up and restore the player's build; pasted/loaded designs are cleaned by `DesignValidator`.
+- Extras: pause menu + controls card (P / F1, `UI/PauseMenu.cs`); engine rumble (`Flight/EngineSound.cs`); 3 more Failure Lab jobs; Quit/Fullscreen hidden on WebGL; Urdu labelled experimental.
+- Proxy: origin allow-list (`ALLOWED_ORIGINS`), optional `HOUSTON_CLIENT_TOKEN` / `clientToken` in houston.config.json, size caps, systemInstruction + safety settings, `?diag=models` removed. **Redeploying the proxy changes who can call it: check the live site still reaches HOUSTON.**
+- CI: `.github/workflows/ci.yml` (proxy typecheck; Unity tests once UNITY_LICENSE secrets exist).
+- Not done (see COMPLETE_PROJECT_AUDIT.md): Urdu font, removing the AI packages from the web build, PlayMode tests, string table, classroom mode and the larger features.

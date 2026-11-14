@@ -1,0 +1,69 @@
+# Continuous checks for T-MINUS (audit A-12).
+#
+# 1. proxy-typecheck: type-checks the HOUSTON proxy. Needs nothing set up.
+# 2. unity-tests: runs the EditMode tests with GameCI. It needs a Unity licence stored as repository secrets
+#    (UNITY_LICENSE, UNITY_EMAIL, UNITY_PASSWORD; see https://game.ci/docs/github/activation). Until those exist the
+#    job is skipped, not failed.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  proxy-typecheck:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: proxy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: proxy/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+
+  unity-tests:
+    runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+    steps:
+      - name: Check for a Unity licence
+        id: licence
+        run: |
+          if [ -z "$UNITY_LICENSE" ]; then
+            echo "No UNITY_LICENSE secret: skipping the Unity tests."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.licence.outputs.run == 'true'
+        with:
+          lfs: true
+      - uses: actions/cache@v4
+        if: steps.licence.outputs.run == 'true'
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Packages/packages-lock.json', 'ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: Library-
+      - uses: game-ci/unity-test-runner@v4
+        if: steps.licence.outputs.run == 'true'
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          unityVersion: auto
+          testMode: editmode
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        if: steps.licence.outputs.run == 'true' && always()
+        with:
+          name: editmode-test-results
+          path: artifacts
