@@ -89,6 +89,7 @@ namespace TMinus.Mission
             BuildOrbit(c2, m);
             BuildRockets(c2, m);
             BuildSites(c2, m);
+            if (m.rewardImages.Count > 0) BuildTarget(c2);
 
             // Column 3: crew, flow, design codes.
             var c3 = Col(cols, "CREW");
@@ -141,6 +142,25 @@ namespace TMinus.Mission
                 card.RegisterCallback<ClickEvent>(_ => { if (allowed) { S.Vehicle.rocketId = id; ShowBriefing(); } else Toast($"{r.name} is for another mission."); });
                 col.Add(card);
             }
+        }
+
+        /// <summary>Where the satellite looks (audit F26). Lake Manchar is bundled; the others are fetched live from NASA when you are online.</summary>
+        void BuildTarget(VisualElement col)
+        {
+            col.Add(L("TARGET REGION", "brief-sub"));
+            var chips = new VisualElement(); chips.AddToClassList("bin-chips");
+            var selected = LiveImagery.Selected;
+            foreach (var r in LiveImagery.Regions)
+            {
+                var region = r;
+                var b = Btn(r.name, () => { LiveImagery.Select(region.id); ShowBriefing(); }, "bin-chip");
+                b.EnableInClassList("on", r.id == selected.id);
+                chips.Add(b);
+            }
+            col.Add(chips);
+            col.Add(L(LiveImagery.IsBundled(selected)
+                ? "The debrief shows the real Landsat pictures of the 2022 Lake Manchar floods."
+                : $"The debrief will show a real NASA picture of {selected.name} (MODIS, {LiveImagery.SourceResolutionM:0} m per pixel, {LiveImagery.Date}) if you are online.", "brief-text"));
         }
 
         void BuildSites(VisualElement col, MissionDef m)

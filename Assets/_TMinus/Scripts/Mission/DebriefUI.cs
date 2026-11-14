@@ -47,6 +47,7 @@ namespace TMinus.Mission
             reward.Add(new Label(ops.rewardPlaceholder));
             reward.Add(RewardGallery.Build(s.Data.GetMission(s.CurrentMissionId), ops));
             var credit = new Label(ops.rewardCredit); credit.AddToClassList("muted"); reward.Add(credit); page.Add(reward);
+            AddLiveView(page, ops);
             AddDesignCompare(page);
             page.Add(new Label("WHAT HAPPENED") { name = "section" });
             var events = s.Events.All.Where(e => e.system == "operations" || (e.system == "flight" && (e.severity >= Severity.Warning || e.code == "orbit_achieved" || e.code == "cubesat_deployed")))
@@ -105,6 +106,26 @@ namespace TMinus.Mission
                 label.text = answer.Trim() + "  (AI summary)";
             }
             catch (Exception) { /* offline text stays */ }
+        }
+
+        /// <summary>The player's chosen region as NASA's satellites see it (audit F26), shown at the detail of the camera that was built.</summary>
+        void AddLiveView(VisualElement page, OpsReport ops)
+        {
+            var region = LiveImagery.Selected;
+            if (LiveImagery.IsBundled(region) || JudgeMode.Active != null) return;
+            var card = Card("LIVE VIEW FROM NASA  /  " + region.name.ToUpperInvariant()); page.Add(card);
+            if (ops.imagesDownlinked <= 0) { card.Add(new Label("No images came home, so there is no picture of this region to show.")); return; }
+            var note = new Label("Fetching the picture from NASA Worldview..."); note.AddToClassList("muted"); note.style.whiteSpace = WhiteSpace.Normal; card.Add(note);
+            var pic = new Image { scaleMode = ScaleMode.ScaleToFit }; pic.style.width = RewardGallery.TileWidthPx * 1.4f; pic.style.height = RewardGallery.TileWidthPx * 1.4f;
+            card.Add(pic);
+            StartCoroutine(LiveImagery.Fetch(region, 512, tex =>
+            {
+                if (note.panel == null) return;   // the player already left the debrief
+                if (tex == null) { note.text = "Could not reach NASA Worldview (you may be offline). The bundled Lake Manchar images above always work."; return; }
+                int width = RewardGallery.ResolvedWidth(ops.rewardGsdM, 512);
+                pic.image = RewardGallery.Degrade(tex, System.Math.Max(8, System.Math.Min(512, width)));
+                note.text = $"Seen at your camera's detail ({ops.rewardGsdM:0.#} m per pixel). The source is MODIS Terra, {LiveImagery.SourceResolutionM:0} m per pixel at best, {LiveImagery.Date}. Credit: NASA EOSDIS Worldview / GIBS.";
+            }));
         }
 
         /// <summary>Records this flight in the mission log and compares it with the last attempt (the Judge Mode demo is not recorded).</summary>
