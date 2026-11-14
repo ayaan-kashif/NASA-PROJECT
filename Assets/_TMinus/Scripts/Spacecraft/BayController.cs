@@ -142,20 +142,25 @@ namespace TMinus.Spacecraft
         static string MountName(string mount) =>
             mount == "slot" ? "slot" : mount == "face_long" ? "side face" : mount == "face_end" ? "end face" : mount;
 
-        public void Install(string partId)
+        public void Install(string partId) => Install(partId, null);
+
+        /// <summary>forceId brings a removed part back under its old instance id (undo), so its cables still address it.</summary>
+        public void Install(string partId, string forceId)
         {
             var def = Data.GetPart(partId);
             if (def == null) return;
             var mount = Model.FreeMountFor(def);
             if (mount == null) { ui.Toast($"No free {MountName(def.mount)} for the {def.name}. Remove something first."); AudioFx.Play("error"); return; }
 
-            string id = partId;
+            string id = !string.IsNullOrEmpty(forceId) && Design.parts.All(p => p.instanceId != forceId) ? forceId : partId;
             for (int n = 2; Design.parts.Any(p => p.instanceId == id); n++) id = partId + "_" + n;
             Design.parts.Add(new PlacedPart { instanceId = id, partId = partId, mountId = mount });
             Model.Install(id, def, mount, true);
             if (def.ports.Count > 0) bench.AddDevice(id, def);
             GameState.Instance.Events.Add("IntegrationBay", "PartInstalled", $"{def.name} in {mount}", id);
             ui.Toast($"{def.name} installed in {mount}.", 1800);
+            string installedId = id;
+            UndoStack.Push("install " + def.name, () => Remove(installedId), () => Install(partId, installedId));
             if (Mode == "wire") Frame(false);
             RefreshBin();
             Save();
@@ -165,11 +170,18 @@ namespace TMinus.Spacecraft
         {
             var placed = Design.parts.FirstOrDefault(p => p.instanceId == instanceId);
             if (placed == null || placed.partId == "rbf_pin") return;
+            // Remember the part's cables so Ctrl+Z can plug them back in (audit F7).
+            string removedPartId = placed.partId;
+            var attached = bench.Graph.Cables.Where(k => WiringGraph.DeviceOf(k.a) == instanceId || WiringGraph.DeviceOf(k.b) == instanceId)
+                                              .Select(k => new { k.a, k.b, k.reversed }).ToList();
             Design.parts.Remove(placed);
             Model.Uninstall(instanceId);
             bench.RemoveDevice(instanceId);
             AudioFx.Play("click");
             GameState.Instance.Events.Add("IntegrationBay", "PartRemoved", $"{Data.GetPart(placed.partId)?.name} removed", instanceId);
+            UndoStack.Push("remove " + Data.GetPart(removedPartId)?.name,
+                () => { Install(removedPartId, instanceId); foreach (var k in attached) bench.Connect(k.a, k.b, k.reversed); },
+                () => Remove(instanceId));
             RefreshBin();
             Save();
         }

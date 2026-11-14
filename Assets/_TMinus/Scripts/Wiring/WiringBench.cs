@@ -143,14 +143,25 @@ namespace TMinus.Wiring
                 Toast?.Invoke($"Sparks! Short circuit: two power outputs wired together. Right-click the cable to remove it.");
             }
             else AudioFx.Play("plug");
+            // Ctrl+Z unplugs it again; Ctrl+Y plugs it back (audit F7).
+            bool rev = c.reversed;
+            UndoStack.Push("cable " + Graph.Describe(a) + " to " + Graph.Describe(b), () => DisconnectBetween(a, b), () => Connect(a, b, rev));
             return c;
+        }
+
+        void DisconnectBetween(string a, string b)
+        {
+            var c = Graph.Cables.FirstOrDefault(x => (x.a == a && x.b == b) || (x.a == b && x.b == a));
+            if (c != null) Disconnect(c.id);
         }
 
         public void Disconnect(string cableId)
         {
             var c = Graph.Cables.FirstOrDefault(x => x.id == cableId);
             if (c == null) return;
+            string endA = c.a, endB = c.b; bool wasReversed = c.reversed;
             Graph.Disconnect(cableId);
+            UndoStack.Push("unplug " + Graph.Describe(endA) + " from " + Graph.Describe(endB), () => Connect(endA, endB, wasReversed), () => DisconnectBetween(endA, endB));
             AudioFx.Play("click");
             GameState.Instance?.Events.Add(system, "CableRemoved", $"{Graph.Describe(c.a)} -x- {Graph.Describe(c.b)}", cableId);
         }

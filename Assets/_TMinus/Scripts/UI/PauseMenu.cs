@@ -35,6 +35,7 @@ namespace TMinus.UI
                 "Build mode: click a part in the list to install it in the 3U frame. Click the RBF pin to pull it.",
                 "Wire mode: click a port, then another port to run a cable. R flips a power plug. Right-click a cable to unplug it. Esc cancels.",
                 "Multimeter: click two ports to test whether they are connected.",
+                "Ctrl+Z undoes and Ctrl+Y redoes: installing or removing a part, plugging or unplugging a cable.",
                 "Right-drag orbits the camera, middle-drag pans, scroll zooms.",
             },
             [SceneNames.VAB] = new[]
@@ -48,6 +49,7 @@ namespace TMinus.UI
             {
                 "Click a port, then another port to run a cable. Right-click a cable to unplug it. Esc cancels.",
                 "Keep Safe/Arm on SAFE while you work. Arm it at the pad, from the pre-launch checklist.",
+                "Ctrl+Z undoes and Ctrl+Y redoes plugging or unplugging a cable.",
             },
             [SceneNames.Flight] = new[]
             {
