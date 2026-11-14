@@ -32,6 +32,7 @@ namespace TMinus.Tests
             StringAssert.Contains("BBOX=23.5,66,25.8,68.4", url);
             StringAssert.Contains("WIDTH=512&HEIGHT=512", url);
             StringAssert.Contains("LAYERS=MODIS_Terra_CorrectedReflectance_TrueColor", url);
+            StringAssert.DoesNotContain("WRAP", url, "NASA Worldview answers 'Invalid value for WRAP' to WRAP=DAY,DAY");
         }
 
         [Test]

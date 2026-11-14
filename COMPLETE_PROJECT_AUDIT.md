@@ -728,7 +728,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] F22 AI debrief narration
 - [x] F23 "What if?" explainer
 - [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
-- [x] F25 Live crew mode (a live room over the free public message service ntfy.sh carries votes with no server of our own; the pad code is still copied by hand; never tried against the live service)
-- [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
+- [x] F25 Live crew mode (a live room over the free public message service ntfy.sh carries votes with no server of our own; the pad code is still copied by hand; the relay protocol was tried live on 14 November 2026: publishing and polling work and the reply has the shape the game reads; the game code itself never ran)
+- [x] F26 Real-data missions (target regions with live NASA Worldview imagery; the address was tried live on 14 November 2026: the first version was refused for a WRAP parameter, the corrected one returns a real MODIS JPEG. Whether a browser build may fetch it across origins is still unchecked)
 - [x] Rehbar-I mission (flight-only sounding-rocket mission: a two-stage solid rocket tuned with tools/sim to climb about 130 km; the flight ends at its highest point; never run in Unity)
 - [x] Moonshot mission (flight-only mission: the Saturn V reaches the 185 km parking orbit with the altitude-hold guidance profile found with tools/sim; the C# flight is covered by a test that has never been run)

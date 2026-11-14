@@ -18,7 +18,7 @@ namespace TMinus.Mission
     /// <summary>
     /// Real-data target (audit F26): pick a region in the briefing and the debrief shows a real NASA picture of it, fetched live from
     /// NASA Worldview Snapshots (MODIS Terra true colour, 250 m per pixel at best) and shown at your camera's detail. The Lake Manchar
-    /// floods stay bundled so the mission works offline. This needs an internet connection and was never tried against the live service.
+    /// floods stay bundled so the mission works offline. This needs an internet connection. The address was tried against the live service on 14 November 2026 and returns a JPEG (a first version with a WRAP parameter was refused).
     /// </summary>
     public static class LiveImagery
     {
@@ -60,7 +60,7 @@ namespace TMinus.Mission
         {
             var c = CultureInfo.InvariantCulture;
             return "https://wvs.earthdata.nasa.gov/api/v1/snapshot?REQUEST=GetSnapshot"
-                 + "&LAYERS=" + Layer + "&CRS=EPSG:4326&TIME=" + Date + "&WRAP=DAY,DAY"
+                 + "&LAYERS=" + Layer + "&CRS=EPSG:4326&TIME=" + Date
                  + "&BBOX=" + r.minLat.ToString(c) + "," + r.minLon.ToString(c) + "," + r.maxLat.ToString(c) + "," + r.maxLon.ToString(c)
                  + "&FORMAT=image/jpeg&WIDTH=" + pixels + "&HEIGHT=" + pixels;
         }
