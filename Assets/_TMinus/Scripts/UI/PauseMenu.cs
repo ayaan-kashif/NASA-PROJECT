@@ -116,7 +116,7 @@ namespace TMinus.UI
         void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            if (_open) Time.timeScale = 1f;
+            if (_open) { Time.timeScale = 1f; AudioListener.pause = false; }
             if (_instance == this) _instance = null;
         }
 
@@ -148,6 +148,7 @@ namespace TMinus.UI
             if (_overlay == null) return;
             _open = true;
             Time.timeScale = 0f;
+            AudioListener.pause = true;
             _overlay.style.display = DisplayStyle.Flex;
             Build();
         }
@@ -157,6 +158,7 @@ namespace TMinus.UI
             if (!_open && (_overlay == null || _overlay.style.display != DisplayStyle.Flex)) return;
             _open = false; _showControls = false;
             Time.timeScale = 1f;
+            AudioListener.pause = false;
             if (_overlay != null) _overlay.style.display = DisplayStyle.None;
         }
 

@@ -31,6 +31,7 @@ namespace TMinus.Mission
             page.Add(new Label($"{s.Data.GetMission(s.CurrentMissionId)?.name ?? "Mission"}  ·  {new string('★', score.stars)}{new string('☆', 3 - score.stars)}") { name = "title" });
             page.Add(new Label($"{score.total:0.0} / 100 points     ·     {(s.Flight.deployed ? "DEPLOYED" : "NOT DEPLOYED")}     ·     {ops.daysAlive} / {ops.timeline.Count} days alive") { name = "summary" });
             AddGoals(page, s, ops);
+            AddHistory(page, s, score);
             var grid = new VisualElement(); grid.AddToClassList("debrief-grid"); page.Add(grid);
             var scoreCard = Card("SCORE BREAKDOWN"); grid.Add(scoreCard);
             foreach (var line in score.breakdown) scoreCard.Add(new Label($"{line.label}     {line.points:0.#} / {line.maximum:0.#}"));
@@ -38,6 +39,7 @@ namespace TMinus.Mission
             opsCard.Add(new Label($"Images captured     {ops.imagesTaken}")); opsCard.Add(new Label($"Images downlinked   {ops.imagesDownlinked}"));
             opsCard.Add(new Label($"Data returned       {ops.downlinkedMB:0.#} MB")); opsCard.Add(new Label($"Storage remaining   {ops.storedMB:0.#} MB"));
             opsCard.Add(new Label($"Battery final       {ops.finalSoc:P0}"));
+            AddFlightCharts(page, s.Flight);
             page.Add(new Label("STATE OF CHARGE  ·  ORBIT SAMPLES") { name = "section" });
             page.Add(BuildTimeline(ops));
             var reward = Card("SCIENCE REWARD  /  LAKE MANCHAR");
@@ -67,6 +69,58 @@ namespace TMinus.Mission
             double days = (e.time - flightEndS) / 86400.0;
             return days < 0.5 ? "On deployment" : $"Day {Math.Round(days):0}";
         }
+        /// <summary>Records this flight in the mission log and compares it with the last attempt (the Judge Mode demo is not recorded).</summary>
+        void AddHistory(VisualElement page, GameState s, MissionScore score)
+        {
+            if (JudgeMode.Active != null) return;
+            var entry = new LogEntry
+            {
+                missionId = s.CurrentMissionId, score = score.total, stars = score.stars, outcome = s.Flight.outcome,
+                cause = s.Flight.failureCause, code = s.Flight.failureCode
+            };
+            var previous = MissionLog.RecordOnce(s.Flight, entry);
+            var best = MissionLog.Best(s.CurrentMissionId);
+            int attempts = MissionLog.Count(s.CurrentMissionId);
+            double bestScore = best != null ? best.score : score.total;
+            string line = previous == null
+                ? $"First recorded attempt on this mission. Best so far: {score.total:0.0} points."
+                : $"Last attempt: {previous.score:0.0} points ({MissionLog.StarText(previous.stars)}). This attempt: {score.total:0.0} ({(score.total >= previous.score ? "+" : "")}{score.total - previous.score:0.0}). Best: {bestScore:0.0}. Attempts: {attempts}.";
+            var label = new Label(line); label.AddToClassList("muted");
+            page.Add(label);
+        }
+
+        /// <summary>Altitude, speed and dynamic pressure over the flight, with max-Q in orange and a failed end in red (feature F9).</summary>
+        static void AddFlightCharts(VisualElement page, FlightRecord f)
+        {
+            if (f == null || !f.flown || f.telemetry == null || f.telemetry.Count < 6) return;
+            page.Add(new Label("THE FLIGHT  ·  ALTITUDE, SPEED, DYNAMIC PRESSURE") { name = "section" });
+            bool failed = !f.orbitAchieved;
+            page.Add(Bars("Altitude (km)", f, p => p.altitudeKm, "km", failed));
+            page.Add(Bars("Speed (m/s)", f, p => p.speedMs, "m/s", failed));
+            page.Add(Bars("Dynamic pressure (kPa). Orange bar = max-Q", f, p => p.qKPa, "kPa", failed));
+        }
+
+        static VisualElement Bars(string title, FlightRecord f, Func<TelemetryPoint, float> value, string unit, bool failed)
+        {
+            var wrap = new VisualElement();
+            wrap.Add(new Label(title));
+            var graph = new VisualElement(); graph.AddToClassList("soc-timeline");
+            float max = Math.Max(1e-3f, f.telemetry.Max(value));
+            int step = Math.Max(1, f.telemetry.Count / 40);
+            for (int i = 0; i < f.telemetry.Count; i += step)
+            {
+                var p = f.telemetry[i];
+                var bar = new VisualElement(); bar.AddToClassList("soc-bar");
+                bar.style.height = Length.Percent(Mathf.Clamp(10 + 90 * value(p) / max, 10, 100));
+                bar.tooltip = $"T+{p.t:0} s: {value(p):0.#} {unit}";
+                if (Math.Abs(p.t - f.maxQTimeS) <= step) bar.style.backgroundColor = new Color(1f, 0.55f, 0.1f);
+                else if (failed && i + step >= f.telemetry.Count) bar.style.backgroundColor = new Color(0.9f, 0.25f, 0.2f);
+                graph.Add(bar);
+            }
+            wrap.Add(graph);
+            return wrap;
+        }
+
         void AddGoals(VisualElement page, GameState s, OpsReport ops)
         {
             var mission = s.Data.GetMission(s.CurrentMissionId);

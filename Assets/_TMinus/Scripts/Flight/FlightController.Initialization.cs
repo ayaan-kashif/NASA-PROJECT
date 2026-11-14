@@ -75,6 +75,7 @@ namespace TMinus.Flight
                 if (S.Spacecraft.orbitAltitudeKm > 0 && _rocket.buildable) Sim.Options.targetAltitudeKm = S.Spacecraft.orbitAltitudeKm;
                 Sim.Options.pitchKickDeg = S.Vehicle.pitchKickDeg > 0 ? S.Vehicle.pitchKickDeg : 3;
 
+                if (_engine == null) _engine = gameObject.AddComponent<EngineSound>();
                 _cam = orbit.GetComponent<Camera>();
                 if (_cam == null) throw new InvalidOperationException("Flight OrbitCamera must be attached to a Camera.");
                 view.cam = _cam;

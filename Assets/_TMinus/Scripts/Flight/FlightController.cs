@@ -40,6 +40,7 @@ namespace TMinus.Flight
         public bool Ended { get; private set; }
         public readonly List<Vec2d> Path = new List<Vec2d>();
 
+        EngineSound _engine;
         AvionicsReport _avionics;
         RocketDef _rocket;
         double _maxQ, _lastPathT = -1;
@@ -121,6 +122,7 @@ namespace TMinus.Flight
             view.Sync(Sim.Position, Sim.Velocity, Sim.TimeS, last != null ? last.thrustN / maxThrust : 0, last?.altitudeM ?? 0);
             hud.Tick(last, Sim);
             UpdateCamera(last);
+            if (_engine != null) _engine.Set(Launched && !Ended && last != null ? (float)(last.thrustN / maxThrust) : 0f, (float)(last?.altitudeM ?? 0));
 
             if (_endTimer >= 0 && (_endTimer -= Time.deltaTime) < 0) { _endTimer = -1; SceneFlow.Load(SceneNames.Debrief); }
         }
