@@ -690,7 +690,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
 - [x] F22 AI debrief narration
 - [x] F23 "What if?" explainer
-- [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
+- [x] F24 Failure replay (jump to the cause with an explanation; "Watch the failure again" flies the same deterministic flight in slow motion before the failure, and when it ends a time slider lets you scrub to any second, by flying a fresh copy of the design to that time with a throwaway log; the 3D model keeps the stages it already dropped; a test checks the determinism it relies on; never run in Unity)
 - [x] F25 Live crew mode (a live room over the free public message service ntfy.sh carries votes with no server of our own; a teammate can join with only the room code, because the host's pad code is sent through the room too; pasting the pad code by hand remains as the fallback when a design is too long for one message or the relay is unreachable; the relay protocol was tried live on 14 November 2026: publishing and polling work and the reply has the shape the game reads; the game code itself never ran)
 - [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
 - [x] Rehbar-I mission (flight-only sounding-rocket mission: a two-stage solid rocket tuned with tools/sim to climb about 130 km; the flight ends at its highest point; never run in Unity)

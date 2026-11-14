@@ -33,7 +33,7 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
   - F18 (school licence) is the pilot offer the roadmap starts with (`tools/web/schools.html`); billing waits for what the pilot schools say.
   - F20's class dashboard is a browser page (`tools/web/teacher.html`) that listens to a class room on the public ntfy.sh relay (or reads pasted CSV); it is not our own server with accounts, so there is no login and results are kept only about 12 hours.
   - F25's live crew uses the free public relay ntfy.sh for votes (plus copy-and-paste codes), not a server of ours.
-  - F15 has the text and a "Save picture" screenshot button, not a designed 1200x630 card; F24 jumps to the cause and can replay the failure in slow motion; F17's touch support is experimental.
+  - F15 has the text and a "Save picture" screenshot button, not a designed 1200x630 card; F24 jumps to the cause, replays the failure in slow motion and lets you scrub the replay with a time slider (the 3D model keeps dropped stages); F17's touch support is experimental.
   - A-24 moves plain on-screen text into `strings.json` (88 entries, by `tools/extract_strings.py`); text built at run time is still in the scripts.
   - A-11 is a release script (`tools/build_release.sh`) rather than a change to the development project, which keeps the AI packages for the Unity MCP tooling.
   - I12: the figures were checked against the Wikipedia articles the data cites; NASA's own Saturn V document could not be reached.
@@ -727,7 +727,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
 - [x] F22 AI debrief narration
 - [x] F23 "What if?" explainer
-- [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
+- [x] F24 Failure replay (jump to the cause with an explanation; "Watch the failure again" flies the same deterministic flight in slow motion before the failure, and when it ends a time slider lets you scrub to any second, by flying a fresh copy of the design to that time with a throwaway log; the 3D model keeps the stages it already dropped; a test checks the determinism it relies on; never run in Unity)
 - [x] F25 Live crew mode (a live room over the free public message service ntfy.sh carries votes with no server of our own; a teammate can join with only the room code, because the host's pad code is sent through the room too; pasting the pad code by hand remains as the fallback when a design is too long for one message or the relay is unreachable; the relay protocol was tried live on 14 November 2026: publishing and polling work and the reply has the shape the game reads; the game code itself never ran)
 - [x] F26 Real-data missions (target regions with live NASA Worldview imagery; the address was tried live on 14 November 2026: the first version was refused for a WRAP parameter, the corrected one returns a real MODIS JPEG. Whether a browser build may fetch it across origins is still unchecked)
 - [x] Rehbar-I mission (flight-only sounding-rocket mission: a two-stage solid rocket tuned with tools/sim to climb about 130 km; the flight ends at its highest point; never run in Unity)

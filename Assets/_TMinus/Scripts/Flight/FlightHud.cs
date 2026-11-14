@@ -129,6 +129,7 @@ namespace TMinus.Flight
             L(r.orbitAchieved ? "ORBIT ACHIEVED" : r.outcome == "Apogee" ? "APOGEE REACHED" : r.outcome == "Aborted" ? "ABORTED" : "MISSION LOST", "end-title", p);
             L(r.outcome == "Apogee" ? $"{r.apoapsisKm:0} km up · max-Q {r.maxQKPa:0.0} kPa · T+{r.flightTimeS:0} s" : r.orbitAchieved ? $"{r.periapsisKm:0} × {r.apoapsisKm:0} km orbit · max-Q {r.maxQKPa:0.0} kPa · {(r.flightOnly ? $"{r.deltaVLeftMs:N0} m/s left for the Moon burn" : r.deployed ? "CubeSat deployed" : "CubeSat NOT deployed")}"
                               : $"{r.failureCode} at T+{r.flightTimeS:0} s · max-Q {r.maxQKPa:0.0} kPa", "check-detail", p);
+            if (_ctrl.IsReplay) ReplayScrubber.Build(p, _ctrl, r.flightTimeS);
             Btn(Strings.Get("flight.continue_to_operations_debrief", "Continue to operations + debrief  ›"), () => _ctrl.ContinueToDebrief(), "card-btn accent", p);
         }
 

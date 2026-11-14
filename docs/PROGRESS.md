@@ -193,3 +193,6 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 ## Live class room and picture (Claude, 2026-11-14) — still NOT compiled or run in Unity
 - F20: `teacher.html` has "Start a class room" (code like K7QF-3MXA-RD2T, topic `tminus-class-<code>` on ntfy.sh, polled every 5 s). The debrief has "Send result to my class" (`CrewRelay.PublishToTopic`, `MissionLog.CsvRow`). curl showed ntfy answers browsers with `Access-Control-Allow-Origin: *`; the page parser passed `node` tests.
 - F15: `Mission/ShareCard.cs` + `Plugins/WebGL/Download.jslib`, "Save picture" button. NASA Worldview also answers with `Access-Control-Allow-Origin: *` (F26 in a browser should work).
+
+## Replay scrub (Claude, 2026-11-14) - still NOT compiled or run in Unity
+- F24: `FlightController.ScrubTo` + `ReplayScrubber` (a Slider on the replay end card). It builds a fresh `FlightSim` with a throwaway `EventLog`, runs it to the chosen second and swaps it in, so the score, event log and attempt history are untouched. Test: `ScrubbingARewoundFlightShowsTheSameMomentAsTheOriginal`.

@@ -190,6 +190,30 @@ namespace TMinus.Tests.Flight
         }
 
         [Test]
+        public void ScrubbingARewoundFlightShowsTheSameMomentAsTheOriginal()
+        {
+            // Replay scrub (audit F24) flies a fresh copy of the same design up to the chosen second. That is only honest if the flight is deterministic.
+            var data = LoadData();
+            FlightSim Fresh()
+            {
+                var sim = FlightRuntime.Create(data, new VehicleDesign { rocketId = "pathfinder", launchSiteId = "sonmiani" },
+                    new PerfectAvionicsReport(), null, new EventLog());
+                sim.Options.pitchKickDeg = 3;
+                return sim;
+            }
+            var original = Fresh();
+            original.RunForSimSeconds(300);
+            var scrubbed = Fresh();
+            scrubbed.RunForSimSeconds(120);
+            var again = Fresh();
+            again.RunForSimSeconds(120);
+            Assert.AreEqual(scrubbed.Position.x, again.Position.x, 1e-6);
+            Assert.AreEqual(scrubbed.Position.y, again.Position.y, 1e-6);
+            Assert.AreEqual(scrubbed.MassKg, again.MassKg, 1e-9);
+            Assert.Less(scrubbed.TimeS, original.TimeS);
+        }
+
+        [Test]
         public void PartOfAStepIsKeptSoNormalSpeedFlightAdvances()
         {
             // At 60 frames a second one frame is 0.0167 s, less than one 0.05 s step. Dropping the remainder froze x1 and x2 flights.
