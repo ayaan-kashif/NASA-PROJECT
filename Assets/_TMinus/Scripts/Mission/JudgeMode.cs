@@ -21,7 +21,13 @@ namespace TMinus.Mission
         public static JudgeMode Active { get; private set; }
 
         int _step;
-        float _timer = -1;
+        float _timer = -1, _autoT;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        static readonly bool AutoPlay = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-judgeauto") >= 0;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void AutoStart() { if (AutoPlay && Active == null) Begin(); }
+#endif
         Label _caption, _counter;
         VisualElement _box;
 
@@ -106,6 +112,10 @@ namespace TMinus.Mission
             var kb = Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame && _step != 1) { Exit(); return; }
             if (kb != null && kb.spaceKey.wasPressedThisFrame) Next();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // Development builds with -judgeauto: move on by itself every 14 s (performance runs, no keyboard needed).
+            if (AutoPlay && (_autoT += Time.unscaledDeltaTime) > 14f) { _autoT = 0; Next(); }
+#endif
             if (_timer >= 0 && (_timer -= Time.unscaledDeltaTime) < 0) { _timer = -1; OnSceneReady(SceneManager.GetActiveScene().name); }
 
             // Flight 2: after the dramatic part (max-Q, staging) skip the long coast to orbit.

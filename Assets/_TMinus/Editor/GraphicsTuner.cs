@@ -16,11 +16,21 @@ namespace TMinus.EditorTools
         const string PcAsset = "Assets/Settings/PC_RPAsset.asset";
         const string PcRenderer = "Assets/Settings/PC_Renderer.asset";
 
-        struct Preset { public int msaa, cascades, shadowRes, softShadow, aoDownsample; }
+        struct Preset { public int msaa, cascades, shadowRes, softShadow, aoDownsample; public float renderScale; }
 
         // soft shadow quality: 1 Low, 2 Medium, 3 High. aoDownsample: 0 full size, 1 half size.
-        static readonly Preset Original = new Preset { msaa = 4, cascades = 4, shadowRes = 2048, softShadow = 3, aoDownsample = 0 };
-        static readonly Preset Faster = new Preset { msaa = 1, cascades = 2, shadowRes = 2048, softShadow = 2, aoDownsample = 1 };
+        static readonly Preset Original = new Preset { msaa = 4, cascades = 4, shadowRes = 2048, softShadow = 3, aoDownsample = 0, renderScale = 1f };
+        static readonly Preset Faster = new Preset { msaa = 1, cascades = 2, shadowRes = 2048, softShadow = 2, aoDownsample = 1, renderScale = 1f };
+        /// <summary>Live demo on a weak laptop (Radeon RX 540 / UHD 620): steady 30 fps at 1080p. SMAA still smooths the edges.</summary>
+        static readonly Preset DemoLive = new Preset { msaa = 1, cascades = 2, shadowRes = 1024, softShadow = 2, aoDownsample = 1, renderScale = 0.8f };
+        /// <summary>Recording the demo video frame by frame: best quality, no speed limit.</summary>
+        static readonly Preset DemoVideo = new Preset { msaa = 4, cascades = 4, shadowRes = 4096, softShadow = 3, aoDownsample = 0, renderScale = 1f };
+
+        [MenuItem("Tools/T-Minus/Graphics/Demo Live (weak laptop, 30 fps)", priority = 33)]
+        public static void DemoLiveMenu() => Apply(DemoLive, "demo live");
+
+        [MenuItem("Tools/T-Minus/Graphics/Demo Video (best quality, for recording)", priority = 34)]
+        public static void DemoVideoMenu() => Apply(DemoVideo, "demo video");
 
         [MenuItem("Tools/T-Minus/Graphics/Make Faster (same look)", priority = 30)]
         public static void MakeFaster() => Apply(Faster, "faster");
@@ -48,6 +58,8 @@ namespace TMinus.EditorTools
             Set(so, "m_ShadowCascadeCount", p.cascades);
             Set(so, "m_MainLightShadowmapResolution", p.shadowRes);
             Set(so, "m_SoftShadowQuality", p.softShadow);
+            var rs = so.FindProperty("m_RenderScale");
+            if (rs != null) rs.floatValue = p.renderScale;
             so.ApplyModifiedProperties();
             EditorUtility.SetDirty(asset);
 
