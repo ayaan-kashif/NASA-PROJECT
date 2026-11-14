@@ -29,6 +29,10 @@ namespace TMinus.Flight
             }
             private set => _instance = value;
         }
+        /// <summary>True only during the scripted Judge Mode demo: the end card then moves on to the debrief by itself.
+        /// Normally the player reads the end card and presses Continue.</summary>
+        public static bool AutoAdvance;
+
         public FlightSim Sim { get; private set; }
         public int Warp { get; set; } = 1;
         public string CameraMode { get; private set; } = "ground";
@@ -202,7 +206,7 @@ namespace TMinus.Flight
             }
             S.Flight = rec;
             hud.ShowEnd(rec);
-            _endTimer = outcome == "Orbit" ? 9f : 7f;
+            _endTimer = AutoAdvance ? (outcome == "Orbit" ? 9f : 7f) : -1f;
         }
 
         public void ContinueToDebrief() => SceneFlow.Load(SceneNames.Debrief);

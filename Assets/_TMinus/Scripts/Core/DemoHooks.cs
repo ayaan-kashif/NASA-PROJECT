@@ -13,5 +13,9 @@ namespace TMinus.Core
 
         /// <summary>Main-menu panel to open on the next load ("failure" or "sandbox"), set by the mission list.</summary>
         public static string PendingMenuPanel;
+
+        /// <summary>What the mission-briefing scene shows when it loads: "checklist" (pre-launch checklist, opened from the VAB)
+        /// or "briefing" (the current mission's briefing, opened by Continue). Null = the mission list.</summary>
+        public static string PendingBriefingPanel;
     }
 }

@@ -49,6 +49,10 @@ namespace TMinus.Mission
         {
             foreach (var c in S.Crew.Select(c => c.name).Distinct()) if (!_players.Contains(c)) _players.Add(c);
             if (_players.Count > 1 && _players[0] == "Player 1" && !S.Crew.Any(c => c.name == "Player 1")) _players.RemoveAt(0);
+
+            var pending = DemoHooks.PendingBriefingPanel; DemoHooks.PendingBriefingPanel = null;
+            if (pending == "checklist") { ShowBriefing(); ShowChecklist(); return; }
+            if (pending == "briefing") { ShowBriefing(); return; }
             ShowMissionSelect();
         }
 

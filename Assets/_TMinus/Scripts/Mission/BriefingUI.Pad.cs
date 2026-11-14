@@ -90,40 +90,28 @@ namespace TMinus.Mission
             panel.Add(row);
         }
 
-        // ------------------------------------------------------------------ countdown
+        // ------------------------------------------------------------------ hand-over to the pad
 
-        static readonly string[] Callouts =
-        {
-            "T-10  Guidance is internal", "T-9  Range is green", "T-8  Telemetry check", "T-7  Pyro channels armed",
-            "T-6  Propellant pressurised", "T-5  Flight computer go", "T-4  Payload on internal power", "T-3  Ignition sequence start",
-            "T-2", "T-1", "LIFTOFF!"
-        };
-
+        // The terminal count (T-10 to liftoff) runs once, in the Flight scene, where the pitch kick is chosen.
         void StartCountdown()
         {
             S.Launch.launched = true;
             if (S.Launch.knownFailures.Count > 0)
                 Log("LaunchWithKnownFailures", "Launched with known FAILs: " + string.Join(", ", S.Launch.knownFailures), string.Join(",", S.Launch.knownFailures), Severity.Warning);
-            Log("CountdownStarted", "All roles GO. Countdown started.");
-            StartCoroutine(Countdown());
+            Log("AllRolesGo", "All roles GO. Moving to the pad.");
+            StartCoroutine(GoToPad());
         }
 
-        IEnumerator Countdown()
+        IEnumerator GoToPad()
         {
             _modal.Clear();
             var panel = new VisualElement(); panel.AddToClassList("poll-panel");
-            var big = L("T-10", "countdown");
-            var call = L("", "pad-title");
             panel.Add(L("ALL ROLES GO", "info-category"));
-            panel.Add(big); panel.Add(call);
+            panel.Add(L("GO", "countdown"));
+            panel.Add(L("To the pad. Next you choose the pitch kick and start the terminal count.", "pad-title"));
             _modal.Add(panel);
-            for (int i = 0; i < Callouts.Length; i++)
-            {
-                big.text = i < 10 ? $"T-{10 - i}" : "T-0";
-                call.text = Callouts[i];
-                AudioFx.Play("beep", 0.8f, i < 10 ? 1f : 1.5f);
-                yield return new WaitForSeconds(i < 10 ? 0.6f : 1.0f);
-            }
+            AudioFx.Play("beep", 0.8f);
+            yield return new WaitForSeconds(1.6f);
             SceneFlow.Load(SceneNames.Flight);
         }
 

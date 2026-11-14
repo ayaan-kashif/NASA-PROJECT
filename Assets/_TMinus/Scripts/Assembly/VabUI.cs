@@ -60,7 +60,8 @@ namespace TMinus.Assembly
             _xray = Bind("btn-xray", () => { _xrayOn = !_xrayOn; _xray.EnableInClassList("on", _xrayOn); XRayChanged?.Invoke(_xrayOn); });
             Bind("btn-reset", () => ResetCamera?.Invoke());
             Bind("btn-menu", () => SceneFlow.Load(SceneNames.MainMenu));
-            Bind("btn-next", SceneFlow.Next);
+            // The pad checklist and the GO/NO-GO poll live in the briefing scene: go there, never straight to Flight.
+            Bind("btn-next", () => { DemoHooks.PendingBriefingPanel = "checklist"; SceneFlow.Load(SceneNames.MissionBriefing); });
             Bind("btn-avionics", () => SceneFlow.Load(SceneNames.AvionicsBay));
             Bind("btn-info-close", () => { HidePart(); InfoClosed?.Invoke(); });
             Bind("btn-learn", () => OpenCodex(GameState.Instance?.Data.GetPart(_shownPartId)?.codexId));

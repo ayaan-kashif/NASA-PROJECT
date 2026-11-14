@@ -50,6 +50,7 @@ namespace TMinus.Mission
             if (Active != null) return;
             var go = new GameObject("[JudgeMode]");
             DontDestroyOnLoad(go);
+            FlightController.AutoAdvance = true;   // the scripted story moves on by itself after each flight
             Active = go.AddComponent<JudgeMode>();
         }
 
@@ -87,6 +88,7 @@ namespace TMinus.Mission
         void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            FlightController.AutoAdvance = false;
             if (Active == this) Active = null;
         }
 

@@ -13,7 +13,7 @@
             <ui:Button name="btn-reset" text="Reset camera" class="tool-btn" />
             <ui:Button name="btn-avionics" text="Avionics bay" class="tool-btn" />
             <ui:VisualElement class="tool-sep" />
-            <ui:Button name="btn-next" text="To launch pad  &gt;" class="tool-btn accent" />
+            <ui:Button name="btn-next" text="Pre-launch checklist  &gt;" class="tool-btn accent" />
         </ui:VisualElement>
         </ui:VisualElement>
 
