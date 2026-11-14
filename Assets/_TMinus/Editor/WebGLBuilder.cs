@@ -38,11 +38,16 @@ namespace TMinus.EditorTools
             if (urpGlobal != null)
             {
                 var so = new SerializedObject(urpGlobal);
-                bool changed = false;
+                // The committed asset is the single source of truth (audit A-34): if someone turned stripping back on, say so and stop
+                // instead of quietly editing project settings as a side effect of a build.
                 var it = so.GetIterator();
                 while (it.Next(true))
-                    if (it.propertyType == SerializedPropertyType.Boolean && it.name.StartsWith("m_StripUnusedPostProcessing") && it.boolValue) { it.boolValue = false; changed = true; }
-                if (changed) { so.ApplyModifiedPropertiesWithoutUndo(); AssetDatabase.SaveAssets(); }
+                    if (it.propertyType == SerializedPropertyType.Boolean && it.name.StartsWith("m_StripUnusedPostProcessing") && it.boolValue)
+                    {
+                        Debug.LogError("[T-Minus] Post-processing shader stripping is ON in UniversalRenderPipelineGlobalSettings. The web build would show a black 3D view. " +
+                                       "Turn it off (Project Settings > Graphics > URP Global Settings > Shader Stripping) and build again.");
+                        return;
+                    }
             }
 
             var scenes = EditorBuildSettings.scenes.Where(s => s.enabled && File.Exists(s.path)).Select(s => s.path).ToArray();

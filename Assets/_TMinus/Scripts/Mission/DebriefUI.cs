@@ -186,17 +186,7 @@ namespace TMinus.Mission
                 Leaderboard.Save(rows.OrderByDescending(x => x.score).Take(10).ToList());
             }
             rows = Leaderboard.Load().OrderByDescending(x => x.score).Take(10).ToList();
-            _status.text = "LOCAL TOP 10 (this computer only)
-" + string.Join("
-", rows.Select((x, i) => $"{i + 1}. {x.name}  {x.score:0.0}"));
+            _status.text = "LOCAL TOP 10 (this computer only)\n" + string.Join("\n", rows.Select((x, i) => $"{i + 1}. {x.name}  {x.score:0.0}"));
         }
-    }
-    [Serializable] sealed class LeaderboardEntry { public string name, code; public double score; }
-    [Serializable] sealed class LeaderboardList { public List<LeaderboardEntry> entries = new List<LeaderboardEntry>(); }
-    static class Leaderboard
-    {
-        const string Key = "TMinus.LocalLeaderboard.v1";
-        public static List<LeaderboardEntry> Load() { var json = PlayerPrefs.GetString(Key, ""); return string.IsNullOrEmpty(json) ? new List<LeaderboardEntry>() : JsonUtility.FromJson<LeaderboardList>(json)?.entries ?? new List<LeaderboardEntry>(); }
-        public static void Save(List<LeaderboardEntry> rows) { PlayerPrefs.SetString(Key, JsonUtility.ToJson(new LeaderboardList { entries = rows })); PlayerPrefs.Save(); }
     }
 }

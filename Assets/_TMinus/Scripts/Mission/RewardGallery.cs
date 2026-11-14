@@ -65,6 +65,16 @@ namespace TMinus.Mission
 
         static readonly Dictionary<string, Texture2D> Cache = new Dictionary<string, Texture2D>();
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void HookRelease() => UnityEngine.SceneManagement.SceneManager.sceneUnloaded += _ => Release();
+
+        /// <summary>Destroy the downsampled copies (audit A-31): they were kept for the whole session.</summary>
+        public static void Release()
+        {
+            foreach (var t in Cache.Values) if (t != null) UnityEngine.Object.Destroy(t);
+            Cache.Clear();
+        }
+
         /// <summary>Downsample on the GPU (works on non-readable textures and WebGL), then show with point filtering so pixels read as blocks.</summary>
         public static Texture2D Degrade(Texture2D src, int width)
         {

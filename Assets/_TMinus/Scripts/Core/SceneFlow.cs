@@ -16,7 +16,8 @@ namespace TMinus.Core
         /// <summary>Close-up of the Pathfinder avionics ring (Prompt 8), opened from the VAB.</summary>
         public const string AvionicsBay = "AvionicsBay";
 
-        /// <summary>Build Settings order. Boot must stay first.</summary>
+        /// <summary>Build Settings order. Boot must stay first. AvionicsBay is a side room opened from the VAB: it is added to Build Settings
+        /// by its own builder (Tools > T-Minus > Build Avionics Bay), so it is deliberately not in this list.</summary>
         public static readonly string[] All =
             { Boot, MainMenu, MissionBriefing, IntegrationBay, VAB, Flight, Debrief };
     }

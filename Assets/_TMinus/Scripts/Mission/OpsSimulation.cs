@@ -22,7 +22,10 @@ namespace TMinus.Mission
             }
             var firstImage = mission?.rewardImages?.FirstOrDefault();
             report.rewardTitle = firstImage?.title ?? "Lake Manchar — Landsat reward";
-            var sw = state.Spacecraft.parts.FirstOrDefault(p => state.Data.GetPart(p.partId)?.id == "dep_switch");
+            // The part that must sit between battery and EPS comes from rules.json (audit A-33), not a hard-coded id.
+            var inlineRule = state.Data.GetRules().inlineRules.FirstOrDefault(r => r.fromCategory == "battery" && r.toCategory == "eps");
+            string switchPartId = inlineRule?.partId ?? "dep_switch";
+            var sw = state.Spacecraft.parts.FirstOrDefault(p => state.Data.GetPart(p.partId)?.id == switchPartId);
             var battery = state.Spacecraft.parts.FirstOrDefault(p => state.Data.GetPart(p.partId)?.category == "battery");
             var eps = state.Spacecraft.parts.FirstOrDefault(p => state.Data.GetPart(p.partId)?.category == "eps");
             bool hasSwitch = sw != null;
@@ -58,8 +61,11 @@ namespace TMinus.Mission
                 foreach (var m in fx.Messages) { report.wiringIssues.Add(m); if (!fx.Dead) report.failures.Add(m); }
             }
 
-            var events = (mission?.randomEvents ?? new System.Collections.Generic.List<RandomEventDef>()).OrderBy(e => e.day).ToList();
             int days = Math.Max(1, mission?.durationDays ?? 30);
+            // Event days shift by up to 2 days with the mission seed and the design, so two different builds do not meet
+            // identical surprises (audit A-23). The same design always gets the same days.
+            var plan = (mission?.randomEvents ?? new System.Collections.Generic.List<RandomEventDef>())
+                .Select((e, i) => (ev: e, day: EventDay(mission, e, i, state.Spacecraft, days))).OrderBy(t => t.day).ToList();
             double soc = 1, stored = 0, down = 0, capacity = Math.Max(0, budget.batteryWh);
             int taken = 0, sent = 0, eventIndex = 0, aliveDays = 0;
             double period = Math.Max(1, budget.periodMin), eclipse = Math.Max(0, budget.eclipseMin);
@@ -69,9 +75,9 @@ namespace TMinus.Mission
             for (int day = 1; day <= days; day++)
             {
                 bool reboot = false, outage = false;
-                while (eventIndex < events.Count && events[eventIndex].day == day)
+                while (eventIndex < plan.Count && plan[eventIndex].day == day)
                 {
-                    var ev = events[eventIndex++];
+                    var ev = plan[eventIndex++].ev;
                     if (ev.type == "solar_storm") reboot = true;
                     if (ev.type == "ground_outage") outage = true;
                     if (ev.type == "battery_ageing") capacity *= Math.Max(0, 1 - (ev.value <= 1 ? ev.value : ev.value / 100.0));
@@ -116,6 +122,20 @@ namespace TMinus.Mission
                 : $"Real Landsat images of the 2022 floods, shown at your camera's detail. Your design: {budget.gsdM:0.#} m/pixel GSD, {report.rewardImageQuality:P0} pointing quality and {report.rewardImageShare:P0} of the image goal returned (each third unlocks one more date).";
             state.Events.AddAt(state.Flight.flightTimeS + days * 86400, "operations", "operations_complete", $"Operations ended after {report.daysAlive} days; {sent} images downlinked.", null, Severity.Info);
             return report;
+        }
+        /// <summary>The day an event really happens: its data day moved by -2..+2 from the mission seed and the CubeSat's parts.</summary>
+        public static int EventDay(MissionDef mission, RandomEventDef e, int index, SpacecraftDesign design, int days)
+        {
+            if (mission == null || mission.seed == 0) return e.day;
+            unchecked
+            {
+                int h = mission.seed * 31 + index * 17;
+                if (design?.parts != null)
+                    foreach (var p in design.parts)
+                        foreach (char c in p.partId ?? "") h = h * 31 + c;
+                int jitter = (int)((uint)h % 5) - 2;
+                return Math.Max(1, Math.Min(days, e.day + jitter));
+            }
         }
         static bool Joins(CableLink c, string a, string b) => (c.fromPort == a && c.toPort == b) || (c.fromPort == b && c.toPort == a);
         static double Clamp01(double x) => Math.Max(0, Math.Min(1, x));
