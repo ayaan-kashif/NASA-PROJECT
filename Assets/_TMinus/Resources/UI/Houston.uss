@@ -172,3 +172,11 @@
     white-space: normal;
     margin: 4px 10px 8px 10px;
 }
+
+/* Urdu answers (audit A-06): an Arabic-script font, right-aligned, with Unity's advanced text generator for letter joining and right-to-left order. */
+.houston-urdu {
+    -unity-font-definition: url("project://database/Assets/_TMinus/Resources/Fonts/NotoNaskhArabic-Regular.ttf");
+    -unity-text-generator: advanced;
+    -unity-text-align: upper-right;
+    font-size: 16px;
+}

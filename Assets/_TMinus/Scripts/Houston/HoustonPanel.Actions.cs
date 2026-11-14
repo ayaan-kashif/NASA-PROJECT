@@ -131,6 +131,8 @@ namespace TMinus.Houston
             item.AddToClassList("houston-msg-item");
             var lbl = new Label(text);
             lbl.AddToClassList("houston-msg-text");
+            // Urdu answers need an Arabic-script font and right-to-left text (houston-urdu in Houston.uss).
+            if (GameState.Instance != null && GameState.Instance.Settings.language == "ur") lbl.AddToClassList("houston-urdu");
             item.Add(lbl);
 
             var actions = new VisualElement();

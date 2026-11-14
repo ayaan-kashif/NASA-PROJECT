@@ -91,5 +91,5 @@ See [CREDITS.md](CREDITS.md). AI coding assistants (Claude Code, OpenAI Codex an
 - The leaderboard is local to the machine.
 - The rocket always carries a fixed 150 kg payload mass in flight (a tuned game value), whatever CubeSat you build.
 - Your build is saved automatically on this computer (in the browser's storage on the web version) and offered as **Continue** on the main menu. Clearing site data erases it; design codes are the backup.
-- Urdu answers are experimental: they need the AI service and a font with Arabic-script glyphs.
+- Urdu answers are experimental: they need the AI service. The game ships Noto Naskh Arabic (SIL Open Font License) for them, but the shaping has not been checked in a build yet.
 - Windows x64 is the main target. WebGL is a stretch target.

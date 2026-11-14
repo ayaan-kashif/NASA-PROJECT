@@ -112,7 +112,7 @@ namespace TMinus.UI
             var houston = new RadioButtonGroup("HOUSTON assistant", new List<string>
                 { "On: advice, scans and AI chat", "Hints only: buttons, no AI chat", "Off: fly solo (best decision score)" })
                 { value = (int)s.houstonMode };
-            var lang = new RadioButtonGroup("HOUSTON answer language", new List<string> { "English", "Urdu (experimental: needs the AI and an Urdu-capable font)" })
+            var lang = new RadioButtonGroup("HOUSTON answer language", new List<string> { "English", "Urdu (experimental: AI answers when online)" })
                 { value = s.language == "ur" ? 1 : 0 };
             var volume = new Slider("Volume", 0, 1) { value = SettingsStore.Volume };
             var full = new Toggle("Fullscreen") { value = Screen.fullScreen };
