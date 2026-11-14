@@ -29,12 +29,12 @@ namespace TMinus.UI
                 cont.clicked += () =>
                 {
                     if (SaveService.TryLoad(GameState.Instance, out string msg)) { DemoHooks.PendingBriefingPanel = "briefing"; SceneFlow.Load(SceneNames.MissionBriefing); }
-                    else Toast(msg ?? "Could not load the save.");
+                    else Toast(msg ?? Strings.Get("menu.saveFailed", "Could not load the save."));
                 };
             }
             Bind(root, "btn-missions", () => SceneFlow.Load(SceneNames.MissionBriefing));
-            Bind(root, "btn-judge", () => { if (DemoHooks.StartJudgeMode != null) DemoHooks.StartJudgeMode(); else Toast("Judge Mode is not available in this build."); });
-            Bind(root, "btn-failure", () => { if (DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root); else Toast("The Failure Lab is not available in this build."); });
+            Bind(root, "btn-judge", () => { if (DemoHooks.StartJudgeMode != null) DemoHooks.StartJudgeMode(); else Toast(Strings.Get("menu.judgeUnavailable", "Judge Mode is not available in this build.")); });
+            Bind(root, "btn-failure", () => { if (DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root); else Toast(Strings.Get("menu.failureUnavailable", "The Failure Lab is not available in this build.")); });
             Bind(root, "btn-sandbox", () => MenuPanels.ShowSandbox(root));
             Bind(root, "btn-codex", () => MenuPanels.ShowCodex(root));
             Bind(root, "btn-settings", () => MenuPanels.ShowSettings(root));
@@ -54,7 +54,7 @@ namespace TMinus.UI
             {
                 _linkChecked = true;   // the address keeps its #d=... part; only react once per session
                 DemoHooks.PendingDesignCode = linked;
-                Toast("A shared design came with this link. Open Missions and press Load code.");
+                Toast(Strings.Get("menu.sharedDesign", "A shared design came with this link. Open Missions and press Load code."));
             }
 
             var version = root.Q<Label>("version");

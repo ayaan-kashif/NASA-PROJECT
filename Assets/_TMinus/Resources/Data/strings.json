@@ -1,0 +1,19 @@
+{
+  "en": {
+    "pause.button": "☰  Menu (P)",
+    "pause.paused": "PAUSED",
+    "pause.controls": "CONTROLS",
+    "pause.volume": "Volume",
+    "pause.resume": "Resume",
+    "pause.controlsButton": "Controls",
+    "pause.restart": "Restart this room",
+    "pause.mainMenu": "Main menu",
+    "pause.back": "Back",
+    "pause.saved": "Your build is saved automatically.",
+    "pause.everywhere": "P  pause menu   ·   F1  controls   ·   H  HOUSTON   ·   N  next step   ·   Shift+S  scan the build   ·   F9  Judge Mode demo",
+    "menu.judgeUnavailable": "Judge Mode is not available in this build.",
+    "menu.failureUnavailable": "The Failure Lab is not available in this build.",
+    "menu.sharedDesign": "A shared design came with this link. Open Missions and press Load code.",
+    "menu.saveFailed": "Could not load the save."
+  }
+}

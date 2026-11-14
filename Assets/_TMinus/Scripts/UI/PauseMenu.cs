@@ -19,7 +19,7 @@ namespace TMinus.UI
             SceneNames.MissionBriefing, SceneNames.IntegrationBay, SceneNames.VAB, SceneNames.AvionicsBay, SceneNames.Flight, SceneNames.Debrief
         };
 
-        const string Everywhere = "P  pause menu   ·   F1  controls   ·   H  HOUSTON   ·   N  next step   ·   Shift+S  scan the build   ·   F9  Judge Mode demo";
+        static string Everywhere => Strings.Get("pause.everywhere", "P  pause menu   ·   F1  controls   ·   H  HOUSTON   ·   N  next step   ·   Shift+S  scan the build   ·   F9  Judge Mode demo");
 
         static readonly Dictionary<string, string[]> Controls = new Dictionary<string, string[]>
         {
@@ -84,7 +84,7 @@ namespace TMinus.UI
             _root = doc.rootVisualElement;
             _root.pickingMode = PickingMode.Ignore;
 
-            _button = new Button(Open) { text = "☰  Menu (P)" };
+            _button = new Button(Open) { text = Strings.Get("pause.button", "☰  Menu (P)") };
             var b = _button.style;
             b.position = Position.Absolute; b.left = 14; b.bottom = 14;
             b.fontSize = 16; b.color = Color.white;
@@ -170,26 +170,26 @@ namespace TMinus.UI
         {
             _card.Clear();
             string scene = SceneManager.GetActiveScene().name;
-            Add(_showControls ? "CONTROLS" : "PAUSED", 34, true, Color.white, 6);
+            Add(_showControls ? Strings.Get("pause.controls", "CONTROLS") : Strings.Get("pause.paused", "PAUSED"), 34, true, Color.white, 6);
             Add(Nice(scene), 16, false, new Color(1f, 0.6f, 0.25f), 16);
 
             if (_showControls)
             {
                 if (Controls.TryGetValue(scene, out var lines)) foreach (var l in lines) Add("•  " + l, 18, false, Color.white, 8);
                 Add(Everywhere, 15, false, new Color(0.7f, 0.78f, 0.9f), 16);
-                _card.Add(MakeButton("Back", () => { _showControls = false; Build(); }, false));
+                _card.Add(MakeButton(Strings.Get("pause.back", "Back"), () => { _showControls = false; Build(); }, false));
                 return;
             }
 
-            var volume = new Slider("Volume", 0f, 1f) { value = SettingsStore.Volume };
+            var volume = new Slider(Strings.Get("pause.volume", "Volume"), 0f, 1f) { value = SettingsStore.Volume };
             volume.style.marginBottom = 14; volume.style.color = Color.white;
             volume.RegisterValueChangedCallback(e => { var s = GameState.Instance; if (s != null) SettingsStore.Save(s.Settings, e.newValue, Screen.fullScreen); });
             _card.Add(volume);
-            _card.Add(MakeButton("Resume", Close, true));
-            _card.Add(MakeButton("Controls", () => { _showControls = true; Build(); }, false));
-            _card.Add(MakeButton("Restart this room", () => { string s = scene; Close(); SceneFlow.Load(s); }, false));
-            _card.Add(MakeButton("Main menu", () => { SaveService.SaveIfChanged(GameState.Instance); Close(); SceneFlow.Load(SceneNames.MainMenu); }, false));
-            Add("Your build is saved automatically.", 14, false, new Color(0.7f, 0.78f, 0.9f), 0);
+            _card.Add(MakeButton(Strings.Get("pause.resume", "Resume"), Close, true));
+            _card.Add(MakeButton(Strings.Get("pause.controlsButton", "Controls"), () => { _showControls = true; Build(); }, false));
+            _card.Add(MakeButton(Strings.Get("pause.restart", "Restart this room"), () => { string s = scene; Close(); SceneFlow.Load(s); }, false));
+            _card.Add(MakeButton(Strings.Get("pause.mainMenu", "Main menu"), () => { SaveService.SaveIfChanged(GameState.Instance); Close(); SceneFlow.Load(SceneNames.MainMenu); }, false));
+            Add(Strings.Get("pause.saved", "Your build is saved automatically."), 14, false, new Color(0.7f, 0.78f, 0.9f), 0);
         }
 
         static string Nice(string scene)
