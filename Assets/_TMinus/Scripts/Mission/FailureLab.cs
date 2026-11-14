@@ -27,10 +27,10 @@ namespace TMinus.Mission
             var overlay = new VisualElement { name = "menu-overlay" }; overlay.AddToClassList("overlay");
             var card = new VisualElement(); card.AddToClassList("overlay-card"); overlay.Add(card);
             var head = new VisualElement(); head.AddToClassList("overlay-head"); card.Add(head);
-            var title = new Label("FAILURE LAB"); title.AddToClassList("overlay-title"); head.Add(title);
-            var close = new Button(() => overlay.RemoveFromHierarchy()) { text = "Close  ✕" }; close.AddToClassList("overlay-close"); head.Add(close);
+            var title = new Label(Strings.Get("failure.failure_lab", "FAILURE LAB")); title.AddToClassList("overlay-title"); head.Add(title);
+            var close = new Button(() => overlay.RemoveFromHierarchy()) { text = Strings.Get("menu.close", "Close  ✕") }; close.AddToClassList("overlay-close"); head.Add(close);
             var body = new VisualElement(); body.AddToClassList("overlay-body"); card.Add(body);
-            var intro = new Label("Repair jobs from real spaceflight history. Find what's broken, fix it, learn why it matters. HOUSTON can help, but every hint costs points.");
+            var intro = new Label(Strings.Get("failure.repair_jobs_from_real_spaceflight", "Repair jobs from real spaceflight history. Find what's broken, fix it, learn why it matters. HOUSTON can help, but every hint costs points."));
             intro.AddToClassList("muted"); body.Add(intro);
 
             foreach (var job in Jobs(s?.Data))
@@ -39,7 +39,7 @@ namespace TMinus.Mission
                 row.Add(new Label($"{job.name.Replace("Failure Lab: ", "")}") { name = "job-title" });
                 var meta = new Label($"{job.difficulty}  ·  reward {job.rewardPoints} pts"); meta.AddToClassList("muted"); row.Add(meta);
                 var note = new Label("Client note: " + (job.clientNote ?? job.objective)); note.AddToClassList("job-note"); row.Add(note);
-                var take = new Button(() => Begin(root, job)) { text = "Take the job ›" };
+                var take = new Button(() => Begin(root, job)) { text = Strings.Get("failure.take_the_job", "Take the job ›") };
                 take.AddToClassList("menu-button"); take.AddToClassList("primary"); row.Add(take);
             }
             root.Add(overlay);

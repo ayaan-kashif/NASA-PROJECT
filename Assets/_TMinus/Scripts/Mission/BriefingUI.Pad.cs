@@ -22,7 +22,7 @@ namespace TMinus.Mission
             _modal.Add(panel);
 
             int fails = items.Count(i => !i.pass);
-            panel.Add(L("PRE-LAUNCH CHECKLIST", "info-category"));
+            panel.Add(L(Strings.Get("pad.pre_launch_checklist", "PRE-LAUNCH CHECKLIST"), "info-category"));
             panel.Add(L(fails == 0 ? "All items PASS. Poll the crew." : $"{fails} item{(fails > 1 ? "s" : "")} FAIL. Fix them, or launch anyway and learn why.", "pad-title"));
 
             foreach (var role in new[] { CrewRole.FlightDirector, CrewRole.PropulsionStructures, CrewRole.SpacecraftComms, CrewRole.ScienceBudget })
@@ -39,18 +39,18 @@ namespace TMinus.Mission
                     text.Add(L(it.detail, "check-detail"));
                     row.Add(mark); row.Add(text);
                     if (!it.pass && it.action == "pull_rbf")
-                        row.Add(Btn("Pull pin", () => { S.Spacecraft.rbfPinPulled = true; AudioFx.Play("click"); Log("RbfPulled", "RBF pin pulled at the pad"); ShowChecklist(); }, "card-btn accent"));
+                        row.Add(Btn(Strings.Get("pad.pull_pin", "Pull pin"), () => { S.Spacecraft.rbfPinPulled = true; AudioFx.Play("click"); Log("RbfPulled", "RBF pin pulled at the pad"); ShowChecklist(); }, "card-btn accent"));
                     else if (!it.pass && it.action == "arm")
-                        row.Add(Btn("Arm", () => { S.Vehicle.armed = true; AudioFx.Play("beep"); Log("Armed", "Safe/Arm switched to ARMED at the pad"); ShowChecklist(); }, "card-btn accent"));
+                        row.Add(Btn(Strings.Get("pad.arm", "Arm"), () => { S.Vehicle.armed = true; AudioFx.Play("beep"); Log("Armed", "Safe/Arm switched to ARMED at the pad"); ShowChecklist(); }, "card-btn accent"));
                     else if (!it.pass && it.fixScene != null)
-                        row.Add(Btn("Fix", () => { Log("FixRequested", $"Went to fix {it.id}", it.id); SceneFlow.Load(it.fixScene); }, "card-btn"));
+                        row.Add(Btn(Strings.Get("pad.fix", "Fix"), () => { Log("FixRequested", $"Went to fix {it.id}", it.id); SceneFlow.Load(it.fixScene); }, "card-btn"));
                     panel.Add(row);
                 }
             }
 
             var bar = new VisualElement(); bar.AddToClassList("bin-chips");
             bar.style.marginTop = 14;
-            bar.Add(Btn("< Back to briefing", () => _modal.AddToClassList("hidden"), "card-btn"));
+            bar.Add(Btn(Strings.Get("pad.back_to_briefing", "< Back to briefing"), () => _modal.AddToClassList("hidden"), "card-btn"));
             bar.Add(Btn(fails == 0 ? "Start GO / NO-GO poll" : $"Poll anyway ({fails} known FAIL)", () => StartPoll(items.Where(i => !i.pass).Select(i => i.id).ToList()), "card-btn accent"));
             panel.Add(bar);
         }
@@ -79,12 +79,12 @@ namespace TMinus.Mission
             panel.Add(L(mine.Count == 0 ? "All your items PASS." : "Your open items: " + string.Join("; ", mine.Select(i => i.title)), mine.Count == 0 ? "check-detail" : "poll-warn"));
             var row = new VisualElement(); row.AddToClassList("poll-buttons");
             row.Add(Btn("GO", () => { S.Launch.poll.Add(PrelaunchChecklist.RoleName(role) + ": GO"); AudioFx.Play("beep"); ShowPollStep(index + 1); }, "poll-go"));
-            row.Add(Btn("NO-GO", () =>
+            row.Add(Btn(Strings.Get("pad.no_go", "NO-GO"), () =>
             {
                 S.Launch.poll.Add(PrelaunchChecklist.RoleName(role) + ": NO-GO");
                 S.Launch.noGoRounds++;
                 Log("NoGo", $"{PrelaunchChecklist.RoleName(role)} called NO-GO. Countdown held.", role.ToString());
-                Toast("Hold the count. Fix the issue, then poll again.");
+                Toast(Strings.Get("pad.hold_the_count_fix_the", "Hold the count. Fix the issue, then poll again."));
                 ShowChecklist();
             }, "poll-nogo"));
             panel.Add(row);
@@ -106,9 +106,9 @@ namespace TMinus.Mission
         {
             _modal.Clear();
             var panel = new VisualElement(); panel.AddToClassList("poll-panel");
-            panel.Add(L("ALL ROLES GO", "info-category"));
+            panel.Add(L(Strings.Get("pad.all_roles_go", "ALL ROLES GO"), "info-category"));
             panel.Add(L("GO", "countdown"));
-            panel.Add(L("To the pad. Next you choose the pitch kick and start the terminal count.", "pad-title"));
+            panel.Add(L(Strings.Get("pad.to_the_pad_next_you", "To the pad. Next you choose the pitch kick and start the terminal count."), "pad-title"));
             _modal.Add(panel);
             AudioFx.Play("beep", 0.8f);
             yield return new WaitForSeconds(1.6f);

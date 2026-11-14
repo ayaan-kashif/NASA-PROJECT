@@ -139,13 +139,13 @@ namespace TMinus.Houston
             actions.AddToClassList("houston-msg-actions");
             if (!string.IsNullOrEmpty(objectRef))
             {
-                var show = new Button(() => ShowMe(objectRef)) { text = "Show me" };
+                var show = new Button(() => ShowMe(objectRef)) { text = Strings.Get("houston.show_me", "Show me") };
                 show.AddToClassList("houston-rating-btn");
                 show.style.color = new Color(1, 0.478f, 0.1f);
                 actions.Add(show);
             }
-            var up = new Button(() => LogFeedback(text, true)) { text = "Helpful" };
-            var down = new Button(() => LogFeedback(text, false)) { text = "Not helpful" };
+            var up = new Button(() => LogFeedback(text, true)) { text = Strings.Get("houston.helpful", "Helpful") };
+            var down = new Button(() => LogFeedback(text, false)) { text = Strings.Get("houston.not_helpful", "Not helpful") };
             up.AddToClassList("houston-rating-btn");
             down.AddToClassList("houston-rating-btn");
             actions.Add(up); actions.Add(down);

@@ -59,16 +59,16 @@ namespace TMinus.Mission
             var buttons = new VisualElement(); buttons.AddToClassList("debrief-buttons"); page.Add(buttons);
             var why = WhyTarget.For(s.Flight, s.Events.All, s.Data.GetRules());
             if (why != null)
-                AddButton(buttons, "Show me why", () => { FocusRequest.Set(why.scene, why.target, why.note); SceneFlow.Load(why.scene); });
+                AddButton(buttons, Strings.Get("debrief.show_me_why", "Show me why"), () => { FocusRequest.Set(why.scene, why.target, why.note); SceneFlow.Load(why.scene); });
             if (s.Flight.flown && s.Flight.outcome == "Failed" && s.Flight.flightTimeS > 10)
-                AddButton(buttons, "Watch the failure again", () => { DemoHooks.ReplayFailure = true; SceneFlow.Load(SceneNames.Flight); });
-            AddButton(buttons, "Redesign", () => { s.BeginAttempt(); SceneFlow.Load(SceneNames.MissionBriefing); });
+                AddButton(buttons, Strings.Get("debrief.watch_the_failure_again", "Watch the failure again"), () => { DemoHooks.ReplayFailure = true; SceneFlow.Load(SceneNames.Flight); });
+            AddButton(buttons, Strings.Get("debrief.redesign", "Redesign"), () => { s.BeginAttempt(); SceneFlow.Load(SceneNames.MissionBriefing); });
             AddButton(buttons, "Fly again", () => { s.BeginAttempt(); DebriefDebug.ResetRun(); SceneFlow.Load(SceneNames.Flight); });
-            AddButton(buttons, "Save design code", SaveCode);
-            AddButton(buttons, "Leaderboard", ShowLeaderboard);
-            AddButton(buttons, "Share result", () => ShareResult(s, score, ops));
-            AddButton(buttons, "Export results (CSV)", ExportCsv);
-            AddButton(buttons, "Main menu", () => SceneFlow.Load(SceneNames.MainMenu));
+            AddButton(buttons, Strings.Get("debrief.save_design_code", "Save design code"), SaveCode);
+            AddButton(buttons, Strings.Get("debrief.leaderboard", "Leaderboard"), ShowLeaderboard);
+            AddButton(buttons, Strings.Get("debrief.share_result", "Share result"), () => ShareResult(s, score, ops));
+            AddButton(buttons, Strings.Get("debrief.export_results_csv", "Export results (CSV)"), ExportCsv);
+            AddButton(buttons, Strings.Get("pause.mainMenu", "Main menu"), () => SceneFlow.Load(SceneNames.MainMenu));
             _status = new Label(""); _status.AddToClassList("muted"); page.Add(_status);
         }
         /// <summary>Operations events carry mission-elapsed seconds (flight end + days); show them as days, flight events as T+ seconds.</summary>
@@ -114,8 +114,8 @@ namespace TMinus.Mission
             var region = LiveImagery.Selected;
             if (LiveImagery.IsBundled(region) || JudgeMode.Active != null) return;
             var card = Card("LIVE VIEW FROM NASA  /  " + region.name.ToUpperInvariant()); page.Add(card);
-            if (ops.imagesDownlinked <= 0) { card.Add(new Label("No images came home, so there is no picture of this region to show.")); return; }
-            var note = new Label("Fetching the picture from NASA Worldview..."); note.AddToClassList("muted"); note.style.whiteSpace = WhiteSpace.Normal; card.Add(note);
+            if (ops.imagesDownlinked <= 0) { card.Add(new Label(Strings.Get("debrief.no_images_came_home_so", "No images came home, so there is no picture of this region to show."))); return; }
+            var note = new Label(Strings.Get("debrief.fetching_the_picture_from_nasa", "Fetching the picture from NASA Worldview...")); note.AddToClassList("muted"); note.style.whiteSpace = WhiteSpace.Normal; card.Add(note);
             var pic = new Image { scaleMode = ScaleMode.ScaleToFit }; pic.style.width = RewardGallery.TileWidthPx * 1.4f; pic.style.height = RewardGallery.TileWidthPx * 1.4f;
             card.Add(pic);
             StartCoroutine(LiveImagery.Fetch(region, 512, tex =>
@@ -193,7 +193,7 @@ namespace TMinus.Mission
         void AddDesignCompare(VisualElement page)
         {
             var card = Card("COMPARE ANOTHER DESIGN");
-            card.Add(new Label("Paste a TM1 design code to compare spacecraft budgets for this mission."));
+            card.Add(new Label(Strings.Get("debrief.paste_a_tm1_design_code", "Paste a TM1 design code to compare spacecraft budgets for this mission.")));
             var input = new TextField { multiline = true }; input.AddToClassList("design-code-input"); card.Add(input);
             var results = new VisualElement(); card.Add(results);
             var button = new Button(() =>
@@ -210,7 +210,7 @@ namespace TMinus.Mission
                 results.Add(new Label(DesignCompare.Metric("Pointing quality", c.current.pointingQuality, c.candidate.pointingQuality, "")));
                 results.Add(new Label(DesignCompare.Metric("Ground sample distance", c.current.gsdM, c.candidate.gsdM, " m", "lower")));
                 results.Add(new Label($"Power {DesignCompare.Status(c.current.power)} → {DesignCompare.Status(c.candidate.power)}   ·   Data {DesignCompare.Status(c.current.data)} → {DesignCompare.Status(c.candidate.data)}   ·   Pointing {DesignCompare.Status(c.current.pointing)} → {DesignCompare.Status(c.candidate.pointing)}"));
-            }) { text = "Compare design code" };
+            }) { text = Strings.Get("debrief.compare_design_code", "Compare design code") };
             button.AddToClassList("debrief-button"); card.Add(button); page.Add(card);
         }
         static VisualElement BuildTimeline(OpsReport o)

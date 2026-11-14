@@ -119,7 +119,7 @@ namespace TMinus.Spacecraft
                     foreach (var id in inst)
                     {
                         var iid = id;
-                        var rm = new Button(() => RemovePressed?.Invoke(iid)) { text = "Remove" };
+                        var rm = new Button(() => RemovePressed?.Invoke(iid)) { text = Strings.Get("bay.remove", "Remove") };
                         rm.AddToClassList("remove-btn");
                         row.Add(rm);
                     }

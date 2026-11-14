@@ -19,7 +19,7 @@ namespace TMinus.UI
             var card = new VisualElement(); card.AddToClassList("overlay-card"); overlay.Add(card);
             var head = new VisualElement(); head.AddToClassList("overlay-head"); card.Add(head);
             var t = new Label(title); t.AddToClassList("overlay-title"); head.Add(t);
-            var close = new Button(() => overlay.RemoveFromHierarchy()) { text = "Close  ✕" };
+            var close = new Button(() => overlay.RemoveFromHierarchy()) { text = Strings.Get("menu.close", "Close  ✕") };
             close.AddToClassList("overlay-close"); head.Add(close);
             body = new VisualElement(); body.AddToClassList("overlay-body"); card.Add(body);
             overlay.RegisterCallback<KeyDownEvent>(e => { if (e.keyCode == KeyCode.Escape) overlay.RemoveFromHierarchy(); });
@@ -119,7 +119,7 @@ namespace TMinus.UI
             // Browsers only allow fullscreen from their own control, so the toggle is hidden in the web build.
             if (Application.platform == RuntimePlatform.WebGLPlayer) full.style.display = DisplayStyle.None;
             foreach (var e in new VisualElement[] { houston, lang, volume, full }) { e.AddToClassList("settings-row"); body.Add(e); }
-            var note = new Label("Saved automatically. HOUSTON's hints count toward decision quality: fewer hints, higher score.");
+            var note = new Label(Strings.Get("menu.saved_automatically_houston_s_hints", "Saved automatically. HOUSTON's hints count toward decision quality: fewer hints, higher score."));
             note.AddToClassList("muted"); body.Add(note);
             // The Helpful / Not helpful buttons on HOUSTON's messages used to count in the dark; show the totals here.
             int up = PlayerPrefs.GetInt("houston.helpful", 0), down = PlayerPrefs.GetInt("houston.unhelpful", 0);
@@ -141,7 +141,7 @@ namespace TMinus.UI
             full.RegisterValueChangedCallback(_ => Save());
 
             // Accessibility and privacy (audit F10, F21).
-            var access = new Label("ACCESSIBILITY AND PRIVACY"); access.AddToClassList("overlay-title"); access.style.marginTop = 14; body.Add(access);
+            var access = new Label(Strings.Get("menu.accessibility_and_privacy", "ACCESSIBILITY AND PRIVACY")); access.AddToClassList("overlay-title"); access.style.marginTop = 14; body.Add(access);
             var text = new RadioButtonGroup("Text size", new List<string> { "Normal", "Large (125%)", "Extra large (150%)" })
                 { value = SettingsStore.TextScalePct >= 150 ? 2 : SettingsStore.TextScalePct >= 125 ? 1 : 0 };
             text.RegisterValueChangedCallback(e => SettingsStore.SetTextScale(e.newValue == 2 ? 150 : e.newValue == 1 ? 125 : 100));
@@ -153,11 +153,11 @@ namespace TMinus.UI
             stats.RegisterValueChangedCallback(e => SettingsStore.SetShareStats(e.newValue));
             foreach (var e in new VisualElement[] { text, low, motion, stats }) { e.AddToClassList("settings-row"); body.Add(e); }
 
-            var replay = new Button(() => { FirstBuildGuideFlags.ResetAll(); }) { text = "Replay the guided first build" };
+            var replay = new Button(() => { FirstBuildGuideFlags.ResetAll(); }) { text = Strings.Get("menu.replay_the_guided_first_build", "Replay the guided first build") };
             replay.AddToClassList("menu-button");
             body.Add(replay);
             Button erase = null;
-            erase = new Button(() => { SaveService.DeleteSave(); erase.text = "Saved build deleted"; erase.SetEnabled(false); }) { text = "Delete my saved build" };
+            erase = new Button(() => { SaveService.DeleteSave(); erase.text = "Saved build deleted"; erase.SetEnabled(false); }) { text = Strings.Get("menu.delete_my_saved_build", "Delete my saved build") };
             erase.AddToClassList("menu-button");
             body.Add(erase);
         }
@@ -167,7 +167,7 @@ namespace TMinus.UI
         public static void ShowSandbox(VisualElement root)
         {
             Overlay(root, "SANDBOX", out var body);
-            var intro = new Label("Free build: open any workshop directly, no briefing, no budget and no mass limit. Your designs carry over between rooms.");
+            var intro = new Label(Strings.Get("menu.free_build_open_any_workshop", "Free build: open any workshop directly, no briefing, no budget and no mass limit. Your designs carry over between rooms."));
             intro.AddToClassList("muted"); body.Add(intro);
             Room(body, "Integration Bay", "Build and wire the 3U CubeSat.", SceneNames.IntegrationBay);
             Room(body, "Vehicle Assembly Building", "Stack, bolt and wire Pathfinder. Inspect Saturn V.", SceneNames.VAB);

@@ -68,7 +68,7 @@ namespace TMinus.Mission
 
             _page.Clear();
             var head = Header(m.name.ToUpperInvariant(), m.objective);
-            head.Add(Btn("< Missions", ShowMissionSelect, "tool-btn"));
+            head.Add(Btn(Strings.Get("briefing.missions", "< Missions"), ShowMissionSelect, "tool-btn"));
             _page.Add(head);
 
             var cols = new VisualElement(); cols.AddToClassList("brief-cols");
@@ -77,9 +77,9 @@ namespace TMinus.Mission
             // Column 1: the story, success criteria, constraints.
             var c1 = Col(cols, "THE MISSION");
             if (!string.IsNullOrEmpty(m.description)) c1.Add(L(m.description, "brief-text"));
-            c1.Add(L("SUCCESS CRITERIA", "brief-sub"));
+            c1.Add(L(Strings.Get("briefing.success_criteria", "SUCCESS CRITERIA"), "brief-sub"));
             foreach (var c in m.successCriteria) c1.Add(L("☐  " + c.text, "brief-item"));
-            c1.Add(L("CONSTRAINTS", "brief-sub"));
+            c1.Add(L(Strings.Get("briefing.constraints", "CONSTRAINTS"), "brief-sub"));
             if (m.budgetMUSD > 0) c1.Add(L($"Budget {m.budgetMUSD:0.00} M$ (launch + spacecraft)", "brief-item"));
             if (m.massLimitKg > 0) c1.Add(L($"3U CubeSat, at most {m.massLimitKg:0.0} kg", "brief-item"));
             if (m.durationDays > 0) c1.Add(L($"{m.durationDays} days of operations, {m.groundContactsPerDay} ground passes/day × {m.contactMinutes:0} min", "brief-item"));
@@ -94,10 +94,10 @@ namespace TMinus.Mission
             // Column 3: crew, flow, design codes.
             var c3 = Col(cols, "CREW");
             BuildCrew(c3);
-            c3.Add(L("BUILD AND FLY", "brief-sub"));
-            c3.Add(Btn("1.  Build the spacecraft  >", () => SceneFlow.Load(SceneNames.IntegrationBay), "flow-btn"));
-            c3.Add(Btn("2.  Build the rocket  >", () => SceneFlow.Load(SceneNames.VAB), "flow-btn"));
-            c3.Add(Btn("3.  Go to the pad  >", ShowChecklist, "flow-btn accent"));
+            c3.Add(L(Strings.Get("briefing.build_and_fly", "BUILD AND FLY"), "brief-sub"));
+            c3.Add(Btn(Strings.Get("briefing.1_build_the_spacecraft", "1.  Build the spacecraft  >"), () => SceneFlow.Load(SceneNames.IntegrationBay), "flow-btn"));
+            c3.Add(Btn(Strings.Get("briefing.2_build_the_rocket", "2.  Build the rocket  >"), () => SceneFlow.Load(SceneNames.VAB), "flow-btn"));
+            c3.Add(Btn(Strings.Get("briefing.3_go_to_the_pad", "3.  Go to the pad  >"), ShowChecklist, "flow-btn accent"));
             BuildDesignCode(c3);
         }
 
@@ -108,7 +108,7 @@ namespace TMinus.Mission
 
         void BuildOrbit(VisualElement col, MissionDef m)
         {
-            col.Add(L("ORBIT", "brief-sub"));
+            col.Add(L(Strings.Get("briefing.orbit", "ORBIT"), "brief-sub"));
             var chips = new VisualElement(); chips.AddToClassList("bin-chips");
             foreach (var km in m.orbitOptionsKm)
             {
@@ -124,7 +124,7 @@ namespace TMinus.Mission
 
         void BuildRockets(VisualElement col, MissionDef m)
         {
-            col.Add(L("LAUNCH VEHICLE", "brief-sub"));
+            col.Add(L(Strings.Get("briefing.launch_vehicle", "LAUNCH VEHICLE"), "brief-sub"));
             var report = SpacecraftBudget.Compute(S.Spacecraft, Data, m, Data.GetRocket(S.Vehicle.rocketId));
             foreach (var r in Data.Rockets)
             {
@@ -147,7 +147,7 @@ namespace TMinus.Mission
         /// <summary>Where the satellite looks (audit F26). Lake Manchar is bundled; the others are fetched live from NASA when you are online.</summary>
         void BuildTarget(VisualElement col)
         {
-            col.Add(L("TARGET REGION", "brief-sub"));
+            col.Add(L(Strings.Get("briefing.target_region", "TARGET REGION"), "brief-sub"));
             var chips = new VisualElement(); chips.AddToClassList("bin-chips");
             var selected = LiveImagery.Selected;
             foreach (var r in LiveImagery.Regions)
@@ -165,7 +165,7 @@ namespace TMinus.Mission
 
         void BuildSites(VisualElement col, MissionDef m)
         {
-            col.Add(L("LAUNCH SITE", "brief-sub"));
+            col.Add(L(Strings.Get("briefing.launch_site", "LAUNCH SITE"), "brief-sub"));
             var rules = Data.GetRules();
             foreach (var id in m.launchSites)
             {
@@ -184,7 +184,7 @@ namespace TMinus.Mission
         void BuildCrew(VisualElement col)
         {
             var chips = new VisualElement(); chips.AddToClassList("bin-chips");
-            chips.Add(L("Players", "orbit-label"));
+            chips.Add(L(Strings.Get("briefing.players", "Players"), "orbit-label"));
             for (int n = 1; n <= 4; n++)
             {
                 int count = n;
@@ -214,7 +214,7 @@ namespace TMinus.Mission
 
         void BuildDesignCode(VisualElement col)
         {
-            col.Add(L("DESIGN CODE", "brief-sub"));
+            col.Add(L(Strings.Get("briefing.design_code", "DESIGN CODE"), "brief-sub"));
             var field = new TextField { value = "" };
             field.AddToClassList("name-field");
             col.Add(field);
@@ -223,18 +223,18 @@ namespace TMinus.Mission
             {
                 field.value = DemoHooks.PendingDesignCode;
                 DemoHooks.PendingDesignCode = null;
-                col.Add(L("A shared design came with this link. Press Load code to open it.", "role-line"));
+                col.Add(L(Strings.Get("briefing.a_shared_design_came_with", "A shared design came with this link. Press Load code to open it."), "role-line"));
             }
             var row = new VisualElement(); row.AddToClassList("bin-chips");
             if (DesignLink.Available)
-                row.Add(Btn("Copy link", () =>
+                row.Add(Btn(Strings.Get("briefing.copy_link", "Copy link"), () =>
                 {
                     string link = DesignLink.Build(DesignCode.Encode(DesignCode.FromState(S)));
                     GUIUtility.systemCopyBuffer = link;
                     field.value = link;
-                    Toast("The link to your design is in the box. Select it and press Ctrl+C, then send it to a friend.");
+                    Toast(Strings.Get("briefing.the_link_to_your_design", "The link to your design is in the box. Select it and press Ctrl+C, then send it to a friend."));
                 }, "bin-chip"));
-            row.Add(Btn("Copy my code", () =>
+            row.Add(Btn(Strings.Get("briefing.copy_my_code", "Copy my code"), () =>
             {
                 var code = DesignCode.Encode(DesignCode.FromState(S));
                 GUIUtility.systemCopyBuffer = code;
@@ -244,7 +244,7 @@ namespace TMinus.Mission
                     ? "Your design code is in the box. Select it and press Ctrl+C to copy."
                     : "Design code copied. Share it with another team to compare builds.");
             }, "bin-chip"));
-            row.Add(Btn("Load code", () =>
+            row.Add(Btn(Strings.Get("briefing.load_code", "Load code"), () =>
             {
                 if (DesignCode.TryDecode(field.value, out var b, out var err))
                 {

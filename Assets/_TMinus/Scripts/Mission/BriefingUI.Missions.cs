@@ -13,7 +13,7 @@ namespace TMinus.Mission
         {
             _page.Clear();
             var head = Header("CHOOSE A MISSION", "Every mission is a full build: satellite, rocket, launch and operations.");
-            head.Add(Btn("Main menu", () => SceneFlow.Load(SceneNames.MainMenu), "tool-btn"));
+            head.Add(Btn(Strings.Get("pause.mainMenu", "Main menu"), () => SceneFlow.Load(SceneNames.MainMenu), "tool-btn"));
             _page.Add(head);
             var grid = new VisualElement(); grid.AddToClassList("mission-grid");
             foreach (var m in Data.Missions.OrderBy(m => m.locked).ThenBy(m => m.priority))
@@ -25,10 +25,10 @@ namespace TMinus.Mission
                 var top = new VisualElement(); top.AddToClassList("rocket-card-top");
                 top.Add(L(m.name, "mission-name"));
                 bool job = m.id.StartsWith("failure_"), sandbox = m.id == "sandbox";
-                if (m.startHere) top.Add(L("START HERE", "badge"));
-                else if (job) top.Add(L("REPAIR JOB", "badge job"));
-                else if (sandbox) top.Add(L("FREE BUILD", "badge job"));
-                else if (m.locked) top.Add(L("COMING NEXT", "badge training"));
+                if (m.startHere) top.Add(L(Strings.Get("briefing.start_here", "START HERE"), "badge"));
+                else if (job) top.Add(L(Strings.Get("briefing.repair_job", "REPAIR JOB"), "badge job"));
+                else if (sandbox) top.Add(L(Strings.Get("briefing.free_build", "FREE BUILD"), "badge job"));
+                else if (m.locked) top.Add(L(Strings.Get("briefing.coming_next", "COMING NEXT"), "badge training"));
                 card.Add(top);
                 card.Add(L(m.difficulty, "mission-diff"));
                 card.Add(L(m.objective, "mission-obj"));
@@ -50,14 +50,14 @@ namespace TMinus.Mission
                         SceneFlow.Load(SceneNames.MainMenu);
                         return;
                     }
-                    if (Data.GetMission(id).locked) { Toast("Coming next: this mission isn't built yet. Start with FloodWatch-1."); return; }
+                    if (Data.GetMission(id).locked) { Toast(Strings.Get("briefing.coming_next_this_mission_isn", "Coming next: this mission isn't built yet. Start with FloodWatch-1.")); return; }
                     S.CurrentMissionId = id;
                     ShowBriefing();
                 });
                 grid.Add(card);
             }
             _page.Add(grid);
-            _page.Add(L("Repair jobs (Failure Lab) and the Sandbox are in the main menu.", "mission-meta"));
+            _page.Add(L(Strings.Get("briefing.repair_jobs_failure_lab_and", "Repair jobs (Failure Lab) and the Sandbox are in the main menu."), "mission-meta"));
         }
     }
 }

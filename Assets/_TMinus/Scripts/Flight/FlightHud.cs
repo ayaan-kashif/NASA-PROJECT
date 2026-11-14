@@ -32,8 +32,8 @@ namespace TMinus.Flight
 
             // Top bar: clock, phase, warp, cameras, abort.
             var top = Box("flight-top", _root);
-            _clock = L("T+ 00:00", "clock", top);
-            _phase = L("ON THE PAD", "phase", top);
+            _clock = L(Strings.Get("flight.t_00_00", "T+ 00:00"), "clock", top);
+            _phase = L(Strings.Get("flight.on_the_pad", "ON THE PAD"), "phase", top);
             foreach (var (w, label) in new[] { (1, "x1"), (2, "x2"), (4, "x4"), (100, "x100") })
             {
                 int warp = w;
@@ -46,23 +46,23 @@ namespace TMinus.Flight
                 _buttons["c" + c] = Btn(char.ToUpper(c[0]) + c.Substring(1), () => _ctrl.SetCamera(c), "tool-btn toggle", top);
             }
             Sep(top);
-            _buttons["auto"] = Btn("Autopilot ON", ToggleAutopilot, "tool-btn on", top);
-            Btn("Abort", () => _ctrl.Abort(), "tool-btn abort", top);
+            _buttons["auto"] = Btn(Strings.Get("flight.autopilot_on", "Autopilot ON"), ToggleAutopilot, "tool-btn on", top);
+            Btn(Strings.Get("flight.abort", "Abort"), () => _ctrl.Abort(), "tool-btn abort", top);
 
             // Right: telemetry numbers and propellant.
             _stats = Box("flight-stats", _root);
-            L("TELEMETRY", "info-category", _stats);
+            L(Strings.Get("flight.telemetry", "TELEMETRY"), "info-category", _stats);
             foreach (var key in new[] { "Altitude", "Surface speed", "Orbital speed", "Acceleration", "Dynamic pressure", "Mass", "Thrust/weight", "Delta-v left", "Apoapsis", "Periapsis", "Stage" })
             {
                 var row = Box("stat-row", _stats);
                 L(key, "stat-key", row);
                 _values[key] = L("—", "stat-value", row);
             }
-            L("PROPELLANT", "info-category", _stats).style.marginTop = 10;
+            L(Strings.Get("flight.propellant", "PROPELLANT"), "info-category", _stats).style.marginTop = 10;
             _fuel = Box("fuel", _stats);
 
             _feed = Box("flight-feed", _root);
-            L("EVENTS", "info-category", _feed);
+            L(Strings.Get("flight.events", "EVENTS"), "info-category", _feed);
 
             _charts = Box("flight-charts", _root);
             _altChart = new LineChart("ALTITUDE (km)", new Color(1f, 0.48f, 0.1f));
@@ -73,8 +73,8 @@ namespace TMinus.Flight
             _root.Add(_map);
 
             _los = Box("los", _root);
-            L("LOS · NO TELEMETRY", "los-title", _los);
-            L("The telemetry radio or its antenna isn't wired. The rocket still flies; nobody on the ground can see how.", "los-text", _los);
+            L(Strings.Get("flight.los_no_telemetry", "LOS · NO TELEMETRY"), "los-title", _los);
+            L(Strings.Get("flight.the_telemetry_radio_or_its", "The telemetry radio or its antenna isn't wired. The rocket still flies; nobody on the ground can see how."), "los-text", _los);
             _los.style.display = telemetryOk ? DisplayStyle.None : DisplayStyle.Flex;
             if (!telemetryOk) { _stats.style.display = DisplayStyle.None; _charts.style.display = DisplayStyle.None; }
 
@@ -90,15 +90,15 @@ namespace TMinus.Flight
         {
             _prelaunch = Box("modal prelaunch-overlay", _root);
             var p = Box("pad-panel-small", _prelaunch);
-            _countdownLabel = L("TERMINAL COUNT HOLD · T-10 READY", "info-category", p);
+            _countdownLabel = L(Strings.Get("flight.terminal_count_hold_t_10", "TERMINAL COUNT HOLD · T-10 READY"), "info-category", p);
             L($"Lift-off thrust-to-weight: {twr:0.00} {(twr >= 1 ? "✓" : "✗ (below 1: it can't lift off)")}", "check-title", p);
-            L("Pitch kick: how far the rocket tips over a few seconds after lift-off. Too little and it climbs straight up wasting fuel; too much and it dives into thick air.", "check-detail", p);
+            L(Strings.Get("flight.pitch_kick_how_far_the", "Pitch kick: how far the rocket tips over a few seconds after lift-off. Too little and it climbs straight up wasting fuel; too much and it dives into thick air."), "check-detail", p);
             var slider = new Slider("Pitch kick (°)", 1, 6) { value = (float)pitchKick };
             slider.AddToClassList("kick-slider");
             var val = L($"{pitchKick:0.0}°", "check-title", p);
             slider.RegisterValueChangedCallback(e => val.text = $"{e.newValue:0.0}°");
             p.Add(slider);
-            _ignition = Btn("START COUNTDOWN  ›", () => _ctrl.StartCountdown(slider.value), "card-btn accent big", p);
+            _ignition = Btn(Strings.Get("flight.start_countdown", "START COUNTDOWN  ›"), () => _ctrl.StartCountdown(slider.value), "card-btn accent big", p);
         }
 
         public void HidePrelaunch() { if (_prelaunch != null) _prelaunch.style.display = DisplayStyle.None; }
@@ -129,7 +129,7 @@ namespace TMinus.Flight
             L(r.orbitAchieved ? "ORBIT ACHIEVED" : r.outcome == "Aborted" ? "ABORTED" : "MISSION LOST", "end-title", p);
             L(r.orbitAchieved ? $"{r.periapsisKm:0} × {r.apoapsisKm:0} km orbit · max-Q {r.maxQKPa:0.0} kPa · {(r.deployed ? "CubeSat deployed" : "CubeSat NOT deployed")}"
                               : $"{r.failureCode} at T+{r.flightTimeS:0} s · max-Q {r.maxQKPa:0.0} kPa", "check-detail", p);
-            Btn("Continue to operations + debrief  ›", () => _ctrl.ContinueToDebrief(), "card-btn accent", p);
+            Btn(Strings.Get("flight.continue_to_operations_debrief", "Continue to operations + debrief  ›"), () => _ctrl.ContinueToDebrief(), "card-btn accent", p);
         }
 
         public void Banner(string text, bool good)

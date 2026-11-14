@@ -50,7 +50,7 @@ namespace TMinus.Mission
             bar.style.borderBottomLeftRadius = 10; bar.style.borderBottomRightRadius = 10;
             _status = new Label(); _status.style.color = Color.white; _status.style.fontSize = 18; _status.style.whiteSpace = WhiteSpace.Normal; _status.style.flexShrink = 1;
             bar.Add(_status);
-            var hand = new Button(HandBack) { text = "Hand back ›" };
+            var hand = new Button(HandBack) { text = Strings.Get("failure.hand_back", "Hand back ›") };
             hand.style.fontSize = 18; hand.style.backgroundColor = new Color(1f, 0.48f, 0.1f); hand.style.color = Color.white;
             bar.Add(hand);
             _root.Add(bar);
@@ -110,7 +110,7 @@ namespace TMinus.Mission
             }
             Line(card, "How you found them: " + (hints == 0 ? "on your own, with the inspection tools." : $"with {hints} HOUSTON hint{(hints > 1 ? "s" : "")}."), 18, false);
             Line(card, "The lesson: " + _job.lesson, 18, false);
-            var back = new Button(() => { Destroy(gameObject); SceneFlow.Load(SceneNames.MainMenu); }) { text = "Back to the job board" };
+            var back = new Button(() => { Destroy(gameObject); SceneFlow.Load(SceneNames.MainMenu); }) { text = Strings.Get("failure.back_to_the_job_board", "Back to the job board") };
             back.style.fontSize = 20; back.style.marginTop = 16; back.style.backgroundColor = new Color(1f, 0.48f, 0.1f); back.style.color = Color.white;
             card.Add(back);
             _root.pickingMode = PickingMode.Position;
