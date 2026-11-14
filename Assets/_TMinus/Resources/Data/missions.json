@@ -44,6 +44,246 @@
       "codexIds": [ "landsat", "gsd", "downlink", "eclipse", "battery_dod" ]
     },
     {
+      "id": "floodwatch_tight",
+      "name": "FloodWatch-1: Tight budget",
+      "priority": "P1",
+      "difficulty": "Intermediate",
+      "objective": "Same flood-watch satellite, but the budget only just covers the basic build. No premium parts.",
+      "description": "The mission is funded, but the budget committee cut the margin to almost nothing. Build the cheapest satellite that still returns 20 images.",
+      "rocketOptions": [
+        "pathfinder"
+      ],
+      "payloadType": "cubesat_3u",
+      "budgetMUSD": 7.62,
+      "massLimitKg": 4.0,
+      "orbitOptionsKm": [
+        400,
+        550,
+        800
+      ],
+      "defaultOrbitKm": 550,
+      "launchSites": [
+        "sonmiani",
+        "cape_canaveral"
+      ],
+      "durationDays": 30,
+      "groundContactsPerDay": 4,
+      "contactMinutes": 8,
+      "imagingPassesPerDay": 1,
+      "imagesPerPass": 3,
+      "seed": 1962,
+      "illustrative": true,
+      "notes": "Challenge variant of FloodWatch-1: 7.62 M USD against a launch of 7.5 M USD leaves about 120 k USD for the whole CubeSat.",
+      "successCriteria": [
+        {
+          "id": "reach_orbit",
+          "text": "Reach orbit and deploy the CubeSat",
+          "metric": "deployed",
+          "threshold": 1
+        },
+        {
+          "id": "survive_30d",
+          "text": "Keep the satellite alive for 30 days",
+          "metric": "daysAlive",
+          "threshold": 30
+        },
+        {
+          "id": "images_20",
+          "text": "Downlink at least 20 usable images",
+          "metric": "imagesDownlinked",
+          "threshold": 20
+        },
+        {
+          "id": "on_budget",
+          "text": "Stay within the 7.62 M USD budget",
+          "metric": "costMUSD",
+          "threshold": 7.62
+        }
+      ],
+      "randomEvents": [
+        {
+          "id": "ev_solar_storm",
+          "day": 12,
+          "type": "solar_storm",
+          "effect": "computer_reboot",
+          "value": 1,
+          "codexId": "data_budget"
+        },
+        {
+          "id": "ev_ground_outage",
+          "day": 20,
+          "type": "ground_outage",
+          "effect": "no_downlink",
+          "value": 1,
+          "codexId": "downlink"
+        },
+        {
+          "id": "ev_battery_ageing",
+          "day": 25,
+          "type": "battery_ageing",
+          "effect": "capacity_loss",
+          "value": 10,
+          "codexId": "battery_dod"
+        }
+      ],
+      "scoring": {
+        "success": 40,
+        "science": 25,
+        "budget": 10,
+        "margins": 10,
+        "decisionQuality": 10,
+        "collaboration": 5
+      },
+      "rewardImages": [
+        {
+          "date": "2022-06-25",
+          "title": "Lake Manchar before the floods",
+          "resource": "Images/Landsat/manchar_2022_06_25",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        },
+        {
+          "date": "2022-08-28",
+          "title": "Lake Manchar overflowing",
+          "resource": "Images/Landsat/manchar_2022_08_28",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        },
+        {
+          "date": "2022-09-05",
+          "title": "Floodwater spreading across the plain",
+          "resource": "Images/Landsat/manchar_2022_09_05",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        }
+      ],
+      "rewardCredit": "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey.",
+      "codexIds": [
+        "landsat",
+        "gsd",
+        "downlink",
+        "eclipse",
+        "battery_dod"
+      ]
+    },
+    {
+      "id": "floodwatch_light",
+      "name": "FloodWatch-1: Featherweight",
+      "priority": "P1",
+      "difficulty": "Intermediate",
+      "objective": "Same flood-watch satellite, but the whole CubeSat may weigh at most 1.8 kg.",
+      "description": "A smaller dispenser means a smaller mass allowance. Every gram counts: choose lighter parts and think about which ones you really need.",
+      "rocketOptions": [
+        "pathfinder"
+      ],
+      "payloadType": "cubesat_3u",
+      "budgetMUSD": 7.72,
+      "massLimitKg": 1.8,
+      "orbitOptionsKm": [
+        400,
+        550,
+        800
+      ],
+      "defaultOrbitKm": 550,
+      "launchSites": [
+        "sonmiani",
+        "cape_canaveral"
+      ],
+      "durationDays": 30,
+      "groundContactsPerDay": 4,
+      "contactMinutes": 8,
+      "imagingPassesPerDay": 1,
+      "imagesPerPass": 3,
+      "seed": 1962,
+      "illustrative": true,
+      "notes": "Challenge variant of FloodWatch-1: mass limit 1.8 kg instead of 4.0 kg.",
+      "successCriteria": [
+        {
+          "id": "reach_orbit",
+          "text": "Reach orbit and deploy the CubeSat",
+          "metric": "deployed",
+          "threshold": 1
+        },
+        {
+          "id": "survive_30d",
+          "text": "Keep the satellite alive for 30 days",
+          "metric": "daysAlive",
+          "threshold": 30
+        },
+        {
+          "id": "images_20",
+          "text": "Downlink at least 20 usable images",
+          "metric": "imagesDownlinked",
+          "threshold": 20
+        },
+        {
+          "id": "on_budget",
+          "text": "Stay within the 7.72 M USD budget",
+          "metric": "costMUSD",
+          "threshold": 7.72
+        }
+      ],
+      "randomEvents": [
+        {
+          "id": "ev_solar_storm",
+          "day": 12,
+          "type": "solar_storm",
+          "effect": "computer_reboot",
+          "value": 1,
+          "codexId": "data_budget"
+        },
+        {
+          "id": "ev_ground_outage",
+          "day": 20,
+          "type": "ground_outage",
+          "effect": "no_downlink",
+          "value": 1,
+          "codexId": "downlink"
+        },
+        {
+          "id": "ev_battery_ageing",
+          "day": 25,
+          "type": "battery_ageing",
+          "effect": "capacity_loss",
+          "value": 10,
+          "codexId": "battery_dod"
+        }
+      ],
+      "scoring": {
+        "success": 40,
+        "science": 25,
+        "budget": 10,
+        "margins": 10,
+        "decisionQuality": 10,
+        "collaboration": 5
+      },
+      "rewardImages": [
+        {
+          "date": "2022-06-25",
+          "title": "Lake Manchar before the floods",
+          "resource": "Images/Landsat/manchar_2022_06_25",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        },
+        {
+          "date": "2022-08-28",
+          "title": "Lake Manchar overflowing",
+          "resource": "Images/Landsat/manchar_2022_08_28",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        },
+        {
+          "date": "2022-09-05",
+          "title": "Floodwater spreading across the plain",
+          "resource": "Images/Landsat/manchar_2022_09_05",
+          "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/"
+        }
+      ],
+      "rewardCredit": "NASA Earth Observatory images by Joshua Stevens, using Landsat data from the U.S. Geological Survey.",
+      "codexIds": [
+        "landsat",
+        "gsd",
+        "downlink",
+        "eclipse",
+        "battery_dod"
+      ]
+    },
+    {
       "id": "moonshot",
       "name": "Moonshot",
       "priority": "P1",

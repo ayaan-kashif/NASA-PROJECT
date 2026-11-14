@@ -82,6 +82,13 @@ namespace TMinus.UI
             foreach (var e in new VisualElement[] { houston, lang, volume, full }) { e.AddToClassList("settings-row"); body.Add(e); }
             var note = new Label("Saved automatically. HOUSTON's hints count toward decision quality: fewer hints, higher score.");
             note.AddToClassList("muted"); body.Add(note);
+            // The Helpful / Not helpful buttons on HOUSTON's messages used to count in the dark; show the totals here.
+            int up = PlayerPrefs.GetInt("houston.helpful", 0), down = PlayerPrefs.GetInt("houston.unhelpful", 0);
+            if (up + down > 0)
+            {
+                var rated = new Label($"You rated HOUSTON's messages: {up} helpful, {down} not helpful ({100 * up / (up + down)}% helpful).");
+                rated.AddToClassList("muted"); body.Add(rated);
+            }
 
             void Save()
             {
