@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>T-MINUS class results</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { color-scheme: dark; --bg: #070b18; --card: #0f1730; --text: #e8edf8; --muted: #9fb0cf; --accent: #ff7a1a; --good: #3ecf7a; --bad: #f0605a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { margin: 0 0 4px; }
+  h2 { color: var(--accent); font-size: 1rem; letter-spacing: .06em; text-transform: uppercase; margin: 28px 0 8px; }
+  p, li { color: var(--muted); }
+  textarea { width: 100%; min-height: 150px; background: var(--card); color: var(--text); border: 1px solid #22305a; border-radius: 8px; padding: 10px; font: 13px/1.4 ui-monospace, Consolas, monospace; }
+  button { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px 18px; font-weight: 700; cursor: pointer; margin: 8px 8px 0 0; }
+  button.quiet { background: #22305a; }
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .card { background: var(--card); border-radius: 10px; padding: 12px 18px; min-width: 150px; }
+  .card b { display: block; font-size: 1.7rem; color: var(--text); }
+  table { border-collapse: collapse; width: 100%; background: var(--card); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #22305a; font-size: .92rem; }
+  th { color: var(--muted); font-weight: 600; }
+  .bar { height: 14px; background: var(--accent); border-radius: 4px; }
+  .barrow { display: grid; grid-template-columns: 220px 1fr 40px; gap: 8px; align-items: center; margin: 4px 0; font-size: .92rem; }
+  .ok { color: var(--good); } .lost { color: var(--bad); }
+  #msg { color: var(--bad); min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>T-MINUS class results</h1>
+  <p>Each student presses <strong>Export results (CSV)</strong> on the debrief screen, which copies their attempts. Paste them all here, one after another. Everything stays in this page: nothing is uploaded and there is no account.</p>
+
+  <textarea id="input" placeholder="students,date_utc,mission,score,stars,outcome,failure_code,failure_cause&#10;Ayesha + Bilal,2026-11-14T10:20:11Z,floodwatch_1,96.2,3,Orbit,,"></textarea>
+  <div>
+    <button id="go">Show class results</button>
+    <button id="clear" class="quiet">Clear</button>
+    <button id="download" class="quiet">Download combined CSV</button>
+  </div>
+  <div id="msg"></div>
+
+  <div id="out" hidden>
+    <h2>Summary</h2>
+    <div class="cards" id="cards"></div>
+
+    <h2>What went wrong most often</h2>
+    <p>Counts of the cause named in each lost flight (a joint id such as j_s1_interstage, a cable id such as w_pyro2, or av_safe_arm for a launch with Safe/Arm still on SAFE). These are good lesson starters.</p>
+    <div id="causes"></div>
+
+    <h2>Best result per team and mission</h2>
+    <table id="best"><thead><tr><th>Team</th><th>Mission</th><th>Best score</th><th>Stars</th><th>Attempts</th></tr></thead><tbody></tbody></table>
+
+    <h2>All attempts</h2>
+    <table id="all"><thead><tr><th>Team</th><th>When (UTC)</th><th>Mission</th><th>Score</th><th>Stars</th><th>Outcome</th><th>Failure</th><th>Cause</th></tr></thead><tbody></tbody></table>
+  </div>
+</main>
+
+<script>
+(function () {
+  var HEADER = 'students,date_utc,mission,score,stars,outcome,failure_code,failure_cause';
+  var rows = [];
+
+  // A small CSV reader that understands quoted cells (a cell with a comma or a quote is written inside double quotes).
+  function parseCsv(text) {
+    var out = [], row = [], cell = '', inQuotes = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else { inQuotes = false; } }
+        else cell += c;
+      } else if (c === '"') inQuotes = true;
+      else if (c === ',') { row.push(cell); cell = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(cell); cell = '';
+        if (row.length > 1 || row[0] !== '') out.push(row);
+        row = [];
+      } else cell += c;
+    }
+    row.push(cell);
+    if (row.length > 1 || row[0] !== '') out.push(row);
+    return out;
+  }
+
+  // The game writes a leading ' in front of cells that start with = + - @ so a spreadsheet cannot run them as formulas.
+  function plain(v) { return (v || '').replace(/^'(?=[=+\-@])/, ''); }
+
+  function load(text) {
+    var parsed = parseCsv(text), good = [], skipped = 0;
+    parsed.forEach(function (r) {
+      if (r.join(',') === HEADER) return;                      // each student's export starts with the header again
+      if (r.length < 8 || isNaN(parseFloat(r[3]))) { skipped++; return; }
+      good.push({ team: plain(r[0]), when: plain(r[1]), mission: plain(r[2]), score: parseFloat(r[3]), stars: parseInt(r[4], 10) || 0,
+                  outcome: plain(r[5]), code: plain(r[6]), cause: plain(r[7]) });
+    });
+    return { rows: good, skipped: skipped };
+  }
+
+  function td(tr, text, cls) { var c = document.createElement('td'); c.textContent = text; if (cls) c.className = cls; tr.appendChild(c); }
+  function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+
+  function render() {
+    var out = document.getElementById('out');
+    out.hidden = rows.length === 0;
+    if (!rows.length) return;
+
+    var teams = {}, orbit = 0, total = 0, sum = 0;
+    rows.forEach(function (r) { teams[r.team] = true; total++; sum += r.score; if (r.outcome === 'Orbit') orbit++; });
+    var cards = document.getElementById('cards'); clear(cards);
+    [['Teams', Object.keys(teams).length], ['Attempts', total], ['Average score', (sum / total).toFixed(1)],
+     ['Reached orbit', Math.round(100 * orbit / total) + '%']].forEach(function (p) {
+      var d = document.createElement('div'); d.className = 'card';
+      var b = document.createElement('b'); b.textContent = p[1];
+      d.appendChild(b); d.appendChild(document.createTextNode(p[0])); cards.appendChild(d);
+    });
+
+    var causes = {};
+    rows.forEach(function (r) { if (r.outcome !== 'Orbit' && r.cause) causes[r.cause] = (causes[r.cause] || 0) + 1; });
+    var list = Object.keys(causes).sort(function (a, b) { return causes[b] - causes[a]; });
+    var box = document.getElementById('causes'); clear(box);
+    if (!list.length) box.textContent = 'No lost flights with a named cause.';
+    var max = list.length ? causes[list[0]] : 1;
+    list.forEach(function (k) {
+      var row = document.createElement('div'); row.className = 'barrow';
+      var name = document.createElement('span'); name.textContent = k;
+      var wrap = document.createElement('div'); var bar = document.createElement('div'); bar.className = 'bar'; bar.style.width = (100 * causes[k] / max) + '%'; wrap.appendChild(bar);
+      var n = document.createElement('span'); n.textContent = causes[k];
+      row.appendChild(name); row.appendChild(wrap); row.appendChild(n); box.appendChild(row);
+    });
+
+    var best = {};
+    rows.forEach(function (r) {
+      var k = r.team + '||' + r.mission;
+      if (!best[k]) best[k] = { team: r.team, mission: r.mission, score: r.score, stars: r.stars, n: 0 };
+      best[k].n++;
+      if (r.score > best[k].score) { best[k].score = r.score; best[k].stars = r.stars; }
+    });
+    var bodyBest = document.querySelector('#best tbody'); clear(bodyBest);
+    Object.keys(best).map(function (k) { return best[k]; }).sort(function (a, b) { return b.score - a.score; }).forEach(function (b) {
+      var tr = document.createElement('tr'); td(tr, b.team); td(tr, b.mission); td(tr, b.score.toFixed(1)); td(tr, '★'.repeat(b.stars) + '☆'.repeat(Math.max(0, 3 - b.stars))); td(tr, b.n); bodyBest.appendChild(tr);
+    });
+
+    var bodyAll = document.querySelector('#all tbody'); clear(bodyAll);
+    rows.slice().sort(function (a, b) { return a.when < b.when ? 1 : -1; }).forEach(function (r) {
+      var tr = document.createElement('tr');
+      td(tr, r.team); td(tr, r.when.replace('T', ' ').replace('Z', '')); td(tr, r.mission); td(tr, r.score.toFixed(1)); td(tr, r.stars);
+      td(tr, r.outcome, r.outcome === 'Orbit' ? 'ok' : 'lost'); td(tr, r.code); td(tr, r.cause); bodyAll.appendChild(tr);
+    });
+  }
+
+  document.getElementById('go').onclick = function () {
+    var result = load(document.getElementById('input').value);
+    rows = result.rows;
+    document.getElementById('msg').textContent = rows.length ? (result.skipped ? result.skipped + ' line(s) were not understood and were skipped.' : '') :
+      'No attempts found. Paste what the game copied from "Export results (CSV)".';
+    render();
+  };
+  document.getElementById('clear').onclick = function () { document.getElementById('input').value = ''; rows = []; document.getElementById('msg').textContent = ''; render(); };
+  document.getElementById('download').onclick = function () {
+    if (!rows.length) return;
+    function q(v) { v = String(v); return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+    var lines = [HEADER].concat(rows.map(function (r) { return [r.team, r.when, r.mission, r.score, r.stars, r.outcome, r.code, r.cause].map(q).join(','); }));
+    var blob = new Blob([lines.join('\n') + '\n'], { type: 'text/csv' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 't-minus-class-results.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  };
+})();
+</script>
+</body>
+</html>

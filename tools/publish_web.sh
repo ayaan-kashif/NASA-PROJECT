@@ -11,6 +11,7 @@ git -C "$P" worktree add -q "$W" gh-pages
 find "$W" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 cp -r "$P/Builds/WebGL/." "$W/"; touch "$W/.nojekyll"
 cp "$P/tools/web/about.html" "$W/about.html"
+cp "$P/tools/web/teacher.html" "$W/teacher.html"
 
 # Link previews and a description for search engines (the Unity template has none).
 sed -i 's|</head>|<meta name="description" content="T-MINUS: build a CubeSat and its rocket part by part, launch it with real physics and learn from a debrief that explains every failure. Free, for students 12 and up.">\n<meta property="og:title" content="T-MINUS: Rocket \&amp; Mission Builder">\n<meta property="og:description" content="Build a satellite and its rocket bolt by bolt, launch it, and find out exactly what made it succeed or fail.">\n<meta property="og:type" content="website">\n</head>|' "$W/index.html"
@@ -22,4 +23,4 @@ git -C "$W" add -A
 git -C "$W" commit -qm "Update playable WebGL build" || echo "No changes to publish."
 git -C "$W" push -q origin gh-pages
 git -C "$P" worktree remove --force "$W"
-echo "Published: https://ayaan-kashif.github.io/NASA-PROJECT/  (about page: about.html)"
+echo "Published: https://ayaan-kashif.github.io/NASA-PROJECT/  (about page: about.html, teacher results page: teacher.html)"
