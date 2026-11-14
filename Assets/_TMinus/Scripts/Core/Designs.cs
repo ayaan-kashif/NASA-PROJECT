@@ -85,6 +85,8 @@ namespace TMinus.Core
         public List<string> poll = new List<string>();
         public int noGoRounds;
         public bool launched;
+        /// <summary>GO / NO-GO votes teammates sent from other computers (audit F25). A vote only counts for the design it was made for.</summary>
+        public List<CrewVote> remoteVotes = new List<CrewVote>();
     }
 
     /// <summary>One telemetry sample kept for the debrief (1 Hz).</summary>

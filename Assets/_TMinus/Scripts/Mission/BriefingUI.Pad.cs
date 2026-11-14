@@ -51,6 +51,7 @@ namespace TMinus.Mission
             var bar = new VisualElement(); bar.AddToClassList("bin-chips");
             bar.style.marginTop = 14;
             bar.Add(Btn(Strings.Get("pad.back_to_briefing", "< Back to briefing"), () => _modal.AddToClassList("hidden"), "card-btn"));
+            bar.Add(Btn("Remote crew", ShowRemoteCrew, "card-btn"));
             bar.Add(Btn(fails == 0 ? "Start GO / NO-GO poll" : $"Poll anyway ({fails} known FAIL)", () => StartPoll(items.Where(i => !i.pass).Select(i => i.id).ToList()), "card-btn accent"));
             panel.Add(bar);
         }
@@ -69,6 +70,9 @@ namespace TMinus.Mission
             _modal.Clear();
             if (index >= PollOrder.Length) { StartCountdown(); return; }
             var role = PollOrder[index];
+            // A teammate on another computer may already have answered for this role (audit F25).
+            var remote = S.Launch.remoteVotes.LastOrDefault(v => v.role == role.ToString() && CrewCodes.Matches(v, DesignCode.FromState(S)));
+            if (remote != null) { ApplyRemoteVote(index, role, remote); return; }
             var who = S.Crew.FirstOrDefault(c => c.role == role)?.name ?? "Player 1";
             var panel = new VisualElement(); panel.AddToClassList("poll-panel");
             _modal.Add(panel);

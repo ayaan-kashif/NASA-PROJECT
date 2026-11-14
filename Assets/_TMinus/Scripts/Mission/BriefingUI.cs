@@ -29,7 +29,11 @@ namespace TMinus.Mission
         DataRegistry Data => S.Data;
 
         void Awake() => Instance = this;
-        void OnDestroy() { if (Instance == this) Instance = null; }
+        void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            if (_joinActive) { _joinActive = false; SaveService.EndScript(GameState.Instance); }   // never leave autosave switched off
+        }
 
         void OnEnable()
         {
