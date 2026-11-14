@@ -205,3 +205,7 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - `FlightController.MaxThrustN` caches the strongest stage thrust (was a LINQ `Max` twice per frame). VAB caches its camera lookup.
 - Desktop builds turn vertical sync on if it was off (`GameState.Awake`, not in WebGL), so the game stops drawing hundreds of unneeded frames a second. Web build settings were left as they are (the friend's black-screen fix depends on them).
 - Nothing in scenes, prefabs, data or physics changed. If the flight HUD looks wrong in Unity, `TextInterval` in `FlightHud.cs` is the one constant to set to 0.
+
+## Graphics tuning tool (Claude, 2026-11-14) - still NOT compiled or run in Unity
+- `Editor/GraphicsTuner.cs`: Tools > T-Minus > Graphics > Make Faster (same look) / Restore Original / Report current values. Drops MSAA 4x (SMAA is already on every camera), 4 to 2 shadow cascades, High to Medium soft shadows, SSAO to half size on `PC_RPAsset`/`PC_Renderer`. Restore Original sets the old values back (MSAA 4, 4 cascades, 2048, High, full-size AO).
+- `docs/FRIEND_PROMPT.md`: the full prompt for the Unity machine (compile, test, play, measure, graphics step 2, web).
