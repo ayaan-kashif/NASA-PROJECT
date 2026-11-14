@@ -12,6 +12,42 @@ namespace TMinus.Mission
     public sealed partial class BriefingUI
     {
         bool _joinActive;
+        bool _remoteOpen;
+        string _liveRoom, _lastRelayId;
+
+        /// <summary>Opens a live room: votes sent to it arrive by themselves (see CrewRelay). Polls every few seconds while this scene is open.</summary>
+        void StartLiveRoom()
+        {
+            _liveRoom = CrewRelay.NewRoomCode();
+            _lastRelayId = null;
+            StartCoroutine(PollLiveRoom(_liveRoom));
+        }
+
+        System.Collections.IEnumerator PollLiveRoom(string room)
+        {
+            while (_liveRoom == room)
+            {
+                System.Collections.Generic.List<RelayMessage> messages = null;
+                bool answered = false;
+                yield return CrewRelay.Poll(room, _lastRelayId, m => { messages = m; answered = true; });
+                bool changed = false;
+                if (answered && messages != null)
+                {
+                    var current = DesignCode.FromState(S);
+                    foreach (var message in messages)
+                    {
+                        _lastRelayId = message.id;
+                        if (!CrewCodes.TryDecodeVote(message.text, out var vote, out _) || !CrewCodes.Matches(vote, current)) continue;
+                        S.Launch.remoteVotes.RemoveAll(v => v.role == vote.role);
+                        S.Launch.remoteVotes.Add(vote);
+                        Log("RemoteVote", $"{vote.role}: {(vote.go ? "GO" : "NO-GO")} from {vote.name} (live room)", vote.role);
+                        changed = true;
+                    }
+                }
+                if (changed && _remoteOpen) ShowRemoteCrew();
+                yield return new WaitForSeconds(3f);
+            }
+        }
 
         // ------------------------------------------------------------------ host
 
@@ -19,6 +55,7 @@ namespace TMinus.Mission
         {
             _modal.Clear();
             _modal.RemoveFromClassList("hidden");
+            _remoteOpen = true;
             var panel = new ScrollView(); panel.AddToClassList("pad-panel");
             _modal.Add(panel);
             panel.Add(L("REMOTE CREW", "info-category"));
@@ -33,6 +70,18 @@ namespace TMinus.Mission
                 GUIUtility.systemCopyBuffer = code;
                 Toast(Application.platform == RuntimePlatform.WebGLPlayer ? "Select the code in the box and press Ctrl+C." : "Pad code copied.");
             }, "card-btn"));
+
+            panel.Add(L("LIVE ROOM (optional)", "brief-sub"));
+            if (_liveRoom == null)
+            {
+                panel.Add(L("A live room lets votes arrive by themselves, with no copying back. It uses the free public service ntfy.sh; only crew vote codes travel through it.", "check-detail"));
+                panel.Add(Btn("Open a live room", () => { StartLiveRoom(); ShowRemoteCrew(); }, "card-btn"));
+            }
+            else
+            {
+                panel.Add(L($"Room code: {_liveRoom}", "check-title"));
+                panel.Add(L("Tell your teammates this room code. They type it when they vote, and their vote shows up below within a few seconds.", "check-detail"));
+            }
 
             panel.Add(L("VOTES", "brief-sub"));
             foreach (var role in PollOrder)
@@ -61,7 +110,7 @@ namespace TMinus.Mission
                 Log("RemoteVote", $"{vote.role}: {(vote.go ? "GO" : "NO-GO")} from {vote.name}", vote.role);
                 ShowRemoteCrew();
             }, "card-btn accent"));
-            panel.Add(Btn("< Back to checklist", ShowChecklist, "card-btn"));
+            panel.Add(Btn("< Back to checklist", () => { _remoteOpen = false; ShowChecklist(); }, "card-btn"));
         }
 
         /// <summary>A teammate's vote answers this role's poll step; a NO-GO holds the count like a local one.</summary>
@@ -97,6 +146,9 @@ namespace TMinus.Mission
             var codeField = new TextField(); codeField.AddToClassList("name-field");
             panel.Add(L("PAD CODE", "brief-sub"));
             panel.Add(codeField);
+            panel.Add(L("ROOM CODE (optional, from your host)", "brief-sub"));
+            var roomField = new TextField(); roomField.AddToClassList("name-field");
+            panel.Add(roomField);
             panel.Add(L("YOUR NAME", "brief-sub"));
             var nameField = new TextField { value = "" }; nameField.AddToClassList("name-field");
             panel.Add(nameField);
@@ -122,6 +174,7 @@ namespace TMinus.Mission
                 DesignValidator.Clean(bundle, Data);
                 if (!_joinActive) { SaveService.BeginScript(S); _joinActive = true; }   // the host's build replaces yours until you press Done
                 DesignCode.Apply(bundle, S);
+                _joinRoom = CrewRelay.IsValid(roomField.value) ? CrewRelay.Normalise(roomField.value) : null;
                 ShowCrewVote(chosen, nameField.value.Trim());
             }, "card-btn accent"));
             panel.Add(Btn("Close", () => _modal.AddToClassList("hidden"), "card-btn"));
@@ -153,6 +206,8 @@ namespace TMinus.Mission
             panel.Add(Btn("Cancel", EndJoin, "card-btn"));
         }
 
+        string _joinRoom;
+
         void ShowVoteCode(CrewRole role, string name, bool go, int open)
         {
             var vote = new CrewVote { role = role.ToString(), go = go, name = name, designHash = CrewCodes.DesignHash(DesignCode.FromState(S)), openItems = open };
@@ -164,6 +219,14 @@ namespace TMinus.Mission
             panel.Add(L("Copy this vote code and send it to your host.", "pad-title"));
             var box = new TextField { value = code, isReadOnly = true }; box.AddToClassList("name-field");
             panel.Add(box);
+            if (_joinRoom != null)
+            {
+                var status = L("Sending your vote to the live room...", "check-detail");
+                panel.Add(status);
+                StartCoroutine(CrewRelay.Publish(_joinRoom, code, ok => status.text = ok
+                    ? "Sent to the live room: your host sees it now. You can still copy the code below."
+                    : "Could not reach the live room. Copy the vote code below and send it by hand."));
+            }
             panel.Add(Btn("Copy vote code", () =>
             {
                 GUIUtility.systemCopyBuffer = code;

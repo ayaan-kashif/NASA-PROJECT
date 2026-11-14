@@ -15,6 +15,7 @@ namespace TMinus.Mission
 
         public void ShowChecklist()
         {
+            _remoteOpen = false;
             var items = PrelaunchChecklist.Build(S);
             _modal.Clear();
             _modal.RemoveFromClassList("hidden");
