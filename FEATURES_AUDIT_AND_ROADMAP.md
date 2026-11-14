@@ -684,7 +684,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] F15 Shareable mission card
 - [x] F16 Design links
 - [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
-- [ ] F18 School licence
+- [x] F18 School licence (the pilot offer the roadmap starts with: tools/web/schools.html says what stays free, what the pilot asks and gives, and how to apply through a GitHub issue; billing is deliberately not built before the pilot says what a licence should include)
 - [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
 - [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)

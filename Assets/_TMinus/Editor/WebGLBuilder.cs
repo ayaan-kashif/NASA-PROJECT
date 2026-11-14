@@ -27,9 +27,11 @@ namespace TMinus.EditorTools
             PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.ExplicitlyThrownExceptionsOnly;
             PlayerSettings.WebGL.template = "APPLICATION:Default";
             PlayerSettings.SetManagedStrippingLevel(NamedBuildTarget.WebGL, ManagedStrippingLevel.Minimal);
-            // An engine package's generated bindings.cpp uses Emscripten's embind, which isn't linked by default.
+            // An engine package's generated bindings.cpp uses Emscripten's embind, which isn't linked by default. Only the Unity AI packages need it,
+            // so a release build made without them (tools/build_release.sh) skips it (audit A-11).
+            bool aiPackages = File.Exists("Packages/manifest.json") && File.ReadAllText("Packages/manifest.json").Contains("com.unity.ai.");
 #pragma warning disable 618
-            if (!(PlayerSettings.WebGL.emscriptenArgs ?? "").Contains("-lembind"))
+            if (aiPackages && !(PlayerSettings.WebGL.emscriptenArgs ?? "").Contains("-lembind"))
                 PlayerSettings.WebGL.emscriptenArgs = ((PlayerSettings.WebGL.emscriptenArgs ?? "") + " -lembind").Trim();
 #pragma warning restore 618
 

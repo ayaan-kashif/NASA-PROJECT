@@ -671,7 +671,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-08 Scoring resets; real team score
 - [x] A-09 Leaderboard duplicate
 - [x] A-10 Design-code validation
-- [ ] A-11 AI packages out of the player build
+- [x] A-11 AI packages out of the player build (tools/build_release.sh builds from a temporary copy of the project whose manifest has the AI packages removed, so the development project keeps its Unity MCP tooling; the web build adds the embind flag only when the packages are present; the manifest edit was tested, the Unity build was not run)
 - [x] A-12 CI (workflow written; Unity tests need the UNITY_LICENSE secrets)
 - [x] A-13 Single countdown; no auto-advance
 - [x] A-14 Real payload mass; unbuilt rocket aborts on the pad (the flight carries the CubeSat's real mass; tools/sim/payload.js shows Pathfinder still reaches orbit and max-Q rises only from 40.6 to 41.4 kPa)
@@ -719,7 +719,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] F15 Shareable mission card
 - [x] F16 Design links
 - [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
-- [ ] F18 School licence
+- [x] F18 School licence (the pilot offer the roadmap starts with: tools/web/schools.html says what stays free, what the pilot asks and gives, and how to apply through a GitHub issue; billing is deliberately not built before the pilot says what a licence should include)
 - [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
 - [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
