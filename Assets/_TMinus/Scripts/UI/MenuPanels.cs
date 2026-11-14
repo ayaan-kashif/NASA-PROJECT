@@ -44,10 +44,17 @@ namespace TMinus.UI
                 var shown = entries.Where(c => string.IsNullOrWhiteSpace(q) ||
                     (c.title ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 ||
                     (c.shortText ?? "").IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-                count.text = $"{shown.Count} of {entries.Count} topics. Every number in the game links to one of these.";
+                var allIds = entries.Select(e => e.id).ToList();
+                count.text = $"{shown.Count} of {entries.Count} topics shown  ·  {CodexProgress.SeenCount(allIds)} read  ·  {CodexProgress.PassedCount(allIds)} quick checks passed. Every number in the game links to one of these.";
                 foreach (var c in shown)
                 {
-                    var f = new Foldout { text = c.title ?? c.id, value = false }; f.AddToClassList("codex-item");
+                    var f = new Foldout { text = TopicTitle(c), value = false }; f.AddToClassList("codex-item");
+                    f.RegisterValueChangedCallback(ev =>
+                    {
+                        if (ev.target != f || !ev.newValue) return;
+                        CodexProgress.MarkSeen(c.id);
+                        f.text = TopicTitle(c);
+                    });
                     var s = new Label(c.shortText); s.AddToClassList("codex-short"); f.Add(s);
                     if (!string.IsNullOrEmpty(c.longText)) { var l = new Label(c.longText); l.AddToClassList("codex-long"); f.Add(l); }
                     if (!string.IsNullOrEmpty(c.sourceUrl))
@@ -55,11 +62,43 @@ namespace TMinus.UI
                         var src = new Button(() => Application.OpenURL(c.sourceUrl)) { text = "Source: " + c.sourceUrl };
                         src.AddToClassList("codex-source"); f.Add(src);
                     }
+                    var quiz = CodexProgress.QuizFor(c.id);
+                    if (quiz != null) f.Add(BuildQuiz(c, quiz, () => f.text = TopicTitle(c)));
                     list.Add(f);
                 }
             }
             search.RegisterValueChangedCallback(e => Fill(e.newValue));
             Fill("");
+        }
+
+        /// <summary>The topic name with a tick once it has been opened, and a star once its quick check was answered correctly.</summary>
+        static string TopicTitle(CodexEntry c) =>
+            (c.title ?? c.id) + (CodexProgress.IsSeen(c.id) ? "  ✓" : "") + (CodexProgress.IsPassed(c.id) ? "  ★" : "");
+
+        /// <summary>A three-answer quick check under a topic (feature F14). Works offline.</summary>
+        static VisualElement BuildQuiz(CodexEntry c, QuizItem quiz, Action onPassed)
+        {
+            var box = new VisualElement(); box.style.marginTop = 10;
+            var question = new Label("Quick check: " + quiz.q); question.style.whiteSpace = WhiteSpace.Normal; question.style.unityFontStyleAndWeight = FontStyle.Bold;
+            box.Add(question);
+            var result = new Label(CodexProgress.IsPassed(c.id) ? "You answered this one correctly before." : ""); result.AddToClassList("muted"); result.style.whiteSpace = WhiteSpace.Normal;
+            var buttons = new List<Button>();
+            foreach (var option in CodexProgress.Options(quiz))
+            {
+                string chosen = option;
+                var b = new Button { text = chosen };
+                b.clicked += () =>
+                {
+                    bool right = chosen == quiz.correct;
+                    result.text = right ? "Correct!" : "Not quite. The answer: " + quiz.correct;
+                    if (right) { CodexProgress.MarkPassed(c.id); onPassed?.Invoke(); }
+                    foreach (var other in buttons) other.SetEnabled(false);
+                };
+                buttons.Add(b);
+                box.Add(b);
+            }
+            box.Add(result);
+            return box;
         }
 
         // ---------------------------------------------------------------- Settings
@@ -100,6 +139,27 @@ namespace TMinus.UI
             lang.RegisterValueChangedCallback(_ => Save());
             volume.RegisterValueChangedCallback(_ => Save());
             full.RegisterValueChangedCallback(_ => Save());
+
+            // Accessibility and privacy (audit F10, F21).
+            var access = new Label("ACCESSIBILITY AND PRIVACY"); access.AddToClassList("overlay-title"); access.style.marginTop = 14; body.Add(access);
+            var text = new RadioButtonGroup("Text size", new List<string> { "Normal", "Large (125%)", "Extra large (150%)" })
+                { value = SettingsStore.TextScalePct >= 150 ? 2 : SettingsStore.TextScalePct >= 125 ? 1 : 0 };
+            text.RegisterValueChangedCallback(e => SettingsStore.SetTextScale(e.newValue == 2 ? 150 : e.newValue == 1 ? 125 : 100));
+            var low = new Toggle("Low graphics (for slow computers; applies when the next room loads)") { value = SettingsStore.LowGraphics };
+            low.RegisterValueChangedCallback(e => SettingsStore.SetLowGraphics(e.newValue));
+            var motion = new Toggle("Reduce motion and flashes") { value = SettingsStore.ReduceMotion };
+            motion.RegisterValueChangedCallback(e => SettingsStore.SetReduceMotion(e.newValue));
+            var stats = new Toggle("Share anonymous gameplay stats (which rooms are used, how flights end; never anything you type)") { value = SettingsStore.ShareStats };
+            stats.RegisterValueChangedCallback(e => SettingsStore.SetShareStats(e.newValue));
+            foreach (var e in new VisualElement[] { text, low, motion, stats }) { e.AddToClassList("settings-row"); body.Add(e); }
+
+            var replay = new Button(() => { FirstBuildGuideFlags.ResetAll(); }) { text = "Replay the guided first build" };
+            replay.AddToClassList("menu-button");
+            body.Add(replay);
+            Button erase = null;
+            erase = new Button(() => { SaveService.DeleteSave(); erase.text = "Saved build deleted"; erase.SetEnabled(false); }) { text = "Delete my saved build" };
+            erase.AddToClassList("menu-button");
+            body.Add(erase);
         }
 
         // ---------------------------------------------------------------- Sandbox

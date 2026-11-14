@@ -150,6 +150,12 @@ namespace TMinus.Houston
         void ShowMe(string objectRef)
         {
             CountHint(HintLevel.ShowMe);
+            FocusOn(objectRef);
+        }
+
+        /// <summary>Frame and highlight the object without counting a hint (the guided first build uses this).</summary>
+        public void FocusOn(string objectRef)
+        {
             var vab = VabController.Instance;
             if (vab != null && vab.Current != null && vab.orbit != null)
             {

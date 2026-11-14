@@ -83,7 +83,7 @@ namespace TMinus.Mission
                 float left = struck ? Window - (Time.unscaledTime - stepStart) : 0;
                 clock.text = $"T+{t:00.0} s   ·   ALT {(t * t * 0.0055f):0.0} km" + (run.Step > 2 ? "   ·   all systems restored" : struck ? $"   ·   DECIDE: {Mathf.Max(0, left):0} s" : "   ·   nominal ascent");
                 bool strikeFlash = (t >= StrikeT && t < StrikeT + 0.4f) || (t >= SecondStrikeT && t < SecondStrikeT + 0.4f);
-                if (strikeFlash != flashing) { flashing = strikeFlash; card.EnableInClassList("a12-flash", flashing); }
+                if (strikeFlash != flashing) { flashing = strikeFlash; if (!SettingsStore.ReduceMotion) card.EnableInClassList("a12-flash", flashing); }
                 if (run.Step > 2) prompt.text = "Telemetry and power are back. The Saturn V never stopped flying.";
                 else if (struck && prompt.text == job.clientNote) prompt.text = "LIGHTNING. Fuel cells offline, caution lights everywhere, telemetry is garbage. What's your call, EECOM?";
 

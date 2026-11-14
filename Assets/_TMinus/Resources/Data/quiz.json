@@ -1,0 +1,32 @@
+{
+  "quiz": [
+    { "id": "star_pattern", "q": "Why are bolts tightened in a star pattern?", "correct": "So the flange closes evenly instead of tilting", "wrong": [ "So the bolts look neat", "To use less torque" ] },
+    { "id": "torque", "q": "What can happen if a bolt gets far too much torque?", "correct": "The thread strips or the bolt yields", "wrong": [ "It clamps even better", "Nothing, the joint just gets heavier" ] },
+    { "id": "staging", "q": "Why does a rocket drop its empty stages?", "correct": "To stop carrying dead weight", "wrong": [ "To make less noise", "To cool the engines" ] },
+    { "id": "thrust_to_weight", "q": "A rocket has a thrust-to-weight ratio of 0.8. What happens?", "correct": "It stays on the pad", "wrong": [ "It lifts off slowly", "It flies sideways" ] },
+    { "id": "delta_v", "q": "What does doubling a stage's propellant do to its delta-v?", "correct": "It rises, but by less than double", "wrong": [ "It exactly doubles", "It halves" ] },
+    { "id": "isp", "q": "A higher specific impulse means...", "correct": "More push from each kilogram of propellant", "wrong": [ "A heavier engine", "A shorter flight" ] },
+    { "id": "max_q", "q": "What is max-Q?", "correct": "The moment of highest aerodynamic pressure", "wrong": [ "The moment of highest speed", "The end of the engine burn" ] },
+    { "id": "gravity_turn", "q": "Why does the rocket tip over after liftoff?", "correct": "Orbit needs sideways speed, not just height", "wrong": [ "To look at the Moon", "To save fuel on the pad" ] },
+    { "id": "launching_east", "q": "Why launch towards the east?", "correct": "The ground already moves east, giving a free speed boost", "wrong": [ "The wind always blows east", "Rockets can only steer east" ] },
+    { "id": "orbit_periapsis", "q": "You are in orbit when the periapsis...", "correct": "Stays above the atmosphere", "wrong": [ "Is exactly zero", "Is higher than the apoapsis" ] },
+    { "id": "eclipse", "q": "Why does a satellite need a battery?", "correct": "Solar panels make no power in Earth's shadow", "wrong": [ "To make it heavier", "For the camera flash" ] },
+    { "id": "battery_dod", "q": "Why keep each eclipse to a shallow depth of discharge?", "correct": "A battery lasts thousands of orbits that way", "wrong": [ "Deep discharge is not allowed in space", "It makes the battery lighter" ] },
+    { "id": "eps", "q": "What does the EPS do?", "correct": "Collects solar power, charges the battery and feeds the boards", "wrong": [ "Points the camera", "Sends data to Earth" ] },
+    { "id": "deployment_switch", "q": "What keeps a CubeSat switched off inside its dispenser?", "correct": "A deployment switch held down by the dispenser rails", "wrong": [ "A software timer only", "The camera cover" ] },
+    { "id": "rbf_pin", "q": "What happens if the Remove-Before-Flight pin is left in?", "correct": "The satellite never wakes up", "wrong": [ "The satellite is extra safe in orbit", "Nothing at all" ] },
+    { "id": "pyro_separation", "q": "A pyro cable is missing. What happens at that event?", "correct": "It does not fire: the stage or fairing stays attached", "wrong": [ "It fires anyway", "It fires too early" ] },
+    { "id": "safe_arm", "q": "When is the Safe/Arm plug switched to ARMED?", "correct": "Late in the countdown, at the pad", "wrong": [ "Whenever people work on the wiring", "Never" ] },
+    { "id": "telemetry", "q": "What is telemetry?", "correct": "Measurements a vehicle radios to the ground", "wrong": [ "A kind of rocket engine", "The launch pad tower" ] },
+    { "id": "adcs", "q": "Which gives sharper pointing for a high-resolution camera?", "correct": "Reaction wheels with a star tracker", "wrong": [ "Magnetorquers", "Neither: pointing does not matter" ] },
+    { "id": "gsd", "q": "A smaller ground sample distance means...", "correct": "More detail in each pixel", "wrong": [ "A blurrier picture", "Less data to send" ] },
+    { "id": "downlink", "q": "When can a satellite send data to a ground station?", "correct": "Only while the station can see it", "wrong": [ "Any time", "Only at night" ] },
+    { "id": "data_budget", "q": "The camera makes more data than the radio can send. What happens?", "correct": "Storage fills up and new images are lost", "wrong": [ "The radio gets faster", "The camera turns itself off safely" ] },
+    { "id": "saturn_v", "q": "How many times did a Saturn V fly?", "correct": "13", "wrong": [ "3", "130" ] },
+    { "id": "f1_engine", "q": "What did the F-1 engine burn?", "correct": "Kerosene and liquid oxygen", "wrong": [ "Liquid hydrogen", "Solid fuel" ] },
+    { "id": "j2_engine", "q": "What made the S-IVB's J-2 engine special?", "correct": "It could restart in space", "wrong": [ "It was the biggest engine ever built", "It burned kerosene" ] },
+    { "id": "rehbar_1962", "q": "What did Rehbar-I release to let scientists track upper-atmosphere winds?", "correct": "A sodium cloud", "wrong": [ "Coloured smoke candles", "A weather balloon" ] },
+    { "id": "apollo12_lightning", "q": "What did flight controller John Aaron suggest to bring telemetry back?", "correct": "Switch the SCE to AUX", "wrong": [ "Abort the launch", "Turn off the radio" ] },
+    { "id": "landsat", "q": "Landsat satellites have photographed Earth's land since...", "correct": "1972", "wrong": [ "1999", "2015" ] }
+  ]
+}

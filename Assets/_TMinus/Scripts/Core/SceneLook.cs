@@ -47,7 +47,8 @@ namespace TMinus.Core
             // If this device can't run URP's post-processing shader (seen in some browsers), drawing with it on
             // leaves the 3D view black. Fall back to plain rendering: no bloom or grading, but a working picture.
             var uber = Shader.Find("Hidden/Universal Render Pipeline/UberPost");
-            bool postOk = uber != null && uber.isSupported;
+            // Low-graphics mode (Settings) takes the same plain-rendering path as a browser without post-processing.
+            bool postOk = uber != null && uber.isSupported && !SettingsStore.LowGraphics;
             if (!postOk && _volume != null) { Object.Destroy(_volume); _volume = null; }
 
             foreach (var cam in Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
