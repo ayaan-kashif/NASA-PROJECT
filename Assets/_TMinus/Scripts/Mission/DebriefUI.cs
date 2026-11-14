@@ -31,6 +31,7 @@ namespace TMinus.Mission
             page.Add(new Label($"{s.Data.GetMission(s.CurrentMissionId)?.name ?? "Mission"}  ·  {new string('★', score.stars)}{new string('☆', 3 - score.stars)}") { name = "title" });
             page.Add(new Label($"{score.total:0.0} / 100 points     ·     {(s.Flight.deployed ? "DEPLOYED" : "NOT DEPLOYED")}     ·     {ops.daysAlive} / {ops.timeline.Count} days alive") { name = "summary" });
             AddGoals(page, s, ops);
+            AddNarration(page, s, ops, score);
             AddHistory(page, s, score);
             var grid = new VisualElement(); grid.AddToClassList("debrief-grid"); page.Add(grid);
             var scoreCard = Card("SCORE BREAKDOWN"); grid.Add(scoreCard);
@@ -71,6 +72,36 @@ namespace TMinus.Mission
             double days = (e.time - flightEndS) / 86400.0;
             return days < 0.5 ? "On deployment" : $"Day {Math.Round(days):0}";
         }
+        /// <summary>
+        /// HOUSTON's summary card (audit F22): the offline three sentences at once, replaced by the AI's wording of the same facts when
+        /// HOUSTON is on and the proxy answers. If the AI is unavailable the offline text simply stays.
+        /// </summary>
+        void AddNarration(VisualElement page, GameState s, OpsReport ops, MissionScore score)
+        {
+            if (s.Settings.houstonMode == HoustonMode.Off) return;
+            var mission = s.Data.GetMission(s.CurrentMissionId);
+            var budget = SpacecraftBudget.Compute(s.Spacecraft, s.Data, mission, s.Data.GetRocket(s.Vehicle.rocketId));
+            var goals = MissionGoals.Evaluate(mission, s.Flight, ops, budget);
+            var card = Card("HOUSTON'S SUMMARY"); page.Add(card);
+            string offline = DebriefNarration.Offline(mission?.name ?? "The mission", s.Flight, ops, score, goals);
+            var text = new Label(offline); text.style.whiteSpace = WhiteSpace.Normal; card.Add(text);
+            if (s.Settings.houstonMode != HoustonMode.On || DemoHooks.NarrateDebrief == null) return;
+            var events = s.Events.All.Where(e => e.system == "operations" || e.system == "flight" || e.system == "Pad").OrderBy(e => e.time).TakeLast(14);
+            FetchAiSummary(text, DebriefNarration.TimelineText(events, s.Flight.flightTimeS), DebriefNarration.BreakdownText(score));
+        }
+
+        async void FetchAiSummary(Label label, string timeline, string breakdown)
+        {
+            try
+            {
+                string answer = await DemoHooks.NarrateDebrief(timeline, breakdown);
+                // The client returns "Mission complete. ..." when the AI is off or unreachable: keep the offline summary then.
+                if (string.IsNullOrWhiteSpace(answer) || answer.StartsWith("Mission complete.") || label.panel == null) return;
+                label.text = answer.Trim() + "  (AI summary)";
+            }
+            catch (Exception) { /* offline text stays */ }
+        }
+
         /// <summary>Records this flight in the mission log and compares it with the last attempt (the Judge Mode demo is not recorded).</summary>
         void AddHistory(VisualElement page, GameState s, MissionScore score)
         {

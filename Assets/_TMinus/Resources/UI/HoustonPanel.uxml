@@ -32,7 +32,7 @@
 
             <!-- Free question input -->
             <ui:VisualElement name="houston-input-row" class="houston-input-row">
-                <ui:TextField name="houston-input" placeholder-text="Ask HOUSTON a question..." class="houston-input" />
+                <ui:TextField name="houston-input" placeholder-text="Ask HOUSTON... try: what if I use the HD camera?" class="houston-input" />
             </ui:VisualElement>
             <ui:Label name="houston-notice" class="houston-notice" text="When online, typed questions are sent to an AI service. Don't type personal details." />
         </ui:VisualElement>

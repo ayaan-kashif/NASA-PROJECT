@@ -62,6 +62,7 @@ namespace TMinus.Houston
             if (_instance != null && _instance != this) { Destroy(gameObject); return; }
             _instance = this;
             _llm = gameObject.AddComponent<HoustonLLMClient>();
+            DemoHooks.NarrateDebrief = (timeline, breakdown) => _llm.AskDebrief(timeline, breakdown);   // the debrief asks for its AI summary through this
             BuildUI();
             HoustonBus.AskRequested += OnAskRequested;
             if (GameState.Instance != null) GameState.Instance.Events.Added += OnGameEvent;
@@ -71,7 +72,7 @@ namespace TMinus.Houston
         {
             HoustonBus.AskRequested -= OnAskRequested;
             if (GameState.Instance != null) GameState.Instance.Events.Added -= OnGameEvent;
-            if (_instance == this) _instance = null;
+            if (_instance == this) { _instance = null; DemoHooks.NarrateDebrief = null; }
         }
 
         /// <summary>Hide the whole overlay (button included) outside the gameplay scenes.</summary>

@@ -18,6 +18,9 @@ namespace TMinus.Core
         /// or "briefing" (the current mission's briefing, opened by Continue). Null = the mission list.</summary>
         public static string PendingBriefingPanel;
 
+        /// <summary>Asks HOUSTON's AI to word the debrief (timeline text, score text). Set by TMinus.Houston; null when HOUSTON is not in the scene.</summary>
+        public static System.Func<string, string, System.Threading.Tasks.Task<string>> NarrateDebrief;
+
         /// <summary>A design code that arrived in the page link (#d=...). The briefing puts it in the code box, ready to Load.</summary>
         public static string PendingDesignCode;
     }

@@ -85,6 +85,14 @@ namespace TMinus.Houston
         async void AskFreeQuestion(string question)
         {
             AddUserMessage(question);
+            // "What if I use the HD camera?": answered from the game's own budget numbers, offline (audit F23).
+            var whatIf = WhatIf.Try(question, GameState.Instance);
+            if (whatIf != null)
+            {
+                CountHint(HintLevel.TextNudge);
+                AddAssistantMessage(whatIf.text, whatIf.codexId);
+                return;
+            }
             var ctx = ContextBuilder.Build(GameState.Instance);
             var rec = AssemblyAdvisor.NextStep(ctx);
             // "Hints only" (Settings): the built-in advisor answers, never the AI.
