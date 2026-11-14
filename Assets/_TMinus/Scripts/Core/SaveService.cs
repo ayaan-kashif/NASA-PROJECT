@@ -71,7 +71,8 @@ namespace TMinus.Core
             try
             {
                 var file = JsonConvert.DeserializeObject<SaveFile>(PlayerPrefs.GetString(Key, ""));
-                if (file == null || !DesignCode.TryDecode(file.design, out var bundle, out string error)) { message = error ?? "The save file is damaged."; return false; }
+                string error = null;
+                if (file == null || !DesignCode.TryDecode(file.design, out var bundle, out error)) { message = error ?? "The save file is damaged."; return false; }
                 int fixedCount = DesignValidator.Clean(bundle, s.Data);
                 DesignCode.Apply(bundle, s);
                 if (file.crew != null && file.crew.Count > 0) s.Crew = file.crew;
