@@ -664,7 +664,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] I15 WebGL: Quit hidden, clipboard toast correct
 - [x] I16 Web build size checked after post-processing stripping was turned off (same tool; the real number needs a build)
 - [x] Confirm before Judge Mode / Failure Lab replaces a build (done as an automatic backup and restore instead of a dialog)
-- [ ] Dead mission cards moved; template leftovers deleted
+- [x] Dead mission cards moved; template leftovers deleted (Failure Lab and Sandbox cards left the mission list, Moonshot and Rehbar-I are playable, and the Unity tutorial files are gone; the empty SampleScene stays)
 
 **New features**
 - [x] F1 Autosave and Continue

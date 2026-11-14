@@ -93,7 +93,7 @@ See [CREDITS.md](CREDITS.md). AI coding assistants (Claude Code, OpenAI Codex an
 - Near the ground, a real-scale launch site is drawn. From altitude, the globe is shown at 1/1000 scale.
 - Part performance, costs and some thresholds are illustrative game values, not flight-qualified data.
 - The leaderboard is local to the machine.
-- The rocket always carries a fixed 150 kg payload mass in flight (a tuned game value), whatever CubeSat you build.
+- The rocket carries the real mass of the CubeSat you built (a few kilograms). Pathfinder's joint limits were tuned with a 150 kg payload; a flight check (tools/sim) shows the lighter payload raises max-Q only from 40.6 to 41.4 kPa.
 - Your build is saved automatically on this computer (in the browser's storage on the web version) and offered as **Continue** on the main menu. Clearing site data erases it; design codes are the backup.
 - Urdu answers are experimental: they need the AI service. The game ships Noto Naskh Arabic (SIL Open Font License) for them, but the shaping has not been checked in a build yet.
 - Windows x64 is the main target. WebGL is a stretch target.

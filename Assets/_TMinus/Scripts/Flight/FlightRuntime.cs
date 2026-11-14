@@ -9,7 +9,7 @@ namespace TMinus.Flight
     public static class FlightRuntime
     {
         public static FlightSim Create(DataRegistry data, VehicleDesign vehicle, IAvionicsReport avionics,
-                                       IEnumerable<IJointStatus> joints, EventLog events, string missionId = null)
+                                       IEnumerable<IJointStatus> joints, EventLog events, string missionId = null, double? payloadKg = null)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
             if (vehicle == null) throw new ArgumentNullException(nameof(vehicle));
@@ -22,7 +22,8 @@ namespace TMinus.Flight
                           : mission != null && mission.defaultOrbitKm > 0 ? mission.defaultOrbitKm : rocket.payloadTargetAltKm;
             var options = new LaunchOptions
             {
-                payloadMassKg = rocket.referencePayloadKg,
+                // The mass the rocket really carries (the player's CubeSat). Tests and the library card use the rocket's reference payload.
+                payloadMassKg = payloadKg ?? rocket.referencePayloadKg,
                 targetAltitudeKm = target,
                 latitudeDeg = site?.latitudeDeg ?? 0,
                 longitudeDeg = site?.longitudeDeg ?? 0,

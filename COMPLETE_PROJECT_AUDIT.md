@@ -674,7 +674,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [ ] A-11 AI packages out of the player build
 - [x] A-12 CI (workflow written; Unity tests need the UNITY_LICENSE secrets)
 - [x] A-13 Single countdown; no auto-advance
-- [ ] A-14 Real payload mass; unbuilt rocket aborts on the pad (unbuilt rocket now aborts; the fixed 150 kg payload was kept on purpose: the joint limits are tuned to it)
+- [x] A-14 Real payload mass; unbuilt rocket aborts on the pad (the flight carries the CubeSat's real mass; tools/sim/payload.js shows Pathfinder still reaches orbit and max-Q rises only from 40.6 to 41.4 kPa)
 - [x] A-15 Debrief day formatting
 - [x] A-16 WebGL UI fixes
 - [x] A-17 Source claims match the data (the claims now match the data; the Saturn V figures themselves are still not cross-checked)

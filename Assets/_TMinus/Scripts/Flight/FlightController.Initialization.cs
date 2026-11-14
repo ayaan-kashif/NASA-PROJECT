@@ -71,7 +71,7 @@ namespace TMinus.Flight
                 var joints = _rocket.buildable ? BoltJointState.AllStatuses(rules, S.Vehicle).Select(j => (IJointStatus)j).ToList() : null;
 
                 S.Events.RemoveSystem("flight"); // a new flight replaces the last one's events (Fly again)
-                Sim = FlightRuntime.Create(data, S.Vehicle, _avionics, joints, S.Events, S.CurrentMissionId);
+                Sim = FlightRuntime.Create(data, S.Vehicle, _avionics, joints, S.Events, S.CurrentMissionId, CarriedMassKg(data));
                 if (S.Spacecraft.orbitAltitudeKm > 0 && _rocket.buildable) Sim.Options.targetAltitudeKm = S.Spacecraft.orbitAltitudeKm;
                 Sim.Options.pitchKickDeg = S.Vehicle.pitchKickDeg > 0 ? S.Vehicle.pitchKickDeg : 3;
 
@@ -92,6 +92,18 @@ namespace TMinus.Flight
                 _initialized = true;
             }
             finally { _initializing = false; }
+        }
+
+        /// <summary>
+        /// What a buildable rocket really carries: the player's CubeSat. It used to be a fixed 150 kg whatever was built (audit A-14). tools/sim
+        /// shows Pathfinder still reaches orbit with a few kilograms, and max-Q rises only from 40.6 to 41.4 kPa (the joint limit is 52.8).
+        /// A rocket that is not built by the player carries its reference payload.
+        /// </summary>
+        double? CarriedMassKg(DataRegistry data)
+        {
+            if (_rocket == null || !_rocket.buildable) return null;
+            var report = SpacecraftBudget.Compute(S.Spacecraft, data, data.GetMission(S.CurrentMissionId), _rocket);
+            return report.massKg;
         }
 
         internal void StepForDebug()
