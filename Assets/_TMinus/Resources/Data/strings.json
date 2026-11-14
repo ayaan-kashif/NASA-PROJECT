@@ -60,6 +60,7 @@
     "debrief.save_design_code": "Save design code",
     "debrief.leaderboard": "Leaderboard",
     "debrief.share_result": "Share result",
+    "debrief.save_picture": "Save picture",
     "debrief.export_results_csv": "Export results (CSV)",
     "debrief.no_images_came_home_so": "No images came home, so there is no picture of this region to show.",
     "debrief.fetching_the_picture_from_nasa": "Fetching the picture from NASA Worldview...",
@@ -87,6 +88,10 @@
     "flight.start_countdown": "START COUNTDOWN  ›",
     "flight.continue_to_operations_debrief": "Continue to operations + debrief  ›",
     "bay.remove": "Remove",
-    "vab.no_space_guide_entry_for": "No Space Guide entry for this part yet."
+    "vab.no_space_guide_entry_for": "No Space Guide entry for this part yet.",
+    "briefing.join_a_crew": "Join a crew",
+    "pad.remote_crew": "Remote crew",
+    "debrief.your_teacher_s_results_page": "Your teacher's results page shows a class code. Type it here and press the button. This sends your team name, the mission, your score and how the flight ended to anyone who has that code.",
+    "debrief.send_result_to_my_class": "Send result to my class"
   }
 }

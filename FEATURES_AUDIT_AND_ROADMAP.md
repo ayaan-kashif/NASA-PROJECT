@@ -681,12 +681,12 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] F12 Engineering challenges
 - [x] F13 More Failure Lab jobs
 - [x] F14 Space Guide progress and quiz cards
-- [x] F15 Shareable mission card
+- [x] F15 Shareable mission card (text for chat, plus a "Save picture" debrief button that saves a PNG of the debrief screen: a file on desktop, a download in the browser through Plugins/WebGL/Download.jslib; never run, and it is a screenshot, not a designed 1200x630 card)
 - [x] F16 Design links
 - [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
 - [x] F18 School licence (the pilot offer the roadmap starts with: tools/web/schools.html says what stays free, what the pilot asks and gives, and how to apply through a GitHub issue; billing is deliberately not built before the pilot says what a licence should include)
 - [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
-- [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
+- [x] F20 Classroom Mode (teacher page starts a class room with a 12-character code; students press "Send result to my class" in the debrief and the page lists results live every 5 s, through the free ntfy.sh relay instead of our own server, so results are kept there about 12 h and anyone with the code can read the room; CSV paste/export remains; the relay and its CORS header were checked with curl on 14 November 2026, the teacher-page parser has a node test, the C# sender never ran)
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
 - [x] F22 AI debrief narration
 - [x] F23 "What if?" explainer

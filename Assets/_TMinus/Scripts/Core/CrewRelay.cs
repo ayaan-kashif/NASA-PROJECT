@@ -48,6 +48,23 @@ namespace TMinus.Core
 
         public static string Topic(string room) => "tminus-" + Normalise(room).ToLowerInvariant();
 
+        /// <summary>A class room (audit F20): students send their results here and the teacher page (tools/web/teacher.html) shows them live.</summary>
+        public static string ClassTopic(string code) => "tminus-class-" + Normalise(code).ToLowerInvariant();
+
+        /// <summary>Sends text to any topic. done(true) when the service accepted it.</summary>
+        public static IEnumerator PublishToTopic(string topic, string text, Action<bool> done)
+        {
+            using (var req = new UnityWebRequest(BaseUrl + topic, "POST"))
+            {
+                req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(text ?? ""));
+                req.downloadHandler = new DownloadHandlerBuffer();
+                req.SetRequestHeader("Content-Type", "text/plain");
+                req.timeout = 10;
+                yield return req.SendWebRequest();
+                done?.Invoke(req.result == UnityWebRequest.Result.Success);
+            }
+        }
+
         /// <summary>Sends text to the room. done(true) when the service accepted it.</summary>
         public static IEnumerator Publish(string room, string text, Action<bool> done)
         {

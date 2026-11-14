@@ -26,11 +26,23 @@
   .barrow { display: grid; grid-template-columns: 220px 1fr 40px; gap: 8px; align-items: center; margin: 4px 0; font-size: .92rem; }
   .ok { color: var(--good); } .lost { color: var(--bad); }
   #msg { color: var(--bad); min-height: 1.4em; }
+  #live { color: var(--muted); min-height: 1.4em; margin-top: 8px; }
 </style>
 </head>
 <body>
 <main>
   <h1>T-MINUS class results</h1>
+
+  <h2>Live class room</h2>
+  <p>Start a room, then give the class code to your students. In the game, the debrief has <strong>Send this result to my class</strong>: they type the code and press the button, and their result appears below within a few seconds. Results go through a free public message relay (ntfy.sh) and are kept there for about 12 hours; anyone who knows the code can read the room, so share it only with your class. It sends the team name, mission, score and outcome, nothing else.</p>
+  <div>
+    <button id="room">Start a class room</button>
+    <button id="stop" class="quiet" hidden>Stop</button>
+  </div>
+  <div class="cards"><div class="card" id="codebox" hidden><b id="code"></b>class code (read it out or write it on the board)</div></div>
+  <div id="live"></div>
+
+  <h2>Or paste CSV</h2>
   <p>Each student presses <strong>Export results (CSV)</strong> on the debrief screen, which copies their attempts. Paste them all here, one after another. Everything stays in this page: nothing is uploaded and there is no account.</p>
 
   <textarea id="input" placeholder="students,date_utc,mission,score,stars,outcome,failure_code,failure_cause&#10;Ayesha + Bilal,2026-11-14T10:20:11Z,floodwatch_1,96.2,3,Orbit,,"></textarea>
@@ -149,6 +161,51 @@
       td(tr, r.outcome, r.outcome === 'Orbit' ? 'ok' : 'lost'); td(tr, r.code); td(tr, r.cause); bodyAll.appendChild(tr);
     });
   }
+
+  // ---- Live class room (the same room-code rules and topic name as CrewRelay.cs in the game) ----
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var b = new Uint8Array(12); (window.crypto || window.msCrypto).getRandomValues(b);
+    var s = '';
+    for (var i = 0; i < 12; i++) { if (i > 0 && i % 4 === 0) s += '-'; s += ALPHABET[b[i] % ALPHABET.length]; }
+    return s;
+  }
+  function topicFor(code) { return 'tminus-class-' + code.replace(/-/g, '').toLowerCase(); }
+  // ntfy answers with one JSON object per line; the CSV row a student sent is in "message".
+  function parseRelay(ndjson, seen) {
+    var texts = [];
+    String(ndjson || '').split(/\r?\n/).forEach(function (line) {
+      if (!line.trim()) return;
+      var o; try { o = JSON.parse(line); } catch (e) { return; }
+      if (o.event !== 'message' || !o.message || o.message.length > 4096) return;
+      if (o.id) { if (seen[o.id]) return; seen[o.id] = true; }
+      texts.push(o.message);
+    });
+    return texts;
+  }
+  var timer = null, seenIds = {}, liveRows = [], roomCode = '';
+  function poll() {
+    fetch('https://ntfy.sh/' + topicFor(roomCode) + '/json?poll=1&since=all')
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (t) {
+        var texts = parseRelay(t, seenIds);
+        if (texts.length) { var res = load(texts.join('\n')); liveRows = liveRows.concat(res.rows); rows = liveRows; render(); }
+        document.getElementById('live').textContent = 'Listening. ' + liveRows.length + ' result(s) so far. Checked ' + new Date().toLocaleTimeString() + '.';
+      })
+      .catch(function () { document.getElementById('live').textContent = 'Could not reach the relay. Check the internet connection; this page will keep trying. You can still paste CSV below.'; });
+  }
+  document.getElementById('room').onclick = function () {
+    if (timer) clearInterval(timer);
+    roomCode = newCode(); seenIds = {}; liveRows = []; rows = []; render();
+    document.getElementById('code').textContent = roomCode; document.getElementById('codebox').hidden = false;
+    document.getElementById('stop').hidden = false;
+    poll(); timer = setInterval(poll, 5000);
+  };
+  document.getElementById('stop').onclick = function () {
+    if (timer) clearInterval(timer); timer = null;
+    document.getElementById('live').textContent = 'Stopped.'; document.getElementById('stop').hidden = true;
+  };
+  window.__tminusTest = { parseRelay: parseRelay, topicFor: topicFor, newCode: newCode, load: load };
 
   document.getElementById('go').onclick = function () {
     var result = load(document.getElementById('input').value);

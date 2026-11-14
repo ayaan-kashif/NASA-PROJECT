@@ -52,7 +52,7 @@ namespace TMinus.Mission
             var bar = new VisualElement(); bar.AddToClassList("bin-chips");
             bar.style.marginTop = 14;
             bar.Add(Btn(Strings.Get("pad.back_to_briefing", "< Back to briefing"), () => _modal.AddToClassList("hidden"), "card-btn"));
-            bar.Add(Btn("Remote crew", ShowRemoteCrew, "card-btn"));
+            bar.Add(Btn(Strings.Get("pad.remote_crew", "Remote crew"), ShowRemoteCrew, "card-btn"));
             bar.Add(Btn(fails == 0 ? "Start GO / NO-GO poll" : $"Poll anyway ({fails} known FAIL)", () => StartPoll(items.Where(i => !i.pass).Select(i => i.id).ToList()), "card-btn accent"));
             panel.Add(bar);
         }

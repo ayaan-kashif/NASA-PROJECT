@@ -13,6 +13,7 @@ namespace TMinus.Mission
         [SerializeField] StyleSheet baseStyle, style;
         Label _status;
         bool _savedToBoard;
+        LogEntry _thisAttempt;
         void OnEnable()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
@@ -82,7 +83,9 @@ namespace TMinus.Mission
             AddButton(buttons, Strings.Get("debrief.save_design_code", "Save design code"), SaveCode);
             AddButton(buttons, Strings.Get("debrief.leaderboard", "Leaderboard"), ShowLeaderboard);
             AddButton(buttons, Strings.Get("debrief.share_result", "Share result"), () => ShareResult(s, score, ops));
+            AddButton(buttons, Strings.Get("debrief.save_picture", "Save picture"), () => StartCoroutine(ShareCard.Save(s.CurrentMissionId, m => { _status.text = m; _status.style.whiteSpace = WhiteSpace.Normal; })));
             AddButton(buttons, Strings.Get("debrief.export_results_csv", "Export results (CSV)"), ExportCsv);
+            AddClassSender(page, s);
             AddButton(buttons, Strings.Get("pause.mainMenu", "Main menu"), () => SceneFlow.Load(SceneNames.MainMenu));
             _status = new Label(""); _status.AddToClassList("muted"); page.Add(_status);
         }
@@ -153,6 +156,7 @@ namespace TMinus.Mission
                 cause = s.Flight.failureCause, code = s.Flight.failureCode
             };
             var previous = MissionLog.RecordOnce(s.Flight, entry);
+            _thisAttempt = entry;
             var best = MissionLog.Best(s.CurrentMissionId);
             int attempts = MissionLog.Count(s.CurrentMissionId);
             double bestScore = best != null ? best.score : score.total;
@@ -242,7 +246,7 @@ namespace TMinus.Mission
         { var b = new Button(action) { text = text }; b.AddToClassList("debrief-button"); parent.Add(b); }
         const string PlayUrl = "https://ayaan-kashif.github.io/NASA-PROJECT/";
 
-        /// <summary>A short text you can paste into a chat (audit F15). An image card needs a screenshot pipeline; the text carries the same facts.</summary>
+        /// <summary>A short text you can paste into a chat (audit F15). The picture version is the Save picture button (ShareCard).</summary>
         void ShareResult(GameState s, MissionScore score, OpsReport ops)
         {
             var mission = s.Data.GetMission(s.CurrentMissionId);
@@ -250,6 +254,32 @@ namespace TMinus.Mission
             string text = $"T-MINUS · {mission?.name ?? "mission"}: {MissionLog.StarText(score.stars)}  {score.total:0.0}/100 · {orbit} · {ops.imagesDownlinked} images downlinked · {ops.daysAlive} days alive. " +
                           $"Build your own: {PlayUrl}";
             ShowText(text, "Result copied. Paste it anywhere: ");
+        }
+
+        /// <summary>
+        /// Live class dashboard (audit F20): the student types the class code the teacher's page shows, and this attempt is sent to that room
+        /// (a free public relay, see CrewRelay). The teacher page updates by itself. It sends the team name, mission, score and outcome, so it
+        /// says so; nothing is sent unless the button is pressed.
+        /// </summary>
+        void AddClassSender(VisualElement page, GameState s)
+        {
+            if (_thisAttempt == null) return;   // a Judge Mode demo is not an attempt
+            var card = Card("SEND THIS RESULT TO MY CLASS"); page.Add(card);
+            var note = new Label(Strings.Get("debrief.your_teacher_s_results_page", "Your teacher's results page shows a class code. Type it here and press the button. This sends your team name, the mission, your score and how the flight ended to anyone who has that code."));
+            note.AddToClassList("muted"); note.style.whiteSpace = WhiteSpace.Normal; card.Add(note);
+            var field = new TextField { value = PlayerPrefs.GetString("tminus.classCode", "") }; card.Add(field);
+            var result = new Label(""); result.AddToClassList("muted"); result.style.whiteSpace = WhiteSpace.Normal;
+            var send = new Button(() =>
+            {
+                if (!CrewRelay.IsValid(field.value)) { result.text = "That is not a class code. It has 12 letters and digits, like K7QF-3MXA-RD2T."; return; }
+                PlayerPrefs.SetString("tminus.classCode", CrewRelay.Normalise(field.value)); PlayerPrefs.Save();
+                string names = string.Join(" + ", s.Crew.Select(c => c.name).Distinct());
+                result.text = "Sending...";
+                StartCoroutine(CrewRelay.PublishToTopic(CrewRelay.ClassTopic(field.value), MissionLog.CsvRow(names, _thisAttempt),
+                    ok => result.text = ok ? "Sent. Your teacher sees it now." : "Could not reach the relay (are you online?). Use Export results (CSV) instead."));
+            }) { text = Strings.Get("debrief.send_result_to_my_class", "Send result to my class") };
+            send.AddToClassList("debrief-button");
+            card.Add(send); card.Add(result);
         }
 
         void ExportCsv()

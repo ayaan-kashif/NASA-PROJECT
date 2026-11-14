@@ -189,3 +189,7 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Schools: `tools/web/schools.html` (free forever list, pilot offer, apply by GitHub issue), published with the web build.
 - Live crew room (`Core/CrewRelay.cs`, ntfy.sh): host opens a room, teammates type its code when they vote. Untested against the live service.
 - Also: remote crew by pad and vote codes, `tools/web/teacher.html`, `tools/extract_strings.py` (88 texts in `strings.json`).
+
+## Live class room and picture (Claude, 2026-11-14) — still NOT compiled or run in Unity
+- F20: `teacher.html` has "Start a class room" (code like K7QF-3MXA-RD2T, topic `tminus-class-<code>` on ntfy.sh, polled every 5 s). The debrief has "Send result to my class" (`CrewRelay.PublishToTopic`, `MissionLog.CsvRow`). curl showed ntfy answers browsers with `Access-Control-Allow-Origin: *`; the page parser passed `node` tests.
+- F15: `Mission/ShareCard.cs` + `Plugins/WebGL/Download.jslib`, "Save picture" button. NASA Worldview also answers with `Access-Control-Allow-Origin: *` (F26 in a browser should work).

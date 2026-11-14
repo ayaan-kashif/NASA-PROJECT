@@ -80,6 +80,14 @@ namespace TMinus.Mission
             return sb.ToString();
         }
 
+        /// <summary>One attempt as a single CSV row (no header), the same columns as ToCsv. This is what a student sends to the class room.</summary>
+        public static string CsvRow(string studentNames, LogEntry e) =>
+            string.Join(",", new[]
+            {
+                Csv(studentNames), Csv(e.whenUtc), Csv(e.missionId), e.score.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture),
+                e.stars.ToString(), Csv(e.outcome), Csv(e.code), Csv(e.cause)
+            });
+
         static string Csv(string v)
         {
             v = v ?? "";

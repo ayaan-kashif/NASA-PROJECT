@@ -31,9 +31,9 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 - **Never run.** Nothing was compiled, tested or played: Unity was not available. The new EditMode and PlayMode tests are the first thing to run. Two of them are the most important: `FlightPhysicsTests.SaturnVReachesTheParkingOrbitWithPropellantLeftForTheMoonBurn` and `RehbarRocketClimbsToAboutOneHundredAndThirtyKilometresAndStopsThere` check that the C# flight agrees with the JavaScript port in `tools/sim` that the Moonshot and Rehbar-I tuning came from.
 - **Different in form from what was first described:**
   - F18 (school licence) is the pilot offer the roadmap starts with (`tools/web/schools.html`); billing waits for what the pilot schools say.
-  - F20's class dashboard is a page that runs in the browser from pasted CSV (`tools/web/teacher.html`), not a server.
+  - F20's class dashboard is a browser page (`tools/web/teacher.html`) that listens to a class room on the public ntfy.sh relay (or reads pasted CSV); it is not our own server with accounts, so there is no login and results are kept only about 12 hours.
   - F25's live crew uses the free public relay ntfy.sh for votes (plus copy-and-paste codes), not a server of ours.
-  - F15 is a text you can paste, not an image; F24 jumps to the cause and can replay the failure in slow motion; F17's touch support is experimental.
+  - F15 has the text and a "Save picture" screenshot button, not a designed 1200x630 card; F24 jumps to the cause and can replay the failure in slow motion; F17's touch support is experimental.
   - A-24 moves plain on-screen text into `strings.json` (88 entries, by `tools/extract_strings.py`); text built at run time is still in the scripts.
   - A-11 is a release script (`tools/build_release.sh`) rather than a change to the development project, which keeps the AI packages for the Unity MCP tooling.
   - I12: the figures were checked against the Wikipedia articles the data cites; NASA's own Saturn V document could not be reached.
@@ -718,12 +718,12 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] F12 Engineering challenges
 - [x] F13 More Failure Lab jobs
 - [x] F14 Space Guide progress and quiz
-- [x] F15 Shareable mission card
+- [x] F15 Shareable mission card (text for chat, plus a "Save picture" debrief button that saves a PNG of the debrief screen: a file on desktop, a download in the browser through Plugins/WebGL/Download.jslib; never run, and it is a screenshot, not a designed 1200x630 card)
 - [x] F16 Design links
 - [x] F17 Web page and touch support (about page, link previews and a phone notice added by tools/publish_web.sh; touch support is not built)
 - [x] F18 School licence (the pilot offer the roadmap starts with: tools/web/schools.html says what stays free, what the pilot asks and gives, and how to apply through a GitHub issue; billing is deliberately not built before the pilot says what a licence should include)
 - [x] F19 Grants and sponsored packs (a sponsor field on missions; the outreach itself is not code)
-- [x] F20 Classroom Mode (offline CSV export only; a live class dashboard needs a server)
+- [x] F20 Classroom Mode (teacher page starts a class room with a 12-character code; students press "Send result to my class" in the debrief and the page lists results live every 5 s, through the free ntfy.sh relay instead of our own server, so results are kept there about 12 h and anyone with the code can read the room; CSV paste/export remains; the relay and its CORS header were checked with curl on 14 November 2026, the teacher-page parser has a node test, the C# sender never ran)
 - [x] F21 Privacy-safe analytics (opt-in client and a log-only endpoint; no database)
 - [x] F22 AI debrief narration
 - [x] F23 "What if?" explainer

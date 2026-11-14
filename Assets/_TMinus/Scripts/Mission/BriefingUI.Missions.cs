@@ -14,7 +14,7 @@ namespace TMinus.Mission
             _page.Clear();
             var head = Header("CHOOSE A MISSION", "Every mission is a full build: satellite, rocket, launch and operations.");
             head.Add(Btn(Strings.Get("pause.mainMenu", "Main menu"), () => SceneFlow.Load(SceneNames.MainMenu), "tool-btn"));
-            head.Add(Btn("Join a crew", ShowJoinCrew, "tool-btn"));
+            head.Add(Btn(Strings.Get("briefing.join_a_crew", "Join a crew"), ShowJoinCrew, "tool-btn"));
             _page.Add(head);
             var grid = new VisualElement(); grid.AddToClassList("mission-grid");
             foreach (var m in Data.Missions.OrderBy(m => m.locked).ThenBy(m => m.priority))
