@@ -6,7 +6,7 @@ Method: every feature below was found by reading the C# scripts, UXML, JSON data
 
 ### Implementation status (updated after the fixes were written)
 
-Done in code: I1 to I9, I10 (Urdu font added), I11, I13, I14, I15 and the Judge Mode / Failure Lab protection; features F1 to F16, F19 (data field), F20 (offline CSV), F21, F22, F23, F24 (jump to the cause), F10 (text size, low graphics, reduce motion), F12 (two variants), F13 (three jobs) and F17 (about page, link previews, phone notice). Not done: I12, I16, the Moonshot and Rehbar-I cards, touch support, the slow-motion replay, a live class dashboard, F18 (school licence), F25 (live crew) and F26 (real-data missions). The last three need a server, database or business set-up that code alone cannot provide; the two missions need new vehicles and Unity to test them.
+Done in code: I1 to I11, I13 to I16 (I12 only partly: the dead NASA link was removed, the Saturn V numbers are still unchecked) and the Judge Mode / Failure Lab protection; features F1 to F17 (touch is experimental), F19 (data field), F20 (offline CSV), F21, F22, F23, F24 (jump to the cause and a slow-motion replay), F26 (live NASA imagery), F10, F12 (two variants) and F13 (three jobs). Not done: the Moonshot and Rehbar-I missions, F18 (school licence), F25 (live crew) and a live class dashboard. The first needs new vehicles and Unity to prove they can be won; the others need a server, database or business set-up that code alone cannot provide.
 
 **These changes have not been compiled, tested or played**: no Unity was available. See the last entry in `docs/PROGRESS.md` and the status note in `COMPLETE_PROJECT_AUDIT.md`.
 
@@ -662,7 +662,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] I13 No auto-advance from the flight end card
 - [x] I14 Sandbox removes limits
 - [x] I15 WebGL: Quit hidden, clipboard toast correct
-- [ ] I16 Web build size checked after post-processing stripping was turned off
+- [x] I16 Web build size checked after post-processing stripping was turned off (same tool; the real number needs a build)
 - [x] Confirm before Judge Mode / Failure Lab replaces a build (done as an automatic backup and restore instead of a dialog)
 - [ ] Dead mission cards moved; template leftovers deleted
 
@@ -692,7 +692,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] F23 "What if?" explainer
 - [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
 - [ ] F25 Live crew mode
-- [ ] F26 Real-data missions
+- [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
 - [ ] Rehbar-I mission
 - [ ] Moonshot mission
 

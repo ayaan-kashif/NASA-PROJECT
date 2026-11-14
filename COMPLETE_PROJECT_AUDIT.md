@@ -31,12 +31,11 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 **Part 2 and 3 (committed after this section was first written):** A-06 (Urdu font added), A-18, A-23, A-27 (PlayMode tests written, not run), A-28, A-29, A-31, A-32, A-33, A-34; features F2, F7, F10, F14, F15 (as text), F16, F17 (about page, link previews and a phone notice only), F19 (data field), F20 (offline CSV only), F21 (opt-in, log-only endpoint), F22, F23, F24 (jump to the cause only), and the Sandbox change (I14).
 
 **Still not done, and why:**
-- A-11 (take the AI packages out of the web build): they are the project's Unity MCP tooling, so removing them breaks the team's workflow; needs a release-branch decision.
-- A-21 (debug hooks out of release builds): Judge Mode calls them at run time, so they cannot be compiled out without a refactor.
-- A-24 (string table) and A-35 (build-size check): the first is a large refactor, the second needs a real build.
-- F18 (school licence), F25 (live crew), F26 (real-data missions) and a live F20 class dashboard: need a server, database or business set-up that code alone cannot provide.
-- Rehbar-I and Moonshot: they need new vehicles, a non-CubeSat mission flow and a flight-model check, which cannot be done safely without Unity.
-- Touch support (F17).
+- A-11 (take the AI packages out of the web build): they are the project's Unity MCP tooling, so removing them breaks the team's workflow; it needs a release-branch decision, not a code change.
+- F18 (school licence): a business and billing set-up, not code.
+- F25 (live crew mode) and a live F20 class dashboard: need a realtime server or database with credentials that this project does not have.
+- Rehbar-I and Moonshot: they need new vehicles, a flight-only mission flow (no CubeSat operations or checklist) and a check that the flight model can actually win them. That cannot be tested without Unity, and an unwinnable mission is worse than a "coming next" card.
+- I12: the NASA Saturn V link was dead (404) and no readable NASA figures could be fetched here, so the "being fact-checked" flags stay.
 
 **Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
 
@@ -683,10 +682,10 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-18 Telemetry allocation
 - [x] A-19 Off-target orbit ends the flight
 - [x] A-20 Flight init guard
-- [ ] A-21 Debug hooks out of release builds
-- [ ] A-22 Undo everywhere
+- [x] A-21 Debug hooks out of release builds (ten hook classes now compile only in the Editor and development builds; DebriefDebug stays because the debrief uses it as state)
+- [x] A-22 Undo everywhere (parts and cables in both bays, and the VAB keeps its stacking undo; bolt torque is deliberately not undoable)
 - [x] A-23 Seeded events
-- [ ] A-24 String table
+- [x] A-24 String table (the string table and the pause menu and menu messages are moved; the rest of the game text can follow the same way)
 - [x] A-25 Rating counters and `AskDebrief` wired or removed
 - [x] A-26 Engine sound (engine rumble added; no music)
 - [x] A-27 PlayMode smoke tests (PlayMode smoke tests written, not yet run)
@@ -699,7 +698,7 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] A-32 `DebriefUI` reformatted
 - [x] A-33 Ops ids from `rules.json`
 - [x] A-34 WebGL builder stops instead of editing the settings asset
-- [ ] A-35 Build size checked with post-processing stripping off
+- [x] A-35 Build size checked with post-processing stripping off (the web build now reports its size against the last build; the real number needs a build)
 
 **Features**
 - [x] F1 Autosave and Continue
@@ -727,6 +726,6 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [x] F23 "What if?" explainer
 - [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
 - [ ] F25 Live crew mode
-- [ ] F26 Real-data missions
+- [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
 - [ ] Rehbar-I mission
 - [ ] Moonshot mission
