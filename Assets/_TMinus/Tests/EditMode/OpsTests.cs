@@ -36,6 +36,19 @@ namespace TMinus.Tests
             Assert.IsFalse(fx.Any, string.Join(" | ", fx.Messages));
         }
 
+        [Test] public void TheDemoBuildTheGameFliesHasNoWiringEffects()
+        {
+            // DemoBuilds is what Judge Mode, the Failure Lab and the smoke tests fly. If this fails the message names the exact fault,
+            // which tells a wiring-data problem (here) from a problem in how the Bay loads and saves cables (not here).
+            var input = new PrelaunchChecklist.Input { Data = TestData.Registry, CurrentMissionId = "floodwatch_1", Spacecraft = new TMinus.Core.SpacecraftDesign { orbitAltitudeKm = 550 }, Vehicle = new TMinus.Core.VehicleDesign() };
+            foreach (var p in DemoBuilds.CubeSatParts) input.Spacecraft.parts.Add(new TMinus.Core.PlacedPart { instanceId = p, partId = p });
+            foreach (var c in DemoBuilds.CubeSatCables) input.Spacecraft.cables.Add(new TMinus.Core.CableLink { fromPort = c[0], toPort = c[1] });
+            var faults = PrelaunchChecklist.SpacecraftWiringFaults(input);
+            Assert.IsEmpty(faults, string.Join(" | ", faults.Select(f => f.code + ":" + f.device + " " + f.message)));
+            var fx = OpsWiring.Evaluate(input);
+            Assert.IsFalse(fx.Any, string.Join(" | ", fx.Messages));
+        }
+
         [Test] public void MissingAntennaCableSilencesTheRadio()
         {
             var input = ChecklistTests.Perfect();
