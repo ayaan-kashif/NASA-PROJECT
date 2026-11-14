@@ -147,3 +147,10 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 - Look: neutral, brighter VAB light rig; additive glow flame (Looks/Flame) for exhaust and break-up; main menu has a live 3D backdrop (`UI/MenuBackdrop`: Blue Marble Earth, stars, rotating rocket) and a glass panel; 3D `TorqueWrench` swings on the bolt while tightening.
 - Bug fix: FailureJobTracker destroyed itself during the fade out of the main menu (job bar never showed). Now it only abandons after leaving and returning.
 - Verified: 93 pass + 1 intentional skip (import test guards real models); golden path 3 stars; Judge Mode both flights; mission clicks; both Failure Lab jobs.
+
+## Final audit of Codex + Antigravity work, Space Guide rename, web fix (Claude, 2026-11-14)
+- UI: "Codex" is now "Space Guide" everywhere players see it (data and code names unchanged).
+- Codex's code: ops image count now from the running downlink total (was truncated per day); battery ageing moved from a hardcoded seed check into missions.json; debrief names the real cause first (joint failure); demo builds assign the four crew roles (perfect run = 100/100); design codes capped at 512 kB decompressed and shown as text on WebGL; compare labels higher-is-better metrics.
+- Antigravity's code: `CodexMatcher` keyword matching (questions now carry the right Space Guide facts); answer cache is language-aware; web-safe request wait. Proxy: 1500-token headroom, skips reasoning parts, retries next model on truncation.
+- WebGL: the 3D view was black because URP's UberPost shader is unsupported there; `SceneLook` now falls back to plain rendering when it is. Post-processing stripping is off.
+- Verified: 97 pass + 1 intentional skip; golden path 100/100; Judge Mode; Sandbox rooms from an empty save; live link menu + VAB + launch in a browser; exe rebuilt.

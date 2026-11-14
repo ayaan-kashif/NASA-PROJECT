@@ -44,12 +44,19 @@ namespace TMinus.Core
                 v.isGlobal = true; v.priority = 10; v.sharedProfile = profile;
             }
 
+            // If this device can't run URP's post-processing shader (seen in some browsers), drawing with it on
+            // leaves the 3D view black. Fall back to plain rendering: no bloom or grading, but a working picture.
+            var uber = Shader.Find("Hidden/Universal Render Pipeline/UberPost");
+            bool postOk = uber != null && uber.isSupported;
+            if (!postOk && _volume != null) { Object.Destroy(_volume); _volume = null; }
+
             foreach (var cam in Object.FindObjectsByType<Camera>(FindObjectsSortMode.None))
             {
                 var data = cam.GetUniversalAdditionalCameraData();
                 if (data == null) continue;
-                data.renderPostProcessing = true;
-                data.stopNaN = true; // one NaN pixel + bloom = a full-screen cyan wash
+                data.renderPostProcessing = postOk;
+                data.stopNaN = postOk; // one NaN pixel + bloom = a full-screen cyan wash
+                if (!postOk) { data.antialiasing = AntialiasingMode.None; continue; }
                 data.antialiasing = AntialiasingMode.SubpixelMorphologicalAntiAliasing;
                 data.antialiasingQuality = AntialiasingQuality.High;
                 if (lit) data.renderShadows = true;

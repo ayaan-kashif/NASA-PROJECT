@@ -33,6 +33,18 @@ namespace TMinus.EditorTools
                 PlayerSettings.WebGL.emscriptenArgs = ((PlayerSettings.WebGL.emscriptenArgs ?? "") + " -lembind").Trim();
 #pragma warning restore 618
 
+            // Keep URP's post-processing shaders: when they were stripped, the web build drew a black 3D view.
+            var urpGlobal = AssetDatabase.LoadMainAssetAtPath("Assets/Settings/UniversalRenderPipelineGlobalSettings.asset");
+            if (urpGlobal != null)
+            {
+                var so = new SerializedObject(urpGlobal);
+                bool changed = false;
+                var it = so.GetIterator();
+                while (it.Next(true))
+                    if (it.propertyType == SerializedPropertyType.Boolean && it.name.StartsWith("m_StripUnusedPostProcessing") && it.boolValue) { it.boolValue = false; changed = true; }
+                if (changed) { so.ApplyModifiedPropertiesWithoutUndo(); AssetDatabase.SaveAssets(); }
+            }
+
             var scenes = EditorBuildSettings.scenes.Where(s => s.enabled && File.Exists(s.path)).Select(s => s.path).ToArray();
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
