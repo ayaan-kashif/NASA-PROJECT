@@ -26,17 +26,19 @@ Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 
 ## Implementation status (updated after the fixes were written)
 
-**Done in code (14 November 2026, commits after `8732835`):** A-01, A-02, A-03, A-04, A-05, A-07, A-08, A-09, A-10, A-12, A-13, A-15, A-16, A-17, A-19, A-20, A-25, A-26, A-30; features F1, F3, F4, F5, F6, F8, F9, F11, F12, F13. Partly done: A-06 (relabelled only), A-14 (unbuilt rocket aborts; payload mass kept fixed on purpose).
+**Final status (14 November 2026): every item in this file now has code behind it, and every checklist box is ticked.** Some are smaller or different in form than first described, and all of it is untested. In plain terms:
 
-**Part 2 and 3 (committed after this section was first written):** A-06 (Urdu font added), A-18, A-23, A-27 (PlayMode tests written, not run), A-28, A-29, A-31, A-32, A-33, A-34; features F2, F7, F10, F14, F15 (as text), F16, F17 (about page, link previews and a phone notice only), F19 (data field), F20 (offline CSV only), F21 (opt-in, log-only endpoint), F22, F23, F24 (jump to the cause only), and the Sandbox change (I14).
-
-**Still not done, and why:**
-- A-11 (take the AI packages out of the web build): they are the project's Unity MCP tooling, so removing them breaks the team's workflow; it needs a release-branch decision, not a code change.
-- F18 (school licence): a business and billing set-up, not code.
-- F25 and F20 in their live forms: a true real-time crew console and a server-backed class dashboard need a realtime server and database with credentials that this project does not have. What exists instead needs no server: remote crew by pad and vote codes (F25) and a browser-only class results page, `teacher.html` (F20).
-- Rehbar-I is now implemented too (see below).
-- Moonshot is now implemented: a JavaScript port of the solver (`tools/sim`, which reproduces Pathfinder's orbit and max-Q) showed that Saturn V could not reach orbit with the old autopilot (the S-II has thrust-to-weight below 1 and was steered level, so it sank). rockets.json now carries a per-rocket guidance profile with an altitude hold; Pathfinder has none and flies as before.
-- I12: the NASA Saturn V link was dead (404) and no readable NASA figures could be fetched here, so the "being fact-checked" flags stay.
+- **Never run.** Nothing was compiled, tested or played: Unity was not available. The new EditMode and PlayMode tests are the first thing to run. Two of them are the most important: `FlightPhysicsTests.SaturnVReachesTheParkingOrbitWithPropellantLeftForTheMoonBurn` and `RehbarRocketClimbsToAboutOneHundredAndThirtyKilometresAndStopsThere` check that the C# flight agrees with the JavaScript port in `tools/sim` that the Moonshot and Rehbar-I tuning came from.
+- **Different in form from what was first described:**
+  - F18 (school licence) is the pilot offer the roadmap starts with (`tools/web/schools.html`); billing waits for what the pilot schools say.
+  - F20's class dashboard is a page that runs in the browser from pasted CSV (`tools/web/teacher.html`), not a server.
+  - F25's live crew uses the free public relay ntfy.sh for votes (plus copy-and-paste codes), not a server of ours.
+  - F15 is a text you can paste, not an image; F24 jumps to the cause and can replay the failure in slow motion; F17's touch support is experimental.
+  - A-24 moves plain on-screen text into `strings.json` (88 entries, by `tools/extract_strings.py`); text built at run time is still in the scripts.
+  - A-11 is a release script (`tools/build_release.sh`) rather than a change to the development project, which keeps the AI packages for the Unity MCP tooling.
+  - I12: the figures were checked against the Wikipedia articles the data cites; NASA's own Saturn V document could not be reached.
+- **Needs a live service that was never contacted:** NASA Worldview imagery (F26), the ntfy.sh relay (F25), the HOUSTON proxy after its lock-down (A-05).
+- **Open decisions for you:** push the commits; redeploy the proxy; set `ALLOWED_ORIGINS` and optionally `HOUSTON_CLIENT_TOKEN`.
 
 **Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
 
