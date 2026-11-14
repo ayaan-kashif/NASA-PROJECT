@@ -24,6 +24,16 @@ What needs work, most serious first:
 
 Issue count: 6 P0, 11 P1, 10 P2, 8 P3.
 
+## Implementation status (updated after the fixes were written)
+
+**Done in code (14 November 2026, commits after `8732835`):** A-01, A-02, A-03, A-04, A-05, A-07, A-08, A-09, A-10, A-12, A-13, A-15, A-16, A-17, A-19, A-20, A-25, A-26, A-30; features F1, F3, F4, F5, F6, F8, F9, F11, F12, F13. Partly done: A-06 (relabelled only), A-14 (unbuilt rocket aborts; payload mass kept fixed on purpose).
+
+**Not done:** A-11, A-18, A-21, A-22, A-23, A-24, A-27, A-28, A-29, A-31 to A-35, and features F2, F7, F10, F14 to F26, Rehbar-I, Moonshot.
+
+**Important:** these changes were written without Unity or Blender on the machine, so **nothing has been compiled, tested or played.** Open the project, let Unity compile, run the EditMode tests (the new tests are in `OpsTests`, `AvionicsTests`, `FlightPhysicsTests`, `FailureLabTests` and `DesignValidatorTests`), then play the golden path, Judge Mode and a Failure Lab job. The log of what changed is in `docs/PROGRESS.md`, last entry.
+
+Behaviour changes to know about before the demo: a rocket launched with Safe/Arm on SAFE now fails (arm it in the pre-launch checklist); the VAB's last button now goes to the checklist; the satellite's cable faults now cost science; the debrief no longer auto-advances (except in Judge Mode).
+
 ---
 
 # PART A: PROJECT + ARCHITECTURE AUDIT
@@ -641,42 +651,42 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 ## Checklist
 
 **P0**
-- [ ] A-01 Wiring faults affect operations
-- [ ] A-02 Manual flight fixed (or toggle hidden)
-- [ ] A-03 VAB button opens the checklist
-- [ ] A-04 Save game; demos back up and restore the build
-- [ ] A-05 Proxy locked down; AI notice shown
-- [ ] A-06 Urdu verified or relabelled
+- [x] A-01 Wiring faults affect operations
+- [x] A-02 Manual flight fixed (or toggle hidden)
+- [x] A-03 VAB button opens the checklist
+- [x] A-04 Save game; demos back up and restore the build (autosave + Continue; Judge Mode and repair jobs back up and restore the build)
+- [x] A-05 Proxy locked down; AI notice shown (origin allow-list, size caps, systemInstruction, diag removed; the rate limiter is still per instance)
+- [ ] A-06 Urdu verified or relabelled (only relabelled "experimental": no Urdu font added, still untested)
 
 **P1**
-- [ ] A-07 Safe/Arm consequence
-- [ ] A-08 Scoring resets; real team score
-- [ ] A-09 Leaderboard duplicate
-- [ ] A-10 Design-code validation
+- [x] A-07 Safe/Arm consequence
+- [x] A-08 Scoring resets; real team score
+- [x] A-09 Leaderboard duplicate
+- [x] A-10 Design-code validation
 - [ ] A-11 AI packages out of the player build
-- [ ] A-12 CI
-- [ ] A-13 Single countdown; no auto-advance
-- [ ] A-14 Real payload mass; unbuilt rocket aborts on the pad
-- [ ] A-15 Debrief day formatting
-- [ ] A-16 WebGL UI fixes
-- [ ] A-17 Source claims match the data
+- [x] A-12 CI (workflow written; Unity tests need the UNITY_LICENSE secrets)
+- [x] A-13 Single countdown; no auto-advance
+- [ ] A-14 Real payload mass; unbuilt rocket aborts on the pad (unbuilt rocket now aborts; the fixed 150 kg payload was kept on purpose: the joint limits are tuned to it)
+- [x] A-15 Debrief day formatting
+- [x] A-16 WebGL UI fixes
+- [x] A-17 Source claims match the data (the claims now match the data; the Saturn V figures themselves are still not cross-checked)
 
 **P2**
 - [ ] A-18 Telemetry allocation
-- [ ] A-19 Off-target orbit ends the flight
-- [ ] A-20 Flight init guard
+- [x] A-19 Off-target orbit ends the flight
+- [x] A-20 Flight init guard
 - [ ] A-21 Debug hooks out of release builds
 - [ ] A-22 Undo everywhere
 - [ ] A-23 Seeded events
 - [ ] A-24 String table
-- [ ] A-25 Rating counters and `AskDebrief` wired or removed
-- [ ] A-26 Engine sound
+- [x] A-25 Rating counters and `AskDebrief` wired or removed
+- [x] A-26 Engine sound (engine rumble added; no music)
 - [ ] A-27 PlayMode smoke tests
 
 **P3**
 - [ ] A-28 `SceneNames.All`
 - [ ] A-29 Template leftovers deleted
-- [ ] A-30 Proxy docs match the code
+- [x] A-30 Proxy docs match the code
 - [ ] A-31 Reward texture cache
 - [ ] A-32 `DebriefUI` reformatted
 - [ ] A-33 Ops ids from `rules.json`
@@ -684,19 +694,19 @@ Not recommended: advertising (wrong for a 12+ classroom audience); AI-generated 
 - [ ] A-35 Build size checked with post-processing stripping off
 
 **Features**
-- [ ] F1 Autosave and Continue
+- [x] F1 Autosave and Continue
 - [ ] F2 Guided first build
-- [ ] F3 Wiring faults change the mission
-- [ ] F4 Pause menu
-- [ ] F5 Success criteria in the debrief
-- [ ] F6 Controls overlay
+- [x] F3 Wiring faults change the mission
+- [x] F4 Pause menu
+- [x] F5 Success criteria in the debrief
+- [x] F6 Controls overlay
 - [ ] F7 Undo everywhere
-- [ ] F8 Engine sound
-- [ ] F9 Flight charts in the debrief
+- [x] F8 Engine sound
+- [x] F9 Flight charts in the debrief
 - [ ] F10 Accessibility options
-- [ ] F11 Mission log and personal bests
-- [ ] F12 Engineering challenges
-- [ ] F13 More Failure Lab jobs
+- [x] F11 Mission log and personal bests
+- [x] F12 Engineering challenges
+- [x] F13 More Failure Lab jobs
 - [ ] F14 Space Guide progress and quiz
 - [ ] F15 Shareable mission card
 - [ ] F16 Design links

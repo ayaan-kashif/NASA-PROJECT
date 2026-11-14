@@ -3,6 +3,13 @@
 Audit date: 14 November 2026. First audited at `f14062b`; updated for `8732835` (branch `main`, see "Changes since the first audit" below).
 Method: every feature below was found by reading the C# scripts, UXML, JSON data and the proxy source. Nothing was run: Unity was not opened, no build was played. Items that need a runtime check are marked **(unverified at runtime)**.
 
+
+### Implementation status (updated after the fixes were written)
+
+Done in code: I1 to I9, I13, I15 and the Judge Mode / Failure Lab protection; features F1, F3, F4, F5, F6, F8, F9, F11, F12 (two variants, Tight budget and Featherweight) and F13 (three more jobs). Not done: I10 to I12, I14, I16, the dead mission cards for Moonshot and Rehbar-I, and features F2, F7, F10, F14 to F26.
+
+**These changes have not been compiled, tested or played**: no Unity was available. See the last entry in `docs/PROGRESS.md` and the status note in `COMPLETE_PROJECT_AUDIT.md`.
+
 ---
 
 ## 1. What This App Currently Does
@@ -640,39 +647,39 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 ## 8. Final Checklist
 
 **Fixes**
-- [ ] I1 Manual flight works, or the toggle is hidden
-- [ ] I2 "To launch pad" opens the checklist
-- [ ] I3 SAFE at T-0 prevents ignition
-- [ ] I4 Hints and NO-GO reset per attempt; roles scored by real actions
-- [ ] I5 Leaderboard: one row per flight, with a name
-- [ ] I6 Design codes validated on load
-- [ ] I7 Single countdown
-- [ ] I8 Debrief timeline uses days for operations
-- [ ] I9 Proxy locked down
+- [x] I1 Manual flight works, or the toggle is hidden
+- [x] I2 "To launch pad" opens the checklist
+- [x] I3 SAFE at T-0 prevents ignition
+- [x] I4 Hints and NO-GO reset per attempt; roles scored by real actions
+- [x] I5 Leaderboard: one row per flight, with a name
+- [x] I6 Design codes validated on load
+- [x] I7 Single countdown
+- [x] I8 Debrief timeline uses days for operations
+- [x] I9 Proxy locked down
 - [ ] I10 Urdu renders correctly, or is relabelled
 - [ ] I11 Seeded random events
 - [ ] I12 Sources upgraded; `needsReview` cleared
-- [ ] I13 No auto-advance from the flight end card
+- [x] I13 No auto-advance from the flight end card
 - [ ] I14 Sandbox removes limits
-- [ ] I15 WebGL: Quit hidden, clipboard toast correct
+- [x] I15 WebGL: Quit hidden, clipboard toast correct
 - [ ] I16 Web build size checked after post-processing stripping was turned off
-- [ ] Confirm before Judge Mode / Failure Lab replaces a build
+- [x] Confirm before Judge Mode / Failure Lab replaces a build (done as an automatic backup and restore instead of a dialog)
 - [ ] Dead mission cards moved; template leftovers deleted
 
 **New features**
-- [ ] F1 Autosave and Continue
+- [x] F1 Autosave and Continue
 - [ ] F2 Guided first build
-- [ ] F3 Wiring faults change the mission
-- [ ] F4 Pause menu
-- [ ] F5 Success criteria in the debrief
-- [ ] F6 Controls overlay
+- [x] F3 Wiring faults change the mission
+- [x] F4 Pause menu
+- [x] F5 Success criteria in the debrief
+- [x] F6 Controls overlay
 - [ ] F7 Undo everywhere
-- [ ] F8 Engine sound and ambient audio
-- [ ] F9 Flight charts in the debrief
+- [x] F8 Engine sound and ambient audio
+- [x] F9 Flight charts in the debrief
 - [ ] F10 Accessibility options
-- [ ] F11 Mission log and personal bests
-- [ ] F12 Engineering challenges
-- [ ] F13 More Failure Lab jobs
+- [x] F11 Mission log and personal bests
+- [x] F12 Engineering challenges
+- [x] F13 More Failure Lab jobs
 - [ ] F14 Space Guide progress and quiz cards
 - [ ] F15 Shareable mission card
 - [ ] F16 Design links
