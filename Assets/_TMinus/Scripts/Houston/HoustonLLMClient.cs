@@ -22,6 +22,8 @@ namespace TMinus.Houston
         {
             public string endpointUrl = "";
             public int timeoutSec = 8;
+            /// <summary>Optional: sent as x-houston-token when the proxy has HOUSTON_CLIENT_TOKEN set. Not a secret.</summary>
+            public string clientToken = "";
             public string language = "en";
             public bool enabled;
         }
@@ -101,7 +103,7 @@ namespace TMinus.Houston
                 var packet = BuildPacket(question, advisorRec, ctx);
                 string body = JsonConvert.SerializeObject(new { packet, question });
 
-                var result = await PostAsync(_config.endpointUrl, body, _config.timeoutSec);
+                var result = await PostAsync(_config.endpointUrl, body, _config.timeoutSec, _config.clientToken);
                 if (result != null)
                 {
                     var obj = JObject.Parse(result);
@@ -139,7 +141,7 @@ namespace TMinus.Houston
                     language = GameState.Instance?.Settings.language ?? _config?.language ?? "en"
                 };
                 string body = JsonConvert.SerializeObject(new { packet, question = "Narrate the debrief" });
-                var result = await PostAsync(_config.endpointUrl, body, _config.timeoutSec);
+                var result = await PostAsync(_config.endpointUrl, body, _config.timeoutSec, _config.clientToken);
                 if (result != null)
                 {
                     var obj = JObject.Parse(result);
@@ -253,13 +255,14 @@ namespace TMinus.Houston
 
         // ------------------------------------------------------------------ HTTP
 
-        static async Task<string> PostAsync(string url, string body, int timeoutSec)
+        static async Task<string> PostAsync(string url, string body, int timeoutSec, string clientToken = null)
         {
             byte[] bodyBytes = Encoding.UTF8.GetBytes(body);
             using var req = new UnityWebRequest(url, "POST");
             req.uploadHandler = new UploadHandlerRaw(bodyBytes);
             req.downloadHandler = new DownloadHandlerBuffer();
             req.SetRequestHeader("Content-Type", "application/json");
+            if (!string.IsNullOrEmpty(clientToken)) req.SetRequestHeader("x-houston-token", clientToken);
             req.timeout = timeoutSec;
 
             var op = req.SendWebRequest();

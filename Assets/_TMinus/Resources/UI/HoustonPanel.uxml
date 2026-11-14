@@ -34,6 +34,7 @@
             <ui:VisualElement name="houston-input-row" class="houston-input-row">
                 <ui:TextField name="houston-input" placeholder-text="Ask HOUSTON a question..." class="houston-input" />
             </ui:VisualElement>
+            <ui:Label name="houston-notice" class="houston-notice" text="When online, typed questions are sent to an AI service. Don't type personal details." />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

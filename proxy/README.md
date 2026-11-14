@@ -6,9 +6,12 @@ The API key is stored **only** in Vercel environment variables and is never chec
 ## Features
 
 - **Key safety:** API keys reside exclusively in server-side environment variables.
-- **CORS enabled:** Supports calls from WebGL builds and local Editor/standalone builds.
-- **Rate limiting:** In-memory rate limiting per client IP (30 requests/minute).
-- **Concise answers:** Capped at 300 output tokens to ensure concise, prompt engineering guidance.
+- **Locked to the game:** only origins in `ALLOWED_ORIGINS` (default `https://ayaan-kashif.github.io`) may call it from a browser; other origins get 403. Desktop builds send no `Origin` header and are allowed; set `HOUSTON_CLIENT_TOKEN` (and the same value as `clientToken` in `houston.config.json`) to require a token from them too. The token ships with the game, so it is a speed bump, not a secret.
+- **Request limits:** question at most 300 characters, packet at most 8,000 characters.
+- **Rate limiting:** in memory, per client IP (20 requests/minute). This is per serverless instance and resets on a cold start; for a hard limit use Vercel KV / Upstash or Vercel's firewall rate limiting.
+- **Rules in the system slot:** for Gemini the rules go in `systemInstruction`, the question is sent as data, and safety filters block medium-or-higher harm (the audience is 12 and up).
+- **No diagnostics endpoint:** the old `GET ?diag=models` route was removed because it was public.
+- **Concise answers:** the prompt asks for at most 70 words.
 - **Dual provider support:** Works with OpenAI-compatible endpoints or Google Gemini API.
 
 ## Deployment Steps
@@ -32,6 +35,8 @@ The API key is stored **only** in Vercel environment variables and is never chec
    - `HOUSTON_API_KEY`: Your API key (OpenAI, Gemini, or OpenRouter)
    - `LLM_PROVIDER`: `openai` (default) or `gemini`
    - `LLM_MODEL`: e.g. `gpt-4o-mini` or `gemini-1.5-flash`
+   - `ALLOWED_ORIGINS` (optional): comma-separated web origins allowed to call the proxy. Add `http://localhost:PORT` when testing a local WebGL build.
+   - `HOUSTON_CLIENT_TOKEN` (optional): see "Locked to the game" above.
    - `OPENAI_BASE_URL` (optional): e.g. `https://openrouter.ai/api/v1`
 
    You can set these via the Vercel dashboard or CLI:
@@ -51,6 +56,7 @@ The API key is stored **only** in Vercel environment variables and is never chec
    {
      "endpointUrl": "https://your-project.vercel.app/api/houston",
      "timeoutSec": 8,
+     "clientToken": "",
      "language": "en",
      "enabled": true
    }
