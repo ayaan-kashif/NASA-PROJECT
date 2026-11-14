@@ -204,7 +204,10 @@ namespace TMinus.Mission
                 var code = DesignCode.Encode(DesignCode.FromState(S));
                 GUIUtility.systemCopyBuffer = code;
                 field.value = code;
-                Toast("Design code copied. Share it with another team to compare builds.");
+                // Browsers block clipboard writes from the game: show the code and ask the player to copy it.
+                Toast(Application.platform == RuntimePlatform.WebGLPlayer
+                    ? "Your design code is in the box. Select it and press Ctrl+C to copy."
+                    : "Design code copied. Share it with another team to compare builds.");
             }, "bin-chip"));
             row.Add(Btn("Load code", () =>
             {

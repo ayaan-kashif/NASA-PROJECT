@@ -18,6 +18,8 @@ namespace TMinus.Mission
             var grid = new VisualElement(); grid.AddToClassList("mission-grid");
             foreach (var m in Data.Missions.OrderBy(m => m.locked).ThenBy(m => m.priority))
             {
+                // Repair jobs and the Sandbox are opened from the main menu, so they are not listed here (they only bounced back).
+                if (m.id.StartsWith("failure_") || m.id == "sandbox") continue;
                 var card = new VisualElement(); card.AddToClassList("mission-card");
                 card.EnableInClassList("locked", m.locked && !m.id.StartsWith("failure_") && m.id != "sandbox");
                 var top = new VisualElement(); top.AddToClassList("rocket-card-top");
@@ -52,6 +54,7 @@ namespace TMinus.Mission
                 grid.Add(card);
             }
             _page.Add(grid);
+            _page.Add(L("Repair jobs (Failure Lab) and the Sandbox are in the main menu.", "mission-meta"));
         }
     }
 }

@@ -38,6 +38,8 @@ namespace TMinus.UI
             Bind(root, "btn-codex", () => MenuPanels.ShowCodex(root));
             Bind(root, "btn-settings", () => MenuPanels.ShowSettings(root));
             Bind(root, "btn-quit", Quit);
+            // A browser tab cannot be closed by the page, so Quit does nothing there: hide it.
+            if (Application.platform == RuntimePlatform.WebGLPlayer) { var quit = root.Q<Button>("btn-quit"); if (quit != null) quit.style.display = DisplayStyle.None; }
 
             _toast = root.Q<Label>("toast");
             if (_toast != null) _toast.AddToClassList("hidden");

@@ -38,6 +38,7 @@ namespace TMinus.Mission
             // The real cause first: a broken joint is not a deployment-wiring problem.
             bool joint = state.Flight.failureCode == "joint_failure";
             if (joint) s.fixes.Add("Torque every bolt in the joint's star pattern and verify the joint integrity before launch.");
+            else if (state.Flight.failureCode == "abort_unbuilt") s.fixes.Add("Stack every part of the rocket in the VAB and bolt each joint before you go to the pad.");
             else if (state.Flight.failureCode == "ignition_failure" && state.Flight.failureCause == "av_safe_arm") s.fixes.Add("Arm the Safe/Arm plug at the pad (pre-launch checklist) before the countdown: on SAFE the igniters get no firing current.");
             else if (!state.Flight.deployed) s.fixes.Add("Restore the deployment path: check the separation pyro cable, fairing release and dispenser.");
             if (ops.powerFailureCause == "rbf_pin") s.fixes.Add("Pull the remove-before-flight pin at the pad before launch.");

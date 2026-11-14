@@ -73,10 +73,12 @@ namespace TMinus.UI
             var houston = new RadioButtonGroup("HOUSTON assistant", new List<string>
                 { "On: advice, scans and AI chat", "Hints only: buttons, no AI chat", "Off: fly solo (best decision score)" })
                 { value = (int)s.houstonMode };
-            var lang = new RadioButtonGroup("HOUSTON answer language", new List<string> { "English", "Urdu (AI answers when online)" })
+            var lang = new RadioButtonGroup("HOUSTON answer language", new List<string> { "English", "Urdu (experimental: needs the AI and an Urdu-capable font)" })
                 { value = s.language == "ur" ? 1 : 0 };
             var volume = new Slider("Volume", 0, 1) { value = SettingsStore.Volume };
             var full = new Toggle("Fullscreen") { value = Screen.fullScreen };
+            // Browsers only allow fullscreen from their own control, so the toggle is hidden in the web build.
+            if (Application.platform == RuntimePlatform.WebGLPlayer) full.style.display = DisplayStyle.None;
             foreach (var e in new VisualElement[] { houston, lang, volume, full }) { e.AddToClassList("settings-row"); body.Add(e); }
             var note = new Label("Saved automatically. HOUSTON's hints count toward decision quality: fewer hints, higher score.");
             note.AddToClassList("muted"); body.Add(note);

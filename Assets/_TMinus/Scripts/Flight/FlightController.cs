@@ -74,6 +74,14 @@ namespace TMinus.Flight
             Sim.Options.pitchKickDeg = pitchKickDeg;
             S.Vehicle.pitchKickDeg = pitchKickDeg;
             hud.HidePrelaunch();
+            if (!RocketAssembled(out int mounted, out int needed))
+            {
+                // The flight model is built from data, so an unstacked rocket would otherwise fly as a complete one.
+                S.Events.Add("flight", "abort_unbuilt", $"The rocket is not fully assembled: {mounted} of {needed} parts are mounted.", "rk_stack", Severity.Fault);
+                hud.Banner($"ABORT: rocket not assembled ({mounted} of {needed} parts)", false);
+                Finish("Aborted", "abort_unbuilt", "rk_stack");
+                return;
+            }
             double twr = TwrAtLiftoff();
             if (twr < 1)
             {
@@ -87,8 +95,20 @@ namespace TMinus.Flight
             hud.Banner("IGNITION · LIFTOFF", true);
         }
 
+        /// <summary>True when every part of a buildable rocket is stacked (the same test as the checklist's "Rocket fully stacked").</summary>
+        bool RocketAssembled(out int mounted, out int needed)
+        {
+            mounted = S.Vehicle.parts.Count; needed = 0;
+            if (_rocket == null || !_rocket.buildable) return true;
+            var rules = S.Data.GetRules();
+            if (!rules.assemblyOrder.TryGetValue(_rocket.id, out var order)) return true;
+            needed = order.Count;
+            return mounted >= needed;
+        }
+
         void Update()
         {
+            if (!_initialized) return;   // scene setup failed (the error is in the Console): don't throw every frame
             TickCountdown();
             HandleKeys();
             if (Launched && !Ended)

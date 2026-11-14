@@ -113,6 +113,7 @@ namespace TMinus.Flight
 
             GuidanceCommand command = Options.autopilot ? FlightGuidance.Autopilot(this) : FlightGuidance.Manual(this);
             UpdateManualPhase();
+            CheckStrandedOrbit();
             if (!_avionics.GuidanceOk)
             {
                 _guidanceErrorDeg += 0.5 * FlightConstants.Dt;
@@ -168,6 +169,21 @@ namespace TMinus.Flight
                 if (o.bound && o.periapsisM - FlightConstants.EarthRadiusM >= FlightConstants.AtmosphereLimitM)
                     SetPhase(FlightPhase.Orbit);
             }
+        }
+
+        /// <summary>
+        /// All propellant is gone while coasting, but the path stays above the atmosphere: that is a stable orbit, just not the
+        /// target one. Without this the flight never ended (audit A-19).
+        /// </summary>
+        void CheckStrandedOrbit()
+        {
+            if (Phase != FlightPhase.Coast && Phase != FlightPhase.Circularize) return;
+            if (Options.initialAltitudeKm > 0 || Options.startInCircularOrbit) return;   // test set-ups start in orbit on purpose
+            for (int i = 0; i < _fuel.Length; i++) if (_fuel[i] > 1e-6) return;
+            var o = OrbitElements.From(_position, _velocity);
+            if (!o.bound || o.periapsisM - FlightConstants.EarthRadiusM < FlightConstants.AtmosphereLimitM) return;
+            Log("orbit_off_target", "Out of propellant, but the whole path stays above the atmosphere: a stable orbit, though not the target one.", null, Severity.Warning);
+            SetPhase(FlightPhase.Orbit);
         }
 
         void HoldDownOnPad()
