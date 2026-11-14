@@ -6,7 +6,11 @@
     <title>Unity Web Player | T-MINUS</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
+  <meta name="description" content="T-MINUS: build a CubeSat and its rocket part by part, launch it with real physics and learn from a debrief that explains every failure. Free, for students 12 and up.">
+<meta property="og:title" content="T-MINUS: Rocket &amp; Mission Builder">
+<meta property="og:description" content="Build a satellite and its rocket bolt by bolt, launch it, and find out exactly what made it succeed or fail.">
+<meta property="og:type" content="website">
+</head>
   <body>
     <div id="unity-container" class="unity-desktop">
       <div id="unity-fullscreen-container">
@@ -146,5 +150,6 @@
       document.body.appendChild(script);
 
     </script>
-  </body>
+  <script>if (matchMedia("(pointer:coarse)").matches && !matchMedia("(pointer:fine)").matches) { var d = document.createElement("div"); d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:99;background:#ff7a1a;color:#fff;padding:10px 14px;font:16px system-ui;text-align:center"; d.innerHTML = "T-MINUS is made for a keyboard and mouse. Touch is experimental: one finger clicks and drags, two fingers orbit, pinch zooms. <a style=\"color:#fff\" href=\"about.html\">About the game</a>"; document.body.appendChild(d); }</script>
+</body>
 </html>

@@ -1,6 +1,8 @@
 {
   "endpointUrl": "https://YOUR-PROJECT.vercel.app/api/houston",
   "timeoutSec": 15,
+  "clientToken": "",
+  "analyticsUrl": "",
   "language": "en",
   "enabled": false
 }
