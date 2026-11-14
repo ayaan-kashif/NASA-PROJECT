@@ -69,7 +69,10 @@ namespace TMinus.Flight
             else if (!_avionics.S1IgnitionOk)
             {
                 _stageIgnited = false;
-                Fail("ignition_failure", "Stage 1 did not ignite; launch aborted.", Cause("no_ignition"));
+                string ignitionCause = Cause("no_ignition");
+                Fail("ignition_failure",
+                     ignitionCause == "av_safe_arm" ? "Stage 1 did not ignite: the Safe/Arm plug was still on SAFE, so the igniter got no firing current."
+                                                    : "Stage 1 did not ignite; launch aborted.", ignitionCause);
                 Phase = FlightPhase.Aborted;
                 _outcome.phase = Phase;
             }
@@ -109,6 +112,7 @@ namespace TMinus.Flight
             if (Terminal()) return;
 
             GuidanceCommand command = Options.autopilot ? FlightGuidance.Autopilot(this) : FlightGuidance.Manual(this);
+            UpdateManualPhase();
             if (!_avionics.GuidanceOk)
             {
                 _guidanceErrorDeg += 0.5 * FlightConstants.Dt;
@@ -137,6 +141,34 @@ namespace TMinus.Flight
         }
 
         static double Clamp(double x, double min, double max) => Math.Max(min, Math.Min(max, x));
+
+        /// <summary>
+        /// Phase changes for manual control. The autopilot changes phase itself; with it off nothing did, so the rocket
+        /// stayed clamped to the pad and an orbit could never be recognised. Lift-off happens once thrust beats weight;
+        /// orbit is reached once the whole path (periapsis) is above the atmosphere.
+        /// </summary>
+        void UpdateManualPhase()
+        {
+            if (Options.autopilot) return;
+            if (Phase == FlightPhase.Pad)
+            {
+                if (_stageIgnited && _stageIndex >= 0 && _stageIndex < Vehicle.stages.Count)
+                {
+                    var s = Vehicle.stages[_stageIndex];
+                    double seaLevelThrust = s.thrustVacN * s.ispSeaLevel / Math.Max(1, s.ispVac);
+                    if (seaLevelThrust * ManualThrottle > _mass * FlightConstants.G0) SetPhase(FlightPhase.Ascent);
+                }
+                return;
+            }
+            // Tests start in a circular orbit on purpose; only a flight that began on the ground can "reach" orbit.
+            bool launchedFromGround = Options.initialAltitudeKm <= 0 && !Options.startInCircularOrbit;
+            if (launchedFromGround && (Phase == FlightPhase.Ascent || Phase == FlightPhase.Coast || Phase == FlightPhase.Circularize))
+            {
+                var o = OrbitElements.From(_position, _velocity);
+                if (o.bound && o.periapsisM - FlightConstants.EarthRadiusM >= FlightConstants.AtmosphereLimitM)
+                    SetPhase(FlightPhase.Orbit);
+            }
+        }
 
         void HoldDownOnPad()
         {

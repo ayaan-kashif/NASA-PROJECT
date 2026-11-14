@@ -123,6 +123,34 @@ namespace TMinus.Tests.Flight
             Assert.That(sim.Outcome.failureCause, Is.EqualTo("w_pyro2"));
         }
 
+        [Test]
+        public void ManualControlLiftsOffAndLeavesThePad()
+        {
+            // Audit A-02: with the autopilot off the phase used to stay "Pad", so the rocket was clamped to the ground.
+            var data = LoadData();
+            var sim = FlightRuntime.Create(data, new VehicleDesign { rocketId = "pathfinder", launchSiteId = "sonmiani" },
+                new PerfectAvionicsReport(), null, new EventLog());
+            sim.Options.autopilot = false;
+            sim.SetManualControl(1, 90);
+            sim.RecordTelemetry = false;
+            sim.RunForSimSeconds(30);
+            Assert.That(sim.Phase, Is.Not.EqualTo(FlightPhase.Pad));
+            Assert.That(FlightPhysics.Altitude(sim.Position), Is.GreaterThan(1000));
+        }
+
+        [Test]
+        public void ManualFlightWithTooLittleThrottleStaysOnThePad()
+        {
+            var data = LoadData();
+            var sim = FlightRuntime.Create(data, new VehicleDesign { rocketId = "pathfinder", launchSiteId = "sonmiani" },
+                new PerfectAvionicsReport(), null, new EventLog());
+            sim.Options.autopilot = false;
+            sim.SetManualControl(0.1, 90);   // 10% of 1.7 TWR is far below 1
+            sim.RecordTelemetry = false;
+            sim.RunForSimSeconds(10);
+            Assert.That(sim.Phase, Is.EqualTo(FlightPhase.Pad));
+        }
+
         sealed class FakeJoint : IJointStatus
         {
             public string JointId { get; }

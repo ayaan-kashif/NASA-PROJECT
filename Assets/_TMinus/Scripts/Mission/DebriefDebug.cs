@@ -33,7 +33,7 @@ namespace TMinus.Mission
         public static string SetupDemo(string variant)
         {
             var s = GameState.Instance;
-            DemoBuilds.Apply(s, noSeparation: (variant ?? "").Contains("sep"));
+            DemoBuilds.Apply(s, noSeparation: (variant ?? "").Contains("sep"), padReady: true);
             s.Spacecraft.rbfPinPulled = true;
             if ((variant ?? "").Contains("hd"))
             {

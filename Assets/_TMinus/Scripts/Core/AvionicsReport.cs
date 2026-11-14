@@ -27,7 +27,8 @@ namespace TMinus.Core
         public AvionicsConsequence First(string consequence) => consequences.FirstOrDefault(c => c.consequence == consequence);
 
         bool PowerOk => !Has("no_avionics_power") && !Has("no_flight_computer");
-        public bool S1IgnitionOk => PowerOk && !Has("no_ignition");
+        // Safe/Arm: while the plug is on SAFE the pyro circuits are blocked, so nothing can fire at T-0.
+        public bool S1IgnitionOk => PowerOk && armed && !Has("no_ignition");
         public bool StageSeparationOk => PowerOk && !Has("stuck_stage");
         public bool S2IgnitionOk => PowerOk && !Has("s2_no_thrust");
         public bool GuidanceOk => PowerOk && !Has("guidance_drift");
@@ -35,10 +36,17 @@ namespace TMinus.Core
         public bool FairingSeparationOk => PowerOk && !Has("fairing_stuck");
         public bool AllOk => consequences.Count == 0;
 
-        public string CauseId(string consequence) => First(consequence)?.linkId;
+        public string CauseId(string consequence)
+        {
+            var direct = First(consequence);
+            if (direct != null) return direct.linkId;
+            if (!PowerOk) return (First("no_avionics_power") ?? First("no_flight_computer"))?.linkId;   // power cascade: blame the power cable
+            if (consequence == "no_ignition" && !armed) return "av_safe_arm";
+            return null;
+        }
 
-        /// <summary>All-OK report (e.g. Saturn V, which has no buildable avionics).</summary>
-        public static AvionicsReport Perfect() => new AvionicsReport();
+        /// <summary>All-OK report (e.g. Saturn V, which has no buildable avionics). Counts as armed.</summary>
+        public static AvionicsReport Perfect() => new AvionicsReport { armed = true };
 
         public static AvionicsReport Compute(VehicleDesign vehicle, RulesDef rules)
         {

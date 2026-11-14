@@ -9,7 +9,7 @@ namespace TMinus.Tests
     {
         static VehicleDesign FullyWired()
         {
-            var v = new VehicleDesign();
+            var v = new VehicleDesign { armed = true };   // armed at the pad: Safe/Arm blocks ignition while SAFE
             foreach (var l in TestData.Registry.GetRules().avionicsWiring)
                 v.avionicsCables.Add(new CableLink { fromPort = l.from, toPort = l.to, cableType = l.cableType });
             return v;
@@ -56,6 +56,38 @@ namespace TMinus.Tests
             Assert.IsFalse(r.S1IgnitionOk);
             Assert.IsFalse(r.TelemetryOk);
             Assert.IsFalse(r.StageSeparationOk);
+        }
+
+        [Test]
+        public void SafePlug_BlocksIgnition_AndNamesTheSafeArmPlug()
+        {
+            var rules = TestData.Registry.GetRules();
+            var v = FullyWired();
+            v.armed = false;
+            var r = AvionicsReport.Compute(v, rules);
+            Assert.IsFalse(r.S1IgnitionOk);
+            Assert.AreEqual("av_safe_arm", r.CauseId("no_ignition"));
+            Assert.IsTrue(r.StageSeparationOk, "Only ignition is gated by Safe/Arm in this model.");
+        }
+
+        [Test]
+        public void ArmedAndWired_Ignites()
+        {
+            var r = AvionicsReport.Compute(FullyWired(), TestData.Registry.GetRules());
+            Assert.IsTrue(r.S1IgnitionOk);
+            Assert.IsNull(r.CauseId("no_ignition"));
+            Assert.IsTrue(AvionicsReport.Perfect().S1IgnitionOk);
+        }
+
+        [Test]
+        public void PowerCascade_BlamesThePowerCable()
+        {
+            var rules = TestData.Registry.GetRules();
+            var v = FullyWired();
+            v.avionicsCables.RemoveAll(c => c.fromPort == "av_battery/PWR_OUT_1");
+            var r = AvionicsReport.Compute(v, rules);
+            Assert.AreEqual("w_batt_pdu", r.CauseId("stuck_stage"));
+            Assert.AreEqual("w_batt_pdu", r.CauseId("no_ignition"));
         }
 
         [Test]
