@@ -658,7 +658,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] I9 Proxy locked down
 - [x] I10 Urdu renders correctly, or is relabelled
 - [x] I11 Seeded random events
-- [ ] I12 Sources upgraded; `needsReview` cleared
+- [x] I12 Sources upgraded; `needsReview` cleared (Saturn V stage figures, the Rehbar-I facts and the battery cycle claim were checked on 14 November 2026 against the Wikipedia articles they cite and published LEO battery studies; Safe/Arm now cites NASA Technical Bulletin 23-01. NASA's Saturn V News Reference stayed unreachable, and derived values keep their notes)
 - [x] I13 No auto-advance from the flight end card
 - [x] I14 Sandbox removes limits
 - [x] I15 WebGL: Quit hidden, clipboard toast correct

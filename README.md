@@ -42,7 +42,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 - *Broken Pathfinder:* find 3 seeded faults (missing bolts, an unplugged pyro cable, a cable in the wrong port), fix them, and hand the rocket back for a job debrief.
 - *Apollo 12, 1969:* you are EECOM after the lightning strikes. Make the right calls in 20 seconds ("SCE to AUX", then reset the fuel cells). Every wrong call is explained.
 
-**Moonshot** is a flight-only mission: fly the real Saturn V (NASA stage data, with game values where marked) to a 185 km parking orbit and keep enough propellant in the S-IVB for the Moon burn. Your one choice is the pitch kick.
+**Moonshot** is a flight-only mission: fly the Saturn V (stage figures from the Wikipedia article, with game values where marked) to a 185 km parking orbit and keep enough propellant in the S-IVB for the Moon burn. Your one choice is the pitch kick.
 
 **Rehbar-I, 1962** is a flight-only mission too: fly the two-stage solid rocket of Pakistan's first launch from Sonmiani to about 130 km. The flight ends at its highest point.
 
@@ -79,7 +79,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
   - Source: [Lake Manchar Is Overflowing](https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/).
 - **Earth from orbit:** NASA Blue Marble: Next Generation (credit "NASA Earth Observatory"). The globe is oriented so the real launch site sits under the pad.
 - **Saturn V:**
-  - Stage figures in the data files cite [Wikipedia's Saturn V article](https://en.wikipedia.org/wiki/Saturn_V) and are being cross-checked against the NASA Saturn V News Reference (the old link to it returned "404 Not Found" on 14 November 2026, so it is not linked). Entries marked "being fact-checked" in the game are not yet verified.
+  - Stage figures in the data files cite [Wikipedia's Saturn V article](https://en.wikipedia.org/wiki/Saturn_V) and were compared with that article on 14 November 2026 (masses, thrust, burn times, diameters and lengths match). NASA's own Saturn V News Reference could not be reached (its old link returned "404 Not Found"), so the figures are only as good as the article. The first stage's vacuum thrust is derived, and the upper stages' sea-level Isp is a game estimate.
   - The model is a procedural representation.
 - **Rehbar-I:** the history is in the in-game Space Guide. Verify it against a mission-specific source before public submission.
 

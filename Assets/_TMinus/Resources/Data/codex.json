@@ -44,7 +44,7 @@
       "short": "In low orbit a satellite spends about a third of each orbit in Earth's shadow, with no solar power. The battery must cover it.",
       "long": "At 550 km one orbit takes about 95 minutes, and in the worst case about 35 of them are in Earth's shadow. Solar panels produce nothing there, so the battery runs everything. Panels also rarely face the Sun squarely: body-mounted panels catch less light than deployable wings that can be angled. Orbit-average power generation must beat consumption, or the battery slowly drains and the satellite dies." },
 
-    { "id": "battery_dod", "title": "Battery depth of discharge", "sourceUrl": "https://en.wikipedia.org/wiki/Depth_of_discharge", "needsReview": true,
+    { "id": "battery_dod", "title": "Battery depth of discharge", "sourceUrl": "https://en.wikipedia.org/wiki/Depth_of_discharge", "needsReview": false,
       "short": "Depth of discharge is how much of the battery you use per cycle. Shallow cycles let a battery survive thousands of eclipses.",
       "long": "A satellite in low orbit charges and discharges its battery about 15 times a day: thousands of cycles in a year. Draining a lithium-ion battery deeply each time wears it out quickly. Designers keep each eclipse to a shallow depth of discharge, often around 20 to 30%. In this game the limit is 30%, so the battery must hold about three times the energy one eclipse needs." },
 
@@ -64,7 +64,7 @@
       "short": "Small explosive charges cut bolts or joints in milliseconds to drop stages and open fairings. Each one fires from a computer channel.",
       "long": "Rockets separate stages and fairings with pyrotechnics: explosive bolts, cutting cords or pushers fired by an electrical pulse from the flight computer. Each event has its own pyro channel and its own cable. If a pyro cable is missing, nothing happens at the critical moment: the spent stage stays attached, the fairing stays shut, or the next engine never lights." },
 
-    { "id": "safe_arm", "title": "Safe/Arm", "sourceUrl": "https://en.wikipedia.org/wiki/Safety_interlock", "needsReview": true,
+    { "id": "safe_arm", "title": "Safe/Arm", "sourceUrl": "https://ntrs.nasa.gov/api/citations/20230001889/downloads/TB_23-01_Pyro%20Best%20Practices_031523.pdf", "needsReview": false,
       "short": "A Safe/Arm device physically blocks the firing circuits. It stays SAFE while people work on the rocket and is armed only at the pad.",
       "long": "Pyrotechnics are dangerous on the ground: a stray voltage could fire a charge while a technician is nearby. A Safe/Arm plug or device mechanically breaks the firing circuit. Teams keep it in SAFE during assembly and testing and switch it to ARMED only late in the countdown, when the pad has been cleared. Working on pyro wiring while armed is a serious safety violation." },
 
@@ -100,7 +100,7 @@
       "short": "The J-2 burned liquid hydrogen and liquid oxygen. Five powered the S-II; one restartable J-2 powered the S-IVB.",
       "long": "Hydrogen engines have a high specific impulse, over 420 s in vacuum, which makes them ideal for upper stages. The J-2 on the S-IVB could restart in space: one burn finished the climb to a parking orbit, and a second burn, after a coast, sent Apollo towards the Moon. That second burn is called trans-lunar injection." },
 
-    { "id": "rehbar_1962", "title": "Rehbar-I, 1962", "sourceUrl": "https://en.wikipedia.org/wiki/Rehbar_(rocket_family)", "needsReview": true,
+    { "id": "rehbar_1962", "title": "Rehbar-I, 1962", "sourceUrl": "https://en.wikipedia.org/wiki/Rehbar_(rocket_family)", "needsReview": false,
       "short": "On 7 June 1962 Pakistan launched its first rocket, Rehbar-I, from Sonmiani near Karachi, with NASA support.",
       "long": "Rehbar-I was a two-stage Nike-Cajun sounding rocket launched from the Sonmiani range on the Balochistan coast. It carried sodium, released high in the atmosphere to form a glowing cloud that scientists tracked from the ground to study upper-atmosphere winds. It reached about 130 km. The launch came from a cooperation between Pakistan's space research commission (SUPARCO) and NASA." },
 

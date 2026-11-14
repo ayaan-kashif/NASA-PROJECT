@@ -97,7 +97,7 @@
         "saturnv_spacecraft"
       ],
       "guidance": { "turnSpanM": 30000, "turnEndM": 130000, "turnDeg": 60, "altitudeHold": true, "maxClimb": 0.4, "vrGain": 0.01 },
-      "extraNotes": "launchCostMUSD is an illustrative game value. The guidance profile was found with tools/sim (a port of the flight solver): with it the autopilot reaches a 185 km parking orbit; the original profile cannot, because the S-II is below thrust-to-weight 1.",
+      "extraNotes": "Stage dry and gross masses, sea-level or vacuum thrust, burn times, diameters and lengths were compared with the Wikipedia Saturn V article on 14 November 2026 and match. Vacuum thrust of the S-IC is derived from sea-level thrust and the Isp ratio, and the sea-level Isp of the upper stages is a game estimate (their notes say so). launchCostMUSD is an illustrative game value. The guidance profile was found with tools/sim (a port of the flight solver): with it the autopilot reaches a 185 km parking orbit; the original profile cannot, because the S-II is below thrust-to-weight 1.",
       "stages": [
         {
           "id": "s_ic",
@@ -116,7 +116,7 @@
           "lengthM": 42,
           "propellants": "LOX/RP-1",
           "source": "https://en.wikipedia.org/wiki/Saturn_V",
-          "needsReview": true,
+          "needsReview": false,
           "notes": "Gross 2,214,000 kg. Vacuum thrust derived from sea-level thrust x Isp ratio (same mass flow). Isp values are F-1 engine figures."
         },
         {
@@ -136,7 +136,7 @@
           "lengthM": 24.87,
           "propellants": "LOX/LH2",
           "source": "https://en.wikipedia.org/wiki/Saturn_V",
-          "needsReview": true,
+          "needsReview": false,
           "notes": "Gross 470,000 kg. Sea-level Isp 200 s is a game estimate (illustrative); the stage only fires high up."
         },
         {
@@ -157,7 +157,7 @@
           "lengthM": 17.86,
           "propellants": "LOX/LH2",
           "source": "https://en.wikipedia.org/wiki/Saturn_V",
-          "needsReview": true,
+          "needsReview": false,
           "notes": "Gross 120,500 kg. Two burns: into parking orbit, then trans-lunar injection. Sea-level Isp is a game estimate (illustrative)."
         }
       ],
@@ -173,7 +173,7 @@
       "real": true,
       "buildable": false,
       "illustrative": true,
-      "heightM": 9.3,
+      "heightM": 7.7,
       "launchCostMUSD": 0.05,
       "payloadLeoKg": 0,
       "payloadTargetAltKm": 130,
@@ -198,7 +198,7 @@
           "ispVac": 222.6,
           "burnTimeS": 3.5,
           "diameterM": 0.42,
-          "lengthM": 5.8,
+          "lengthM": 4.6,
           "propellants": "Solid",
           "ignitionChannel": 0,
           "separationChannel": 0,
@@ -219,7 +219,7 @@
           "ispVac": 225,
           "burnTimeS": 33,
           "diameterM": 0.3,
-          "lengthM": 3.5,
+          "lengthM": 3.1,
           "propellants": "Solid",
           "ignitionChannel": 0,
           "separationChannel": 0,
