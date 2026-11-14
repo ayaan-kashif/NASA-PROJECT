@@ -18,6 +18,8 @@ namespace TMinus.Flight
         readonly double _startAngle;
         readonly double _rotationRate;
         bool _pitchKicked, _fairingChecked, _guidanceFailureLogged;
+        const int TelemetryEveryNSteps = 4;
+        int _sampleCounter;
         bool _stageIgnited = true;
         double _mass, _time, _maxQ, _guidanceErrorDeg;
         Vec2d _position, _velocity;
@@ -137,7 +139,8 @@ namespace TMinus.Flight
             if (h < -10 && _time > 2) Fail("impact", "The vehicle fell back to Earth.", null);
             if (_stageIndex >= 0 && _stageIndex < _fuel.Length && _fuel[_stageIndex] <= 1e-9 && !_burnoutHandled[_stageIndex])
                 HandleBurnout();
-            if (RecordTelemetry) _outcome.telemetry.Add(Sample(command));
+            // 5 samples a second are plenty for the HUD, charts and debrief; one per 0.05 s step allocated an array every step (audit A-18).
+            if (RecordTelemetry && (++_sampleCounter % TelemetryEveryNSteps == 0 || Terminal())) _outcome.telemetry.Add(Sample(command));
             _outcome.phase = Phase;
         }
 
