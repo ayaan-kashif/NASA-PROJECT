@@ -75,7 +75,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
   - Source: [Lake Manchar Is Overflowing](https://science.nasa.gov/earth/earth-observatory/lake-manchar-is-overflowing-150306/).
 - **Earth from orbit:** NASA Blue Marble: Next Generation (credit "NASA Earth Observatory"). The globe is oriented so the real launch site sits under the pad.
 - **Saturn V:**
-  - Stage figures in the data files cite [Wikipedia's Saturn V article](https://en.wikipedia.org/wiki/Saturn_V) and are being cross-checked against the [NASA Saturn V News Reference](https://www.nasa.gov/wp-content/uploads/2023/04/saturnvnewsreference.pdf). Entries marked "being fact-checked" in the game are not yet verified.
+  - Stage figures in the data files cite [Wikipedia's Saturn V article](https://en.wikipedia.org/wiki/Saturn_V) and are being cross-checked against the NASA Saturn V News Reference (the old link to it returned "404 Not Found" on 14 November 2026, so it is not linked). Entries marked "being fact-checked" in the game are not yet verified.
   - The model is a procedural representation.
 - **Rehbar-I:** the history is in the in-game Space Guide. Verify it against a mission-specific source before public submission.
 
