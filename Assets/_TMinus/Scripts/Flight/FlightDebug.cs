@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using UnityEngine.SceneManagement;
 using System;
 
@@ -31,9 +32,7 @@ namespace TMinus.Flight
         /// <summary>Runs the sim to the end immediately (no animation), for fast checks.</summary>
         public static string RunToEnd(string _)
         {
-            var c = RequireController();
-            for (int i = 0; i < 400000 && !c.Ended && c.Launched; i++) c.StepForDebug();
-            c.RefreshDebugView();
+            RequireController().FastForwardToEnd();
             return Report(null);
         }
 
@@ -66,3 +65,4 @@ namespace TMinus.Flight
         }
     }
 }
+#endif

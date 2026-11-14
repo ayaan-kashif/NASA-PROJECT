@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using TMinus.Core;
 using UnityEngine;
 
@@ -29,3 +30,4 @@ namespace TMinus.Houston
         public static string Last(string _) => _last;
     }
 }
+#endif

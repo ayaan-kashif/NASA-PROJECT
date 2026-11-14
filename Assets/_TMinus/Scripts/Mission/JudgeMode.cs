@@ -111,7 +111,7 @@ namespace TMinus.Mission
             // Flight 2: after the dramatic part (max-Q, staging) skip the long coast to orbit.
             var f = FlightController.Instance;
             if (_step == 5 && f != null && f.Launched && !f.Ended && f.Sim != null && f.Sim.TimeS > 130)
-                FlightDebug.RunToEnd(null);
+                f.FastForwardToEnd();
         }
 
         VisualElement _row;
@@ -174,7 +174,7 @@ namespace TMinus.Mission
                 case 5:
                     var f2 = FlightController.Instance;
                     if (f2 != null && f2.Ended) SceneFlow.Load(SceneNames.Debrief);
-                    else if (f2 != null && f2.Launched) FlightDebug.RunToEnd(null);
+                    else if (f2 != null && f2.Launched) f2.FastForwardToEnd();
                     break;
                 case 6: Exit(); SceneFlow.Load(SceneNames.MainMenu); break;
             }
@@ -196,6 +196,7 @@ namespace TMinus.Mission
     }
 }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 namespace TMinus.Mission
 {
     /// <summary>Hooks for automated checks of Judge Mode.</summary>
@@ -211,3 +212,4 @@ namespace TMinus.Mission
         }
     }
 }
+#endif

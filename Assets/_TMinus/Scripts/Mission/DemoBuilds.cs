@@ -77,6 +77,7 @@ namespace TMinus.Mission
         }
     }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     /// <summary>Static hooks for automated checks of the briefing / pad.</summary>
     public static class BriefingDebug
     {
@@ -102,4 +103,6 @@ namespace TMinus.Mission
             return "pad actions done";
         }
     }
+#endif
+
 }

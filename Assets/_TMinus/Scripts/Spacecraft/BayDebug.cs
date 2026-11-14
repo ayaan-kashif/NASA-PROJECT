@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System.Linq;
 using UnityEngine;
 
@@ -81,3 +82,4 @@ namespace TMinus.Spacecraft
             string.Join("\n", C.bench.Faults.Select(f => f.ToString()));
     }
 }
+#endif

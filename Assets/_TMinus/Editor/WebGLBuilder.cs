@@ -62,6 +62,16 @@ namespace TMinus.EditorTools
                 foreach (var m in step.messages.Where(m => m.type == LogType.Error || m.type == LogType.Exception))
                     text += $"ERROR [{step.name}] {m.content}\n";
             Directory.CreateDirectory("Logs");
+            // Compare with the previous build so a size jump (for example after changing shader stripping, audit A-35 / I16) is visible at once.
+            long mb = (long)(s.totalSize / (1024 * 1024));
+            const string sizeFile = "Logs/build-webgl-size.txt";
+            if (File.Exists(sizeFile) && long.TryParse(File.ReadAllText(sizeFile).Trim(), out long previousMb))
+            {
+                long diff = mb - previousMb;
+                text += $"size compared with the previous build: {previousMb} MB -> {mb} MB ({(diff >= 0 ? "+" : "")}{diff} MB)\n";
+                if (diff > 5) text += "WARNING: the build grew by more than 5 MB. If you just changed shader stripping, decide whether the cost is worth it.\n";
+            }
+            File.WriteAllText(sizeFile, mb.ToString());
             File.WriteAllText("Logs/build-webgl.txt", text);
             Debug.Log("[T-Minus] WebGL build: " + text);
         }

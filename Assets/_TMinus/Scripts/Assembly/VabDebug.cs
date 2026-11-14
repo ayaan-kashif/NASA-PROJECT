@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System.Linq;
 using UnityEngine;
 
@@ -139,3 +140,4 @@ namespace TMinus.Assembly
         }
     }
 }
+#endif

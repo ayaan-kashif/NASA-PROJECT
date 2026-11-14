@@ -68,6 +68,14 @@ namespace TMinus.Flight
             if (DemoHooks.ReplayFailure && _initialized) { DemoHooks.ReplayFailure = false; BeginReplay(); }
         }
 
+        /// <summary>Runs the rest of the flight at once, with no animation (Judge Mode skips the long coast with it).</summary>
+        public void FastForwardToEnd()
+        {
+            EnsureInitialized();
+            for (int i = 0; i < 400000 && !Ended && Launched; i++) StepForDebug();
+            RefreshDebugView();
+        }
+
         /// <summary>Launch the saved design at x4, then drop to one fifth of real time 8 seconds before the failure.</summary>
         void BeginReplay()
         {

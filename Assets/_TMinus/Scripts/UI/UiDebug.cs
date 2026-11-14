@@ -1,3 +1,4 @@
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -46,3 +47,4 @@ namespace TMinus.UI
         }
     }
 }
+#endif

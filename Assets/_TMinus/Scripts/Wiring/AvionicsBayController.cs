@@ -229,6 +229,7 @@ namespace TMinus.Wiring
         }
     }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     /// <summary>Static hooks for automated checks of the avionics bay.</summary>
     public static class AvionicsDebug
     {
@@ -248,4 +249,6 @@ namespace TMinus.Wiring
         public static string Arm(string _) { C.ToggleArm(); return C.Report.ToString(); }
         public static string Report(string _) => C.Report.ToString();
     }
+#endif
+
 }

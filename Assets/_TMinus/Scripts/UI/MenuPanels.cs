@@ -190,6 +190,7 @@ namespace TMinus.UI
     }
 }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 namespace TMinus.UI
 {
     /// <summary>Agent/play-script hook: MenuDebug.Open codex|settings|sandbox.</summary>
@@ -210,3 +211,4 @@ namespace TMinus.UI
         }
     }
 }
+#endif

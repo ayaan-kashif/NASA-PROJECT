@@ -129,6 +129,7 @@ namespace TMinus.Mission
     }
 }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 namespace TMinus.Mission
 {
     /// <summary>Agent/play-script hooks: FailureDebug.Board | Job &lt;id&gt; | Pick &lt;label&gt; | HandBack.</summary>
@@ -157,3 +158,4 @@ namespace TMinus.Mission
         }
     }
 }
+#endif
