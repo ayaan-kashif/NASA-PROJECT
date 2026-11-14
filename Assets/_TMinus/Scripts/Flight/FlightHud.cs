@@ -166,19 +166,46 @@ namespace TMinus.Flight
 
         // ------------------------------------------------------------------ per frame
 
+        // Performance: the numbers on screen are rewritten ten times a second, not every frame. Nobody can read them faster, and every
+        // rewrite builds new strings (garbage the browser has to collect, which shows up as stutter in the web build).
+        const float TextInterval = 0.1f;
+        float _nextTextAt;
+        int _shownWarp = -1;
+        static readonly int[] WarpSteps = { 1, 2, 4, 100 };
+
+        /// <summary>The next Tick rewrites the numbers at once (after a jump in time: the replay scrubber, Judge Mode's fast-forward).</summary>
+        public void ForceTextRefresh() => _nextTextAt = 0;
+
         public void Tick(TelemetrySample s, FlightSim sim)
         {
             if (_bannerTime > 0 && (_bannerTime -= Time.deltaTime) <= 0) _banner.style.display = DisplayStyle.None;
-            foreach (var w in new[] { 1, 2, 4, 100 }) _buttons["w" + w].EnableInClassList("on", _ctrl.Warp == w);
-            var ts = System.TimeSpan.FromSeconds(sim.TimeS);
-            _clock.text = $"T+ {(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
-            _phase.text = sim.Phase.ToString().ToUpperInvariant();
+            if (_shownWarp != _ctrl.Warp)
+            {
+                _shownWarp = _ctrl.Warp;
+                foreach (var w in WarpSteps) _buttons["w" + w].EnableInClassList("on", _shownWarp == w);
+            }
+            bool textDue = Time.unscaledTime >= _nextTextAt;
+            if (textDue)
+            {
+                _nextTextAt = Time.unscaledTime + TextInterval;
+                var ts = System.TimeSpan.FromSeconds(sim.TimeS);
+                _clock.text = $"T+ {(int)ts.TotalMinutes:00}:{ts.Seconds:00}";
+                _phase.text = sim.Phase.ToString().ToUpperInvariant();
+            }
 
             _map.path = _ctrl.Path; _map.pos = sim.Position; _map.vel = sim.Velocity;
-            if (s != null) _map.caption = $"Apoapsis {(s.apoapsisM - FlightConstants.EarthRadiusM) / 1000:0} km · Periapsis {(s.periapsisM < FlightConstants.EarthRadiusM ? "below ground" : $"{(s.periapsisM - FlightConstants.EarthRadiusM) / 1000:0} km")}";
+            if (textDue && s != null) _map.caption = $"Apoapsis {(s.apoapsisM - FlightConstants.EarthRadiusM) / 1000:0} km · Periapsis {(s.periapsisM < FlightConstants.EarthRadiusM ? "below ground" : $"{(s.periapsisM - FlightConstants.EarthRadiusM) / 1000:0} km")}";
             if (_map.style.display == DisplayStyle.Flex) _map.Refresh();
 
             if (s == null || !_telemetry) return;
+            if (textDue) SetStats(s);
+            _altChart.Add((float)s.timeS, (float)(s.altitudeM / 1000), $"{s.altitudeM / 1000:0.0}");
+            _speedChart.Add((float)s.timeS, (float)s.orbitalSpeedMs, $"{s.orbitalSpeedMs:0}");
+            UpdateFuel(s);
+        }
+
+        void SetStats(TelemetrySample s)
+        {
             Set("Altitude", $"{s.altitudeM / 1000:0.0} km");
             Set("Surface speed", $"{s.surfaceSpeedMs:0} m/s");
             Set("Orbital speed", $"{s.orbitalSpeedMs:0} m/s");
@@ -192,9 +219,10 @@ namespace TMinus.Flight
             // Below the surface means the path still hits Earth: say so instead of a confusing "-6362 km".
             Set("Periapsis", periKm < 0 ? "below ground (suborbital)" : $"{periKm:0} km");
             Set("Stage", $"{s.stageIndex + 1}");
-            _altChart.Add((float)s.timeS, (float)(s.altitudeM / 1000), $"{s.altitudeM / 1000:0.0}");
-            _speedChart.Add((float)s.timeS, (float)s.orbitalSpeedMs, $"{s.orbitalSpeedMs:0}");
+        }
 
+        void UpdateFuel(TelemetrySample s)
+        {
             if (s.propellantPercent != null)
             {
                 while (_fuel.childCount < s.propellantPercent.Length)

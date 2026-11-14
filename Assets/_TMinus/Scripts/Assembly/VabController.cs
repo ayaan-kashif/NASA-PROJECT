@@ -167,10 +167,13 @@ namespace TMinus.Assembly
             else ui?.ShowPart(p, Data);
         }
 
+        Camera _orbitCam;
+
         void LateUpdate()
         {
-            if (ui != null && orbit != null)
-                ui.UpdateLabels(orbit.GetComponent<Camera>(), Current, Current != null && Current.Exploded);
+            if (ui == null || orbit == null) return;
+            if (_orbitCam == null) _orbitCam = orbit.GetComponent<Camera>();   // looked up once, not every frame
+            ui.UpdateLabels(_orbitCam, Current, Current != null && Current.Exploded);
         }
     }
 }

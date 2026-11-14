@@ -199,3 +199,9 @@ Newest entries at the bottom. Each entry: what was done, how to test it, what ch
 
 ## A-24 interpolated text (Claude, 2026-11-14) - still NOT compiled or run in Unity
 - `tools/extract_strings.py` now also converts `$"..."` UI text whose holes are plain names/members/indexes (optionally with a format like :0.0) into `Strings.Format(key, template, args)`. 17 more entries; `StringsTests` checks Get and Format calls against the table.
+
+## Speed-ups, no behaviour change (Claude, 2026-11-14) - still NOT compiled or run in Unity
+- Flight HUD: the stat numbers, clock and map caption are rewritten 10 times a second instead of every frame, warp buttons only when the warp changes, no more per-frame array and string-concatenation garbage (`FlightHud.Tick`, `ForceTextRefresh` after jumps in time). Charts, fuel bars and the 3D view still update every frame.
+- `FlightController.MaxThrustN` caches the strongest stage thrust (was a LINQ `Max` twice per frame). VAB caches its camera lookup.
+- Desktop builds turn vertical sync on if it was off (`GameState.Awake`, not in WebGL), so the game stops drawing hundreds of unneeded frames a second. Web build settings were left as they are (the friend's black-screen fix depends on them).
+- Nothing in scenes, prefabs, data or physics changed. If the flight HUD looks wrong in Unity, `TextInterval` in `FlightHud.cs` is the one constant to set to 0.

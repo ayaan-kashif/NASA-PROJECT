@@ -86,6 +86,23 @@ namespace TMinus.Flight
             hud.Banner("REPLAY: it will slow down just before the failure", true);
         }
 
+        // The strongest stage never changes during a flight; computing it with LINQ every frame only made garbage.
+        double _maxThrustN;
+        FlightVehicle _maxThrustFor;
+
+        double MaxThrustN()
+        {
+            if (!ReferenceEquals(_maxThrustFor, Sim.Vehicle))
+            {
+                _maxThrustFor = Sim.Vehicle;
+                double max = 1;
+                bool any = false;
+                foreach (var st in Sim.Vehicle.stages) { if (!any || st.thrustVacN > max) max = st.thrustVacN; any = true; }
+                _maxThrustN = any ? max : 1;
+            }
+            return _maxThrustN;
+        }
+
         public double TwrAtLiftoff()
         {
             var s = Sim.Vehicle.stages[0];
@@ -150,7 +167,7 @@ namespace TMinus.Flight
                 AfterStep();
             }
             var last = Sim.Outcome.telemetry.Count > 0 ? Sim.Outcome.telemetry[Sim.Outcome.telemetry.Count - 1] : null;
-            double maxThrust = Sim.Vehicle.stages.Count > 0 ? Sim.Vehicle.stages.Max(s => s.thrustVacN) : 1;
+            double maxThrust = MaxThrustN();
             view.Sync(Sim.Position, Sim.Velocity, Sim.TimeS, last != null ? last.thrustN / maxThrust : 0, last?.altitudeM ?? 0);
             hud.Tick(last, Sim);
             UpdateCamera(last);

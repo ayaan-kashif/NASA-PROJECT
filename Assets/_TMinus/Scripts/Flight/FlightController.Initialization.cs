@@ -116,8 +116,9 @@ namespace TMinus.Flight
         internal void RefreshDebugView()
         {
             var last = Sim.Outcome.telemetry.Count > 0 ? Sim.Outcome.telemetry[Sim.Outcome.telemetry.Count - 1] : null;
-            double maxThrust = Sim.Vehicle.stages.Count > 0 ? Sim.Vehicle.stages.Max(s => s.thrustVacN) : 1;
+            double maxThrust = MaxThrustN();
             view.Sync(Sim.Position, Sim.Velocity, Sim.TimeS, last != null ? last.thrustN / maxThrust : 0, last?.altitudeM ?? 0);
+            hud.ForceTextRefresh();
             hud.Tick(last, Sim);
             UpdateCamera(last);
         }

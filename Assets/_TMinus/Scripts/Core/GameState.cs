@@ -42,6 +42,11 @@ namespace TMinus.Core
                 return;
             }
             Instance = this;
+#if !UNITY_WEBGL
+            // Performance: with vertical sync off the desktop build draws as many frames as it can, which heats a laptop until it slows down.
+            // One frame per screen refresh is as smooth as the eye can tell. (A browser already paces itself to the screen.)
+            if (QualitySettings.vSyncCount == 0) QualitySettings.vSyncCount = 1;
+#endif
             Events = new EventLog(() => Time.timeAsDouble);
             Data = DataRegistry.LoadFromResources();
             SettingsStore.Load(Settings);
