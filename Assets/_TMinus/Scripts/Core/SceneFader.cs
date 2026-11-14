@@ -35,9 +35,15 @@ namespace TMinus.Core
             if (Instance == this) Instance = null;
         }
 
+        string _queued; float _queuedSeconds;
+
+        /// <summary>
+        /// A request made during a fade is queued (the latest one wins), not dropped: the Judge Mode script and a quick double
+        /// click both asked for a new room while the previous fade was still running, and the request used to vanish.
+        /// </summary>
         public void FadeTo(string sceneName, float totalSeconds)
         {
-            if (IsBusy) return;
+            if (IsBusy) { _queued = sceneName; _queuedSeconds = totalSeconds; return; }
             StartCoroutine(Run(sceneName, totalSeconds * 0.5f));
         }
 
@@ -53,6 +59,7 @@ namespace TMinus.Core
             yield return Fade(1f, 0f, half);
             if (_overlay != null) _overlay.pickingMode = PickingMode.Ignore;
             IsBusy = false;
+            if (_queued != null) { var next = _queued; _queued = null; FadeTo(next, _queuedSeconds); }
         }
 
         IEnumerator Fade(float from, float to, float seconds)

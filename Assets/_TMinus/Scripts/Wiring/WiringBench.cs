@@ -345,7 +345,7 @@ namespace TMinus.Wiring
 
         public void LoadFrom(List<CableLink> cables)
         {
-            foreach (var l in cables) Graph.Connect(l.fromPort, l.toPort, l.reversed, out _);
+            foreach (var l in cables) if (Graph.Connect(l.fromPort, l.toPort, l.reversed, out var why) == null) UnityEngine.Debug.LogWarning($"[Wiring] cable {l.fromPort} -> {l.toPort} refused: {why}");
         }
     }
 }

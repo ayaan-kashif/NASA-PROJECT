@@ -32,7 +32,7 @@ namespace TMinus.Tests
         {
             Assert.IsEmpty(R.Errors, string.Join("\n", R.Errors));
             Assert.Greater(R.Parts.Count, 30);
-            Assert.AreEqual(2, R.Rockets.Count);
+            Assert.AreEqual(3, R.Rockets.Count);   // Pathfinder, Saturn V, Rehbar-I
             Assert.GreaterOrEqual(R.Missions.Count, 5);
             Assert.IsFalse(R.GetRules().IsEmpty);
             Assert.IsNotNull(R.GetMission("floodwatch_1"));

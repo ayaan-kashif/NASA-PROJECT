@@ -86,7 +86,10 @@ namespace TMinus.Mission
         public static string Brief(string id) { GameState.Instance.CurrentMissionId = id; C.ShowBriefing(); return "ok"; }
         public static string Demo(string variant)
         {
-            DemoBuilds.Apply(GameState.Instance, missingRf: variant.Contains("rf"), badJoint: variant.Contains("joint"), noSeparation: variant.Contains("sep"), padReady: variant.Contains("ready"));
+            // Each option is a whole word ("perfect-ready" contains "rf" inside "perfect", which removed the antenna cable).
+            var words = variant.Split(new[] { '-', ' ', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+            bool Has(string w) => System.Array.IndexOf(words, w) >= 0;
+            DemoBuilds.Apply(GameState.Instance, missingRf: Has("rf"), badJoint: Has("joint"), noSeparation: Has("sep"), padReady: Has("ready"));
             return "applied " + variant;
         }
         public static string Checklist(string _)
