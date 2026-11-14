@@ -61,6 +61,16 @@ namespace TMinus.Assembly
             ui?.BuildLibrary(Data.Rockets.OrderBy(r => r.real), rocketId);
             if (rocketId != null) ShowRocket(rocketId);
             else ui?.Toast("No rockets in rockets.json.");
+            if (FocusRequest.TryTake(SceneNames.VAB, out var focusTarget, out var focusNote)) StartCoroutine(FocusLater(focusTarget, focusNote));
+        }
+
+        /// <summary>"Show me why" from the debrief: frame the joint that failed and say why.</summary>
+        System.Collections.IEnumerator FocusLater(string jointId, string note)
+        {
+            yield return new WaitForSeconds(0.6f);   // let the rocket and camera settle first
+            var view = string.IsNullOrEmpty(jointId) ? null : boltTool?.View(jointId);
+            if (view != null && orbit != null) orbit.Focus(view.FlangeBounds());
+            if (!string.IsNullOrEmpty(note)) ui?.Toast(note, 9000);
         }
 
         public void SetMode(string mode)

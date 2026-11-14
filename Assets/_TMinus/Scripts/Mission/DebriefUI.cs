@@ -56,6 +56,9 @@ namespace TMinus.Mission
             page.Add(new Label("WHAT TO CHANGE  ·  TOP FIXES") { name = "section" });
             foreach (var fix in score.fixes) page.Add(new Label("✓  " + fix));
             var buttons = new VisualElement(); buttons.AddToClassList("debrief-buttons"); page.Add(buttons);
+            var why = WhyTarget.For(s.Flight, s.Events.All, s.Data.GetRules());
+            if (why != null)
+                AddButton(buttons, "Show me why", () => { FocusRequest.Set(why.scene, why.target, why.note); SceneFlow.Load(why.scene); });
             AddButton(buttons, "Redesign", () => { s.BeginAttempt(); SceneFlow.Load(SceneNames.MissionBriefing); });
             AddButton(buttons, "Fly again", () => { s.BeginAttempt(); DebriefDebug.ResetRun(); SceneFlow.Load(SceneNames.Flight); });
             AddButton(buttons, "Save design code", SaveCode);

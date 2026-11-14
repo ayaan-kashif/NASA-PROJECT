@@ -83,6 +83,22 @@ namespace TMinus.Wiring
             Frame();
             if (Vehicle.avionicsCables.Count == 0)
                 Toast("Wire the ring: battery -> PDU -> computer, IMU, telemetry; then the four pyro channels.", 6000);
+            if (FocusRequest.TryTake(SceneNames.AvionicsBay, out var focusTarget, out var focusNote)) StartCoroutine(FocusLater(focusTarget, focusNote));
+        }
+
+        /// <summary>"Show me why" from the debrief: frame the port (or device) that lost the mission and say why.</summary>
+        System.Collections.IEnumerator FocusLater(string target, string note)
+        {
+            yield return new WaitForSeconds(0.6f);
+            var port = string.IsNullOrEmpty(target) ? null : bench.FindPort(target);
+            if (port != null)
+            {
+                orbit.Focus(new Bounds(port.transform.position, Vector3.one * 0.3f));
+                port.SetGlow(new Color(1f, 0.4f, 0.1f));
+            }
+            else if (!string.IsNullOrEmpty(target) && bench.Tiles.TryGetValue(target, out var tile))
+                orbit.Focus(new Bounds(tile.transform.position, Vector3.one * 0.4f));
+            if (!string.IsNullOrEmpty(note)) Toast(note, 9000);
         }
 
         void Frame()

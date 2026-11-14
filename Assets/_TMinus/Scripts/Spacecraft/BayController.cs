@@ -82,6 +82,22 @@ namespace TMinus.Spacecraft
             RefreshBin();
             SetMode("build");
             if (Design.parts.Count <= 1) ui.Toast("Click parts on the left to install them in the frame. Start with the EPS and a battery.", 5000);
+            if (FocusRequest.TryTake(SceneNames.IntegrationBay, out var focusTarget, out var focusNote)) StartCoroutine(FocusLater(focusTarget, focusNote));
+        }
+
+        /// <summary>"Show me why" from the debrief: switch to the wiring bench and frame the port that cost science.</summary>
+        System.Collections.IEnumerator FocusLater(string target, string note)
+        {
+            yield return new WaitForSeconds(0.6f);
+            SetMode("wire");
+            yield return null;
+            var port = string.IsNullOrEmpty(target) ? null : bench.FindPort(target);
+            if (port != null)
+            {
+                orbit.Focus(new Bounds(port.transform.position, Vector3.one * 0.35f));
+                StartCoroutine(Pulse(port));
+            }
+            if (!string.IsNullOrEmpty(note)) ui.Toast(note, 9000);
         }
 
         public void SetMode(string mode)
