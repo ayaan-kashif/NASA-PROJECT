@@ -65,6 +65,29 @@ namespace TMinus.Mission
             return _previousOfRecorded;
         }
 
+        /// <summary>
+        /// This computer's attempts as CSV text (audit F20, offline form): a teacher can collect one from each student's machine and
+        /// open them in a spreadsheet. A live class dashboard would need a server and is not part of this build.
+        /// </summary>
+        public static string ToCsv(string studentNames)
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.Append("students,date_utc,mission,score,stars,outcome,failure_code,failure_cause\n");
+            foreach (var e in Load().OrderBy(x => x.whenUtc))
+                sb.Append(Csv(studentNames)).Append(',').Append(Csv(e.whenUtc)).Append(',').Append(Csv(e.missionId)).Append(',')
+                  .Append(e.score.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)).Append(',').Append(e.stars).Append(',')
+                  .Append(Csv(e.outcome)).Append(',').Append(Csv(e.code)).Append(',').Append(Csv(e.cause)).Append('\n');
+            return sb.ToString();
+        }
+
+        static string Csv(string v)
+        {
+            v = v ?? "";
+            // A cell that starts with = + - @ can run as a formula in a spreadsheet: neutralise it.
+            if (v.Length > 0 && "=+-@".IndexOf(v[0]) >= 0) v = "'" + v;
+            return v.IndexOfAny(new[] { ',', '"', '\n', '\r' }) >= 0 ? "\"" + v.Replace("\"", "\"\"") + "\"" : v;
+        }
+
         public static string StarText(int stars)
         {
             int n = Mathf.Clamp(stars, 0, 3);

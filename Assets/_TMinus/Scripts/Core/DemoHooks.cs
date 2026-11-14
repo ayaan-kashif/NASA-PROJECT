@@ -17,5 +17,8 @@ namespace TMinus.Core
         /// <summary>What the mission-briefing scene shows when it loads: "checklist" (pre-launch checklist, opened from the VAB)
         /// or "briefing" (the current mission's briefing, opened by Continue). Null = the mission list.</summary>
         public static string PendingBriefingPanel;
+
+        /// <summary>A design code that arrived in the page link (#d=...). The briefing puts it in the code box, ready to Load.</summary>
+        public static string PendingDesignCode;
     }
 }

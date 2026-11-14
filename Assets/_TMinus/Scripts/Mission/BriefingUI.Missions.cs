@@ -36,6 +36,7 @@ namespace TMinus.Mission
                 if (m.budgetMUSD > 0) meta.Add($"Budget {m.budgetMUSD:0.00} M$");
                 if (m.rocketOptions.Count > 0) meta.Add("Rocket: " + string.Join(", ", m.rocketOptions.Select(r => Data.GetRocket(r)?.name ?? r)));
                 if (m.durationDays > 0) meta.Add($"{m.durationDays} days");
+                if (!string.IsNullOrEmpty(m.sponsor)) meta.Add("Sponsored by " + m.sponsor);
                 var best = MissionLog.Best(m.id);
                 if (best != null) { int n = MissionLog.Count(m.id); meta.Add($"Best {MissionLog.StarText(best.stars)} {best.score:0.#} pts ({n} attempt{(n == 1 ? "" : "s")})"); }
                 card.Add(L(string.Join("  ·  ", meta), "mission-meta"));

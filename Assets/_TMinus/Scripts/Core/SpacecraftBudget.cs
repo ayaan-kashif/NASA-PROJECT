@@ -77,7 +77,8 @@ namespace TMinus.Core
 
             // ---- mass and cost
             r.massKg = parts.Sum(p => p.massKg);
-            r.massLimitKg = mission?.massLimitKg ?? 4.0;
+            // A mission with massLimitKg 0 (the Sandbox) has no mass limit; show a generous one so the bar still reads.
+            r.massLimitKg = mission == null ? 4.0 : mission.massLimitKg > 0 ? mission.massLimitKg : 100.0;
             r.spacecraftCostK = parts.Sum(p => p.costK);
             r.launchCostM = rocket?.launchCostMUSD ?? 0;
             r.totalCostM = r.launchCostM + r.spacecraftCostK / 1000.0;

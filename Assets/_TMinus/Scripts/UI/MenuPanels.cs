@@ -107,7 +107,7 @@ namespace TMinus.UI
         public static void ShowSandbox(VisualElement root)
         {
             Overlay(root, "SANDBOX", out var body);
-            var intro = new Label("Free build: open any workshop directly, no briefing. Your designs carry over between rooms.");
+            var intro = new Label("Free build: open any workshop directly, no briefing, no budget and no mass limit. Your designs carry over between rooms.");
             intro.AddToClassList("muted"); body.Add(intro);
             Room(body, "Integration Bay", "Build and wire the 3U CubeSat.", SceneNames.IntegrationBay);
             Room(body, "Vehicle Assembly Building", "Stack, bolt and wire Pathfinder. Inspect Saturn V.", SceneNames.VAB);
@@ -117,7 +117,13 @@ namespace TMinus.UI
 
         static void Room(VisualElement body, string name, string what, string scene)
         {
-            var b = new Button(() => SceneFlow.Load(scene)) { text = $"{name}\n<size=18>{what}</size>" };
+            var b = new Button(() =>
+            {
+                // The sandbox mission has no budget and no mass limit, so any build can be tried (audit I14).
+                var gs = GameState.Instance;
+                if (gs != null) gs.CurrentMissionId = "sandbox";
+                SceneFlow.Load(scene);
+            }) { text = $"{name}\n<size=18>{what}</size>" };
             b.AddToClassList("menu-button"); b.AddToClassList("sandbox-room");
             body.Add(b);
         }

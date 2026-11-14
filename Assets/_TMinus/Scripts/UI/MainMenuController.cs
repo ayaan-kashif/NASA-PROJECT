@@ -10,6 +10,7 @@ namespace TMinus.UI
     {
         [SerializeField] StyleSheet style;
 
+        static bool _linkChecked;
         Label _toast;
         IVisualElementScheduledItem _toastHide;
 
@@ -47,6 +48,14 @@ namespace TMinus.UI
             var pending = DemoHooks.PendingMenuPanel; DemoHooks.PendingMenuPanel = null;
             if (pending == "failure" && DemoHooks.OpenFailureLab != null) DemoHooks.OpenFailureLab(root);
             else if (pending == "sandbox") MenuPanels.ShowSandbox(root);
+
+            // The page link may carry a design (#d=...): keep it for the briefing and tell the player once.
+            if (!_linkChecked && DesignLink.TryRead(out string linked))
+            {
+                _linkChecked = true;   // the address keeps its #d=... part; only react once per session
+                DemoHooks.PendingDesignCode = linked;
+                Toast("A shared design came with this link. Open Missions and press Load code.");
+            }
 
             var version = root.Q<Label>("version");
             if (version != null) version.text = "v" + Application.version + "  ·  NASA Space Apps 2026";

@@ -198,7 +198,22 @@ namespace TMinus.Mission
             var field = new TextField { value = "" };
             field.AddToClassList("name-field");
             col.Add(field);
+            // A design that arrived in the page link (#d=...) waits here, ready to load (audit F16).
+            if (!string.IsNullOrEmpty(DemoHooks.PendingDesignCode))
+            {
+                field.value = DemoHooks.PendingDesignCode;
+                DemoHooks.PendingDesignCode = null;
+                col.Add(L("A shared design came with this link. Press Load code to open it.", "role-line"));
+            }
             var row = new VisualElement(); row.AddToClassList("bin-chips");
+            if (DesignLink.Available)
+                row.Add(Btn("Copy link", () =>
+                {
+                    string link = DesignLink.Build(DesignCode.Encode(DesignCode.FromState(S)));
+                    GUIUtility.systemCopyBuffer = link;
+                    field.value = link;
+                    Toast("The link to your design is in the box. Select it and press Ctrl+C, then send it to a friend.");
+                }, "bin-chip"));
             row.Add(Btn("Copy my code", () =>
             {
                 var code = DesignCode.Encode(DesignCode.FromState(S));

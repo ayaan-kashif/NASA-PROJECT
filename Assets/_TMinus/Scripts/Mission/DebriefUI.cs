@@ -59,6 +59,8 @@ namespace TMinus.Mission
             AddButton(buttons, "Fly again", () => { s.BeginAttempt(); DebriefDebug.ResetRun(); SceneFlow.Load(SceneNames.Flight); });
             AddButton(buttons, "Save design code", SaveCode);
             AddButton(buttons, "Leaderboard", ShowLeaderboard);
+            AddButton(buttons, "Share result", () => ShareResult(s, score, ops));
+            AddButton(buttons, "Export results (CSV)", ExportCsv);
             AddButton(buttons, "Main menu", () => SceneFlow.Load(SceneNames.MainMenu));
             _status = new Label(""); _status.AddToClassList("muted"); page.Add(_status);
         }
@@ -166,6 +168,32 @@ namespace TMinus.Mission
         }
         static void AddButton(VisualElement parent, string text, Action action)
         { var b = new Button(action) { text = text }; b.AddToClassList("debrief-button"); parent.Add(b); }
+        const string PlayUrl = "https://ayaan-kashif.github.io/NASA-PROJECT/";
+
+        /// <summary>A short text you can paste into a chat (audit F15). An image card needs a screenshot pipeline; the text carries the same facts.</summary>
+        void ShareResult(GameState s, MissionScore score, OpsReport ops)
+        {
+            var mission = s.Data.GetMission(s.CurrentMissionId);
+            string orbit = s.Flight.orbitAchieved ? $"orbit {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km" : "did not reach orbit";
+            string text = $"T-MINUS · {mission?.name ?? "mission"}: {MissionLog.StarText(score.stars)}  {score.total:0.0}/100 · {orbit} · {ops.imagesDownlinked} images downlinked · {ops.daysAlive} days alive. " +
+                          $"Build your own: {PlayUrl}";
+            ShowText(text, "Result copied. Paste it anywhere: ");
+        }
+
+        void ExportCsv()
+        {
+            string names = string.Join(" + ", GameState.Instance.Crew.Select(c => c.name).Distinct());
+            ShowText(MissionLog.ToCsv(names), "Results copied (CSV): ");
+        }
+
+        /// <summary>Copy to the clipboard; the browser blocks that, so there the text is shown to select and copy.</summary>
+        void ShowText(string text, string prefix)
+        {
+            GUIUtility.systemCopyBuffer = text;
+            _status.text = Application.platform == RuntimePlatform.WebGLPlayer ? "Select and copy: " + text : prefix + text;
+            _status.selection.isSelectable = true; _status.style.whiteSpace = WhiteSpace.Normal;
+        }
+
         void SaveCode()
         {
             string code = DesignCode.Encode(DesignCode.FromState(GameState.Instance));

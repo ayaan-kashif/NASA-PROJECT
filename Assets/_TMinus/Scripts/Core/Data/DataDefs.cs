@@ -206,6 +206,8 @@ namespace TMinus.Core.Data
         public List<RewardImageDef> rewardImages = new List<RewardImageDef>();
         public string rewardCredit;
         public string storyCard;
+        /// <summary>Optional: who sponsored this mission pack. Shown on the mission card (audit F19). Data only.</summary>
+        public string sponsor;
         public List<string> codexIds = new List<string>();
 
         // Failure Lab jobs (Prompt 15): new jobs need data only, no code.
