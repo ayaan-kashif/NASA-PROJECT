@@ -21,6 +21,15 @@ namespace TMinus.Mission
             _liveRoom = CrewRelay.NewRoomCode();
             _lastRelayId = null;
             StartCoroutine(PollLiveRoom(_liveRoom));
+            SendPadToRoom(null);
+        }
+
+        /// <summary>Puts the current pad code in the room so a teammate only needs the room code. It is the same text that is copied by hand.</summary>
+        void SendPadToRoom(UnityEngine.UIElements.Label status)
+        {
+            string message = CrewRelay.PadMessage(DesignCode.Encode(DesignCode.FromState(S)));
+            if (message == null) { if (status != null) status.text = "This design is too long to send through the room: copy the pad code by hand."; return; }
+            StartCoroutine(CrewRelay.Publish(_liveRoom, message, ok => { if (status != null) status.text = ok ? "Pad code sent to the room." : "Could not reach the room service: copy the pad code by hand."; }));
         }
 
         System.Collections.IEnumerator PollLiveRoom(string room)
@@ -80,7 +89,10 @@ namespace TMinus.Mission
             else
             {
                 panel.Add(L($"Room code: {_liveRoom}", "check-title"));
-                panel.Add(L("Tell your teammates this room code. They type it when they vote, and their vote shows up below within a few seconds.", "check-detail"));
+                panel.Add(L("Tell your teammates this room code. They type it in Join a crew (the pad code is fetched from the room), and their vote shows up below within a few seconds. If you change your design, send the pad code again.", "check-detail"));
+                var padStatus = L("", "check-detail");
+                panel.Add(Btn("Send current pad code to the room", () => SendPadToRoom(padStatus), "card-btn"));
+                panel.Add(padStatus);
             }
 
             panel.Add(L("VOTES", "brief-sub"));
@@ -144,11 +156,11 @@ namespace TMinus.Mission
             panel.Add(L("Paste the pad code your host sent, choose your role and type your name. You will see only your own checklist items. Your own build is kept safe and comes back when you finish.", "check-detail"));
 
             var codeField = new TextField(); codeField.AddToClassList("name-field");
-            panel.Add(L("PAD CODE", "brief-sub"));
-            panel.Add(codeField);
-            panel.Add(L("ROOM CODE (optional, from your host)", "brief-sub"));
+            panel.Add(L("ROOM CODE (from your host: then you do not need the pad code)", "brief-sub"));
             var roomField = new TextField(); roomField.AddToClassList("name-field");
             panel.Add(roomField);
+            panel.Add(L("PAD CODE (only if you have no room code)", "brief-sub"));
+            panel.Add(codeField);
             panel.Add(L("YOUR NAME", "brief-sub"));
             var nameField = new TextField { value = "" }; nameField.AddToClassList("name-field");
             panel.Add(nameField);
@@ -168,14 +180,26 @@ namespace TMinus.Mission
             }
             panel.Add(chips);
 
-            panel.Add(Btn("Open my checklist", () =>
+            void Open(string padCode)
             {
-                if (!DesignCode.TryDecode(codeField.value, out var bundle, out var error)) { Toast(error); return; }
+                if (!DesignCode.TryDecode(padCode, out var bundle, out var error)) { Toast(error); return; }
                 DesignValidator.Clean(bundle, Data);
                 if (!_joinActive) { SaveService.BeginScript(S); _joinActive = true; }   // the host's build replaces yours until you press Done
                 DesignCode.Apply(bundle, S);
                 _joinRoom = CrewRelay.IsValid(roomField.value) ? CrewRelay.Normalise(roomField.value) : null;
                 ShowCrewVote(chosen, nameField.value.Trim());
+            }
+            panel.Add(Btn("Open my checklist", () =>
+            {
+                if (!string.IsNullOrWhiteSpace(codeField.value)) { Open(codeField.value); return; }
+                if (!CrewRelay.IsValid(roomField.value)) { Toast("Type the room code or paste the pad code from your host."); return; }
+                Toast("Fetching the pad code from the room...");
+                StartCoroutine(CrewRelay.Poll(roomField.value, null, messages =>
+                {
+                    string pad = CrewRelay.LatestPad(messages);
+                    if (pad == null) Toast(messages == null ? "Could not reach the room service. Ask your host for the pad code and paste it." : "No pad code in that room yet. Ask your host to press Send current pad code to the room.");
+                    else Open(pad);
+                }));
             }, "card-btn accent"));
             panel.Add(Btn("Close", () => _modal.AddToClassList("hidden"), "card-btn"));
         }

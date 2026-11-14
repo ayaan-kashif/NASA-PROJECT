@@ -93,6 +93,23 @@ namespace TMinus.Core
             }
         }
 
+        public const string PadPrefix = "PAD:";
+        public const int MaxPadLength = 3800;   // the service refuses a message over 4096 bytes
+
+        /// <summary>The host's pad code as a room message, or null when it is too long to send (then it is copied by hand as before).</summary>
+        public static string PadMessage(string padCode) =>
+            string.IsNullOrEmpty(padCode) || padCode.Length > MaxPadLength ? null : PadPrefix + padCode;
+
+        /// <summary>The newest pad code in a room, or null. A joining teammate with the room code needs no pasted pad code.</summary>
+        public static string LatestPad(List<RelayMessage> messages)
+        {
+            if (messages == null) return null;
+            for (int i = messages.Count - 1; i >= 0; i--)
+                if (messages[i].text != null && messages[i].text.StartsWith(PadPrefix, StringComparison.Ordinal))
+                    return messages[i].text.Substring(PadPrefix.Length).Trim();
+            return null;
+        }
+
         /// <summary>The service answers with one JSON object per line; only lines with event "message" are crew messages.</summary>
         public static List<RelayMessage> ParseMessages(string ndjson)
         {

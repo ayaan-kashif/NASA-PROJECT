@@ -50,5 +50,22 @@ namespace TMinus.Tests
             Assert.IsEmpty(CrewRelay.ParseMessages(null));
             Assert.IsEmpty(CrewRelay.ParseMessages(""));
         }
+
+        [Test]
+        public void ThePadCodeTravelsThroughTheRoomAndTheNewestOneWins()
+        {
+            string old = CrewRelay.PadMessage("TMD1-old");
+            string fresh = CrewRelay.PadMessage("TMD1-new");
+            StringAssert.StartsWith(CrewRelay.PadPrefix, fresh);
+            var list = new System.Collections.Generic.List<RelayMessage>
+            {
+                new RelayMessage { id = "1", text = old }, new RelayMessage { id = "2", text = "TMV1-a-vote" }, new RelayMessage { id = "3", text = fresh },
+                new RelayMessage { id = "4", text = "TMV1-another-vote" }
+            };
+            Assert.AreEqual("TMD1-new", CrewRelay.LatestPad(list));
+            Assert.IsNull(CrewRelay.LatestPad(new System.Collections.Generic.List<RelayMessage>()));
+            Assert.IsNull(CrewRelay.LatestPad(null));
+            Assert.IsNull(CrewRelay.PadMessage(new string('x', CrewRelay.MaxPadLength + 1)), "too long to send: copied by hand instead");
+        }
     }
 }
