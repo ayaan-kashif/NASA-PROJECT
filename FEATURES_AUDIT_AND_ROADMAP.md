@@ -6,7 +6,7 @@ Method: every feature below was found by reading the C# scripts, UXML, JSON data
 
 ### Implementation status (updated after the fixes were written)
 
-Done in code: I1 to I11, I13 to I16 (I12 only partly: the dead NASA link was removed, the Saturn V numbers are still unchecked) and the Judge Mode / Failure Lab protection; features F1 to F17 (touch is experimental), F19 (data field), F20 (offline CSV), F21, F22, F23, F24 (jump to the cause and a slow-motion replay), F26 (live NASA imagery), F10, F12 (two variants) and F13 (three jobs). Moonshot is now a playable flight-only mission (never run in Unity). Not done: the Rehbar-I mission, F18 (school licence), F25 (live crew) and a live class dashboard. Rehbar-I needs a new rocket, its models and a suborbital ending, and Unity to prove it can be won; the others need a server, database or business set-up that code alone cannot provide.
+Done in code: I1 to I11, I13 to I16 (I12 only partly: the dead NASA link was removed, the Saturn V numbers are still unchecked) and the Judge Mode / Failure Lab protection; features F1 to F17 (touch is experimental), F19 (data field), F20 (offline CSV), F21, F22, F23, F24 (jump to the cause and a slow-motion replay), F26 (live NASA imagery), F10, F12 (two variants) and F13 (three jobs). Moonshot and Rehbar-I are now playable flight-only missions (never run in Unity). Not done: F18 (school licence), F25 (live crew) and a live class dashboard. The others need a server, database or business set-up that code alone cannot provide.
 
 **These changes have not been compiled, tested or played**: no Unity was available. See the last entry in `docs/PROGRESS.md` and the status note in `COMPLETE_PROJECT_AUDIT.md`.
 
@@ -693,7 +693,7 @@ AI not recommended: AI-generated missions or parts. They would break the "every 
 - [x] F24 Failure replay (jump to the cause with an explanation; the slow-motion replay is not built)
 - [ ] F25 Live crew mode
 - [x] F26 Real-data missions (target regions with live NASA Worldview imagery, written from the API form and never run against the live service)
-- [ ] Rehbar-I mission
+- [x] Rehbar-I mission (flight-only sounding-rocket mission: a two-stage solid rocket tuned with tools/sim to climb about 130 km; the flight ends at its highest point; never run in Unity)
 - [x] Moonshot mission (flight-only mission: the Saturn V reaches the 185 km parking orbit with the altitude-hold guidance profile found with tools/sim; the C# flight is covered by a test that has never been run)
 
 ---

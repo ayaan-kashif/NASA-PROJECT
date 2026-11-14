@@ -1,5 +1,7 @@
 {
   "parts": [
+    {"id": "rehbar_nike", "name": "Nike booster", "category": "saturn_stage", "assembly": "rehbar", "mount": "stack", "massKg": 465, "lengthM": 5.8, "diameterM": 0.42, "inspectOnly": true, "illustrative": true, "codexId": "rehbar_1962", "description": "The first stage: one solid-fuel motor that burns for a few seconds and gives the push through the thick air.", "ports": []},
+    {"id": "rehbar_cajun", "name": "Cajun second stage", "category": "saturn_stage", "assembly": "rehbar", "mount": "stack", "massKg": 220, "lengthM": 3.5, "diameterM": 0.3, "inspectOnly": true, "illustrative": true, "codexId": "rehbar_1962", "description": "The second stage: a smaller solid motor that carries the sodium canister the rest of the way up.", "ports": []},
     { "id": "frame_3u", "name": "3U structure", "category": "frame", "assembly": "cubesat", "mount": "frame", "massKg": 0.35, "costK": 6, "lengthM": 0.34, "diameterM": 0.1, "illustrative": true, "codexId": "eps",
       "description": "Aluminium frame 10 x 10 x 34 cm with 4 corner rails. Boards slide into slots U1-U3; panels and antennas mount outside.",
       "specs": { "slots": 3, "boardsPerSlot": 2, "longFaces": 4, "endFaces": 2 }, "ports": [] },

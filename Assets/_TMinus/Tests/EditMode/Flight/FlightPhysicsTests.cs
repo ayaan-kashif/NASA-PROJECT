@@ -172,6 +172,24 @@ namespace TMinus.Tests.Flight
         }
 
         [Test]
+        public void RehbarRocketClimbsToAboutOneHundredAndThirtyKilometresAndStopsThere()
+        {
+            // The Rehbar-I mission. tools/sim gives 130 to 133 km for any pitch kick from 1 to 6 degrees.
+            var data = LoadData();
+            foreach (double kick in new[] { 1.0, 3.0, 6.0 })
+            {
+                var sim = FlightRuntime.Create(data, new VehicleDesign { rocketId = "rehbar_nike_cajun", launchSiteId = "sonmiani" },
+                    new PerfectAvionicsReport(), null, new EventLog(), "rehbar_1962");
+                Assert.IsTrue(sim.Options.suborbital, "the mission has a target apogee, so the flight is a sounding rocket");
+                sim.Options.pitchKickDeg = kick;
+                sim.RunForSimSeconds(600);
+                Assert.That(sim.Phase, Is.EqualTo(FlightPhase.Apogee), "kick " + kick + ": ended as " + sim.Phase + " " + sim.Outcome.failureCode);
+                var last = sim.Outcome.telemetry[sim.Outcome.telemetry.Count - 1];
+                Assert.That(last.altitudeM / 1000, Is.InRange(120, 145), "kick " + kick);
+            }
+        }
+
+        [Test]
         public void PartOfAStepIsKeptSoNormalSpeedFlightAdvances()
         {
             // At 60 frames a second one frame is 0.0167 s, less than one 0.05 s step. Dropping the remainder froze x1 and x2 flights.

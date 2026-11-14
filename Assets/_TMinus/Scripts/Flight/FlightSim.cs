@@ -141,6 +141,12 @@ namespace TMinus.Flight
             if (q > _maxQ) { _maxQ = q; _outcome.maxQPa = q; _outcome.maxQTimeS = _time; }
             CheckJointFailure(q);
             CheckFairing(h);
+            // A sounding rocket's flight ends at its highest point: when it stops climbing.
+            if (Options.suborbital && Phase != FlightPhase.Pad && !Terminal() && _time > 3 && h > 1000 && _position.Normalized.Dot(_velocity) <= 0)
+            {
+                SetPhase(FlightPhase.Apogee);
+                Log("apogee", $"Apogee reached at {h / 1000:0.0} km.", null, Severity.Info);
+            }
             if (h < -10 && _time > 2) Fail("impact", "The vehicle fell back to Earth.", null);
             if (_stageIndex >= 0 && _stageIndex < _fuel.Length && _fuel[_stageIndex] <= 1e-9 && !_burnoutHandled[_stageIndex])
                 HandleBurnout();
@@ -202,7 +208,7 @@ namespace TMinus.Flight
             _velocity -= radial * _velocity.Dot(radial);
         }
 
-        bool Terminal() => Phase == FlightPhase.Orbit || Phase == FlightPhase.Failed || Phase == FlightPhase.Aborted;
+        bool Terminal() => Phase == FlightPhase.Orbit || Phase == FlightPhase.Failed || Phase == FlightPhase.Aborted || Phase == FlightPhase.Apogee;
         string Cause(string consequence) => _avionics.CauseId(consequence);
 
         void HandleBurnout()

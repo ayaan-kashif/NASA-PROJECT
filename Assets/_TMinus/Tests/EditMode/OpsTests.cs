@@ -108,6 +108,16 @@ namespace TMinus.Tests
             Assert.IsTrue(TMinus.Core.MissionKinds.IsCubeSat(TestData.Registry.GetMission("floodwatch_1")));
         }
 
+        [Test] public void RehbarGoalIsTheHeightOfTheClimb()
+        {
+            var m = TestData.Registry.GetMission("rehbar_1962");
+            var up = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { flown = true, outcome = "Apogee", apoapsisKm = 131 }, new OpsReport(), null);
+            Assert.AreEqual(1, up.Count);
+            Assert.IsTrue(up[0].met, up[0].measured);
+            var low = MissionGoals.Evaluate(m, new TMinus.Core.FlightRecord { flown = true, outcome = "Apogee", apoapsisKm = 90 }, new OpsReport(), null);
+            Assert.IsFalse(low[0].met);
+        }
+
         [Test] public void TeamScoreGrowsWithRealPlayersAndNeedsEveryRoleInThePoll()
         {
             var solo = TMinus.Mission.PrelaunchChecklist.AssignRoles(new[] { "A" });

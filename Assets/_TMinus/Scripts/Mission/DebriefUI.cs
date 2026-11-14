@@ -31,7 +31,7 @@ namespace TMinus.Mission
             page.Add(new Label($"{s.Data.GetMission(s.CurrentMissionId)?.name ?? "Mission"}  ·  {new string('★', score.stars)}{new string('☆', 3 - score.stars)}") { name = "title" });
             bool flightOnly = !MissionKinds.IsCubeSat(s.Data.GetMission(s.CurrentMissionId));
             page.Add(new Label(flightOnly
-                ? $"{score.total:0.0} / 100 points     ·     {(s.Flight.orbitAchieved ? $"ORBIT {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km" : "NO ORBIT")}     ·     {s.Flight.deltaVLeftMs:N0} m/s left"
+                ? $"{score.total:0.0} / 100 points     ·     {(s.Flight.outcome == "Apogee" ? $"APOGEE {s.Flight.apoapsisKm:0} km" : s.Flight.orbitAchieved ? $"ORBIT {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km" : "NO ORBIT")}     ·     {s.Flight.deltaVLeftMs:N0} m/s left"
                 : $"{score.total:0.0} / 100 points     ·     {(s.Flight.deployed ? "DEPLOYED" : "NOT DEPLOYED")}     ·     {ops.daysAlive} / {ops.timeline.Count} days alive") { name = "summary" });
             AddGoals(page, s, ops);
             AddNarration(page, s, ops, score);
@@ -42,9 +42,9 @@ namespace TMinus.Mission
             if (flightOnly)
             {
                 var flightCard = Card("FLIGHT"); grid.Add(flightCard);
-                flightCard.Add(new Label($"Orbit              {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km"));
+                flightCard.Add(new Label(s.Flight.outcome == "Apogee" ? $"Highest point      {s.Flight.apoapsisKm:0} km" : $"Orbit              {s.Flight.periapsisKm:0} x {s.Flight.apoapsisKm:0} km"));
                 flightCard.Add(new Label($"Max-Q              {s.Flight.maxQKPa:0.0} kPa at T+{s.Flight.maxQTimeS:0} s"));
-                flightCard.Add(new Label($"Propellant left    {s.Flight.deltaVLeftMs:N0} m/s of delta-v"));
+                if (s.Flight.outcome != "Apogee") flightCard.Add(new Label($"Propellant left    {s.Flight.deltaVLeftMs:N0} m/s of delta-v"));
                 flightCard.Add(new Label($"Flight time        {s.Flight.flightTimeS:0} s"));
                 AddFlightCharts(page, s.Flight);
             }
@@ -168,7 +168,7 @@ namespace TMinus.Mission
         {
             if (f == null || !f.flown || f.telemetry == null || f.telemetry.Count < 6) return;
             page.Add(new Label("THE FLIGHT  ·  ALTITUDE, SPEED, DYNAMIC PRESSURE") { name = "section" });
-            bool failed = !f.orbitAchieved;
+            bool failed = !f.orbitAchieved && f.outcome != "Apogee";
             page.Add(Bars("Altitude (km)", f, p => p.altitudeKm, "km", failed));
             page.Add(Bars("Speed (m/s)", f, p => p.speedMs, "m/s", failed));
             page.Add(Bars("Dynamic pressure (kPa). Orange bar = max-Q", f, p => p.qKPa, "kPa", failed));

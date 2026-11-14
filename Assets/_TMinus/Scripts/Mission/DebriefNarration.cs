@@ -19,6 +19,10 @@ namespace TMinus.Mission
             if (f == null || !f.flown)
                 return "No flight was flown, so there is nothing to debrief yet. Build, check the pad list and launch.";
 
+            if (flightOnly && f.outcome == "Apogee")
+                return $"{missionName}: the rocket climbed to {f.apoapsisKm:0} km before it stopped rising ({met} of {total} goals met, {score.stars} star{(score.stars == 1 ? "" : "s")}). " +
+                       (fix != null ? "To score higher: " + fix : "At that height a sodium cloud would show the winds high in the atmosphere, as in 1962.");
+
             if (!f.orbitAchieved)
             {
                 string what = f.outcome == "Aborted" ? $"The launch was aborted ({f.failureCode})" : $"The rocket was lost {f.flightTimeS:0} seconds after liftoff ({f.failureCode})";

@@ -44,6 +44,8 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 
 **Moonshot** is a flight-only mission: fly the real Saturn V (NASA stage data, with game values where marked) to a 185 km parking orbit and keep enough propellant in the S-IVB for the Moon burn. Your one choice is the pitch kick.
 
+**Rehbar-I, 1962** is a flight-only mission too: fly the two-stage solid rocket of Pakistan's first launch from Sonmiani to about 130 km. The flight ends at its highest point.
+
 **Main menu extras:**
 - **Space Guide:** 28 searchable science topics, each with its source.
 - **Settings:** HOUSTON on, hints only or off; HOUSTON answers in Urdu; volume; fullscreen.

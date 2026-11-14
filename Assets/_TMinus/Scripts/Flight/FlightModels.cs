@@ -72,9 +72,11 @@ namespace TMinus.Flight
         public bool autopilot = true;
         public double initialAltitudeKm;
         public bool startInCircularOrbit;
+        /// <summary>A sounding rocket (Rehbar-I): no orbit logic, the flight ends at its highest point.</summary>
+        public bool suborbital;
     }
 
-    public enum FlightPhase { Pad, Ascent, Coast, Circularize, Orbit, Failed, Aborted }
+    public enum FlightPhase { Pad, Ascent, Coast, Circularize, Orbit, Failed, Aborted, Apogee }
 
     public struct OrbitElements
     {

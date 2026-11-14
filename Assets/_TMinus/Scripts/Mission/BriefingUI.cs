@@ -133,7 +133,7 @@ namespace TMinus.Mission
             foreach (var r in Data.Rockets)
             {
                 bool allowed = m.rocketOptions.Contains(r.id);
-                bool fits = report.massKg <= r.payloadLeoKg;
+                bool fits = !MissionKinds.IsCubeSat(m) || report.massKg <= r.payloadLeoKg;   // a flight-only mission carries no CubeSat
                 var card = new VisualElement(); card.AddToClassList("choice-card");
                 card.EnableInClassList("selected", S.Vehicle.rocketId == r.id);
                 card.EnableInClassList("locked", !allowed);
@@ -141,7 +141,7 @@ namespace TMinus.Mission
                 top.Add(L(r.name, "choice-name"));
                 top.Add(L(!allowed ? "NOT FOR THIS MISSION" : fits ? "FITS ✓" : "TOO SMALL ✗", fits && allowed ? "badge" : "badge training"));
                 card.Add(top);
-                card.Add(L($"{PartStatsText.Mass(r.payloadLeoKg)} to orbit  ·  {r.launchCostMUSD:0.#} M$", "brief-text"));
+                card.Add(L($"{(r.payloadLeoKg > 0 ? PartStatsText.Mass(r.payloadLeoKg) + " to orbit" : "Sounding rocket, no orbit")}  ·  {r.launchCostMUSD:0.#} M$", "brief-text"));
                 var id = r.id;
                 card.RegisterCallback<ClickEvent>(_ => { if (allowed) { S.Vehicle.rocketId = id; ShowBriefing(); } else Toast($"{r.name} is for another mission."); });
                 col.Add(card);

@@ -22,6 +22,7 @@ namespace TMinus.Flight
             double relativeSpeed = relative.Magnitude;
             double targetRadius = FlightConstants.EarthRadiusM + sim.Options.targetAltitudeKm * 1000;
             double throttle = 1;
+            if (sim.Options.suborbital) return Suborbital(sim, radial, east, h);
 
             if (sim.Phase == FlightPhase.Pad)
             {
@@ -77,6 +78,22 @@ namespace TMinus.Flight
             if (sim.Phase == FlightPhase.Orbit || sim.Phase == FlightPhase.Failed || sim.Phase == FlightPhase.Aborted)
                 throttle = 0;
             return new GuidanceCommand { throttle = throttle, thrustDirection = direction.Normalized };
+        }
+
+        /// <summary>A sounding rocket: lift off once thrust beats weight, straight up for 300 m, then a fixed small tilt towards the east.</summary>
+        static GuidanceCommand Suborbital(FlightSim sim, Vec2d radial, Vec2d east, double h)
+        {
+            if (sim.Phase == FlightPhase.Pad)
+            {
+                var first = sim.Vehicle.stages[sim.StageIndex];
+                if (first.thrustVacN * first.ispSeaLevel / Math.Max(1, first.ispVac) * sim.ManualThrottle > sim.MassKg * FlightConstants.G0)
+                    sim.SetPhase(FlightPhase.Ascent);
+            }
+            double kick = sim.Options.pitchKickDeg * Math.PI / 180.0;
+            if (!sim.PitchKicked && h >= 300) sim.MarkPitchKick();
+            var direction = h < 300 ? radial : radial * Math.Cos(kick) + east * Math.Sin(kick);
+            bool done = sim.Phase == FlightPhase.Failed || sim.Phase == FlightPhase.Aborted || sim.Phase == FlightPhase.Apogee;
+            return new GuidanceCommand { throttle = done ? 0 : 1, thrustDirection = direction.Normalized };
         }
 
         /// <summary>

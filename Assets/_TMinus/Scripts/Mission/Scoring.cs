@@ -46,16 +46,21 @@ namespace TMinus.Mission
             var score = new MissionScore();
             var f = s.Flight;
             var goals = MissionGoals.Evaluate(m, f, new OpsReport(), null);
-            double met = goals.Count == 0 ? (f.orbitAchieved ? 1 : 0) : goals.Count(g => g.met) / (double)goals.Count;
-            Add(score, "success", "Mission success", w.success, f.orbitAchieved ? Math.Max(0.5, met) : met * 0.5);
+            // Moonshot ends in orbit; Rehbar-I (a sounding rocket) ends at its highest point.
+            bool apogeeMission = m != null && m.targetApogeeKm > 0;
+            bool reached = apogeeMission ? f.outcome == "Apogee" : f.orbitAchieved;
+            double met = goals.Count == 0 ? (reached ? 1 : 0) : goals.Count(g => g.met) / (double)goals.Count;
+            Add(score, "success", "Mission success", w.success, reached ? Math.Max(0.5, met) : met * 0.5);
             double need = m != null && m.requiredDeltaVLeftMs > 0 ? m.requiredDeltaVLeftMs : 1;
-            Add(score, "margins", "Propellant margin", w.margins, f.orbitAchieved ? Math.Min(1, f.deltaVLeftMs / need) : 0);
+            Add(score, "margins", apogeeMission ? "Height reached" : "Propellant margin", w.margins,
+                !reached ? 0 : apogeeMission ? Math.Min(1, f.apoapsisKm / m.targetApogeeKm) : Math.Min(1, f.deltaVLeftMs / need));
             Add(score, "decision", "Decision quality", w.decisionQuality, DecisionFraction(s));
             score.total = Math.Round(score.breakdown.Sum(x => x.points), 1);
             score.stars = StarsForScore(score.total);
-            if (!f.orbitAchieved) score.fixes.Add(string.IsNullOrEmpty(f.failureCode)
-                ? "Fly again: reach the parking orbit first."
+            if (!reached) score.fixes.Add(string.IsNullOrEmpty(f.failureCode)
+                ? (apogeeMission ? "Fly again: the rocket has to climb to its highest point." : "Fly again: reach the parking orbit first.")
                 : $"The flight ended with {f.failureCode}. Read the timeline for the cause, then try a different pitch kick.");
+            else if (apogeeMission) { if (f.apoapsisKm < m.targetApogeeKm) score.fixes.Add($"The rocket reached {f.apoapsisKm:0} km and the target is about {m.targetApogeeKm:0} km. A smaller pitch kick keeps the climb steeper."); }
             else if (f.deltaVLeftMs < need) score.fixes.Add($"Only {f.deltaVLeftMs:N0} m/s were left for the Moon burn and {need:N0} are needed. Try a different pitch kick: a poor climb wastes propellant on gravity and drag.");
             return score;
         }

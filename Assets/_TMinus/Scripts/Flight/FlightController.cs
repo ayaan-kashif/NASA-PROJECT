@@ -178,9 +178,20 @@ namespace TMinus.Flight
             {
                 _lastPhase = Sim.Phase;
                 if (Sim.Phase == FlightPhase.Orbit) OnOrbit();
+                else if (Sim.Phase == FlightPhase.Apogee) OnApogee();
                 else if (Sim.Phase == FlightPhase.Failed || Sim.Phase == FlightPhase.Aborted)
                     Finish(Sim.Phase.ToString(), Sim.Outcome.failureCode, Sim.Outcome.failureCause);
             }
+        }
+
+        /// <summary>A sounding rocket reached its highest point: that is the end of the flight.</summary>
+        void OnApogee()
+        {
+            var last = Sim.Outcome.telemetry.Count > 0 ? Sim.Outcome.telemetry[Sim.Outcome.telemetry.Count - 1] : null;
+            double km = last != null ? last.altitudeM / 1000 : 0;
+            hud.Banner($"APOGEE · {km:0} km", true);
+            hud.Feed(Sim.TimeS, $"Apogee {km:0.0} km", Severity.Info);
+            Finish("Apogee", null, null);
         }
 
         void OnOrbit()

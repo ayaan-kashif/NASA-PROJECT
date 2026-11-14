@@ -21,7 +21,7 @@ function orbitEl(p, v) {
 }
 
 function fly(rocketId, opts) {
-  const data = JSON.parse(fs.readFileSync('' + require('path').join(__dirname, '..', '..', 'Assets', '_TMinus', 'Resources', 'Data', 'rockets.json') + '', 'utf8')).rockets.find(r => r.id === rocketId);
+  const data = opts.rocketData || JSON.parse(fs.readFileSync('' + require('path').join(__dirname, '..', '..', 'Assets', '_TMinus', 'Resources', 'Data', 'rockets.json') + '', 'utf8')).rockets.find(r => r.id === rocketId);
   const stages = data.stages.map(s => ({ id: s.id, dry: s.dryMassKg, prop: s.propMassKg, thrustVac: s.thrustVacKN * 1000, ispVac: s.ispVac, ispSl: s.ispSl, d: s.diameterM }));
   const comps = (data.components || []).map(c => ({ id: c.id, mass: c.massKg, drop: c.dropWithStage, d: c.diameterM || 0 }));
   const payload = opts.payload !== undefined ? opts.payload : data.referencePayloadKg;
@@ -30,7 +30,7 @@ function fly(rocketId, opts) {
   const target = opts.targetKm;
   let mass = payload + stages.reduce((m, s) => m + s.dry + s.prop, 0) + comps.reduce((m, c) => m + c.mass, 0);
   const fuel = stages.map(s => s.prop), attached = stages.map(() => true), compAtt = comps.map(() => true);
-  let stage = 0, t = 0, phase = 'Pad', maxQ = 0, kickDone = false, ignited = true;
+  let stage = 0, t = 0, phase = 'Pad', maxQ = 0, kickDone = false, ignited = true, maxAlt = 0;
   const rot = C.W * Math.cos(lat * Math.PI / 180);
   let p = { x: C.R * Math.cos(lon), y: C.R * Math.sin(lon) };
   let v = V.mul({ x: -Math.sin(lon), y: Math.cos(lon) }, rot * C.R);
@@ -41,6 +41,12 @@ function fly(rocketId, opts) {
     const rel = V.sub(v, airVel(p, lat)), h = alt(p), relSpeed = V.mag(rel);
     const targetR = C.R + target * 1000;
     let dir = rad, thr = 1;
+    if (opts.suborbital) {
+      // A sounding rocket: no orbit logic. Straight up for the first 300 m, then a fixed small tilt towards the east.
+      if (phase === 'Pad') { const s0 = stages[stage]; if (s0.thrustVac * s0.ispSl / s0.ispVac > mass * C.G0) phase = 'Ascent'; }
+      const k = opts.kick * Math.PI / 180;
+      return { thr: 1, dir: V.norm(h < 300 ? rad : V.add(V.mul(rad, Math.cos(k)), V.mul(east, Math.sin(k)))) };
+    }
     if (phase === 'Pad') {
       const s = stages[stage], slT = s.thrustVac * s.ispSl / s.ispVac;
       if (slT > mass * C.G0) phase = 'Ascent';
@@ -97,7 +103,7 @@ function fly(rocketId, opts) {
   const addS = (a, b) => ({ p: V.add(a.p, b.p), v: V.add(a.v, b.v), m: a.m + b.m, f: a.f + b.f });
   const mulS = (a, s) => ({ p: V.mul(a.p, s), v: V.mul(a.v, s), m: a.m * s, f: a.f * s });
 
-  while (t < (opts.maxT || 2400) && !['Orbit', 'Failed'].includes(phase)) {
+  while (t < (opts.maxT || 2400) && !['Orbit', 'Failed', 'Apogee'].includes(phase)) {
     if (stage < stages.length && fuel[stage] <= 1e-9 && attached[stage]) {
       if (stage + 1 < stages.length) {
         attached[stage] = false;
@@ -118,11 +124,13 @@ function fly(rocketId, opts) {
     t += C.DT;
     const q = 0.5 * density(alt(p)) * Math.pow(V.mag(V.sub(v, airVel(p, lat))), 2);
     if (q > maxQ) maxQ = q;
+    if (alt(p) > maxAlt) maxAlt = alt(p);
+    if (opts.suborbital && t > 3 && V.dot(v, V.norm(p)) <= 0 && alt(p) > 1000) { phase = 'Apogee'; }
     if (alt(p) < -10 && t > 2) { phase = 'Failed'; log.push('IMPACT'); }
   }
   const o = orbitEl(p, v);
   const dvLeft = (() => { let m = mass, sum = 0; for (let i = Math.max(0, stage); i < stages.length; i++) { const s = stages[i]; const f = fuel[i]; if (f <= 0 || m <= f) { m -= s.dry; continue; } sum += s.ispVac * C.G0 * Math.log(m / (m - f)); m -= f + s.dry; comps.forEach((c, j) => { if (c.drop === s.id) m -= c.mass; }); } return sum; })();
-  return { phase, t: +t.toFixed(0), altKm: +(alt(p) / 1000).toFixed(0), apKm: +((o.ap - C.R) / 1000).toFixed(0), peKm: +((o.pe - C.R) / 1000).toFixed(0), maxQkPa: +(maxQ / 1000).toFixed(1), stage, dvLeft: +dvLeft.toFixed(0), log };
+  return { phase, apogeeKm: +(maxAlt / 1000).toFixed(1), maxAccelG: 0, t: +t.toFixed(0), altKm: +(alt(p) / 1000).toFixed(0), apKm: +((o.ap - C.R) / 1000).toFixed(0), peKm: +((o.pe - C.R) / 1000).toFixed(0), maxQkPa: +(maxQ / 1000).toFixed(1), stage, dvLeft: +dvLeft.toFixed(0), log };
 }
 module.exports = { fly };
 if (require.main === module) {

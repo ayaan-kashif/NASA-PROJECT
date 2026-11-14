@@ -165,6 +165,69 @@
         { "id": "saturnv_iu", "name": "Instrument Unit", "partId": "saturnv_iu", "massKg": 2000, "lengthM": 0.91, "diameterM": 6.6, "illustrative": true },
         { "id": "saturnv_interstages_les", "name": "Interstages + launch escape tower (lumped)", "massKg": 13000, "dropWithStage": "s_ii", "illustrative": true }
       ]
+    },
+    {
+      "id": "rehbar_nike_cajun",
+      "name": "Nike-Cajun (Rehbar-I)",
+      "description": "The two-stage solid-fuel sounding rocket of Rehbar-I, Pakistan's first rocket (7 June 1962, Sonmiani). It carried a sodium canister about 130 km up.",
+      "real": true,
+      "buildable": false,
+      "illustrative": true,
+      "heightM": 9.3,
+      "launchCostMUSD": 0.05,
+      "payloadLeoKg": 0,
+      "payloadTargetAltKm": 130,
+      "referencePayloadKg": 36,
+      "source": "Game values (T-MINUS) in the spirit of the Nike-Cajun; tuned with tools/sim so the flight reaches about 130 km. Not flight data.",
+      "partIds": [
+        "rehbar_nike",
+        "rehbar_cajun"
+      ],
+      "stages": [
+        {
+          "id": "rb_nike",
+          "name": "Nike booster",
+          "partId": "rehbar_nike",
+          "dryMassKg": 120,
+          "propMassKg": 345,
+          "engineCount": 1,
+          "engineName": "Nike solid motor",
+          "thrustSlKN": 217,
+          "thrustVacKN": 230,
+          "ispSl": 210,
+          "ispVac": 222.6,
+          "burnTimeS": 3.5,
+          "diameterM": 0.42,
+          "lengthM": 5.8,
+          "propellants": "Solid",
+          "ignitionChannel": 0,
+          "separationChannel": 0,
+          "source": "Game values",
+          "illustrative": true
+        },
+        {
+          "id": "rb_cajun",
+          "name": "Cajun second stage",
+          "partId": "rehbar_cajun",
+          "dryMassKg": 40,
+          "propMassKg": 180,
+          "engineCount": 1,
+          "engineName": "Cajun solid motor",
+          "thrustSlKN": 33.5,
+          "thrustVacKN": 36,
+          "ispSl": 209.25,
+          "ispVac": 225,
+          "burnTimeS": 33,
+          "diameterM": 0.3,
+          "lengthM": 3.5,
+          "propellants": "Solid",
+          "ignitionChannel": 0,
+          "separationChannel": 0,
+          "source": "Game values",
+          "illustrative": true
+        }
+      ],
+      "components": []
     }
   ]
 }

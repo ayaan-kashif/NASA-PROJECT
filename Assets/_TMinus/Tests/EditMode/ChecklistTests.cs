@@ -94,6 +94,20 @@ namespace TMinus.Tests
         }
 
         [Test]
+        public void RehbarIsAFlightOnlyMissionToo()
+        {
+            var input = new PrelaunchChecklist.Input
+            {
+                Data = TestData.Registry, CurrentMissionId = "rehbar_1962", Spacecraft = new SpacecraftDesign(),
+                Vehicle = new VehicleDesign { rocketId = "rehbar_nike_cajun", launchSiteId = "sonmiani" }
+            };
+            var items = PrelaunchChecklist.Build(input);
+            Assert.IsTrue(items.All(i => i.pass), Dump(items));
+            Assert.IsFalse(TestData.Registry.GetMission("rehbar_1962").locked);
+            CollectionAssert.Contains(TestData.Registry.GetMission("rehbar_1962").rocketOptions, "rehbar_nike_cajun");
+        }
+
+        [Test]
         public void SonmianiBoost_IsAbout420()
         {
             Assert.AreEqual(420, PrelaunchChecklist.EarthBoostMs(25.2), 6);

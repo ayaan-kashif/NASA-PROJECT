@@ -308,18 +308,18 @@
     {
       "id": "rehbar_1962",
       "name": "Rehbar-I, 1962",
-      "priority": "P1",
+      "priority": "P0",
       "difficulty": "Beginner",
-      "locked": true,
       "objective": "Fly a two-stage solid sounding rocket from Sonmiani to about 130 km and release a sodium-vapour cloud.",
       "description": "On 7 June 1962 Pakistan launched its first rocket, Rehbar-I, from Sonmiani near Karachi: a two-stage Nike-Cajun flown with NASA support.",
-      "rocketOptions": [],
+      "rocketOptions": [ "rehbar_nike_cajun" ],
       "payloadType": "sounding",
       "targetApogeeKm": 130,
       "launchSites": [ "sonmiani" ],
       "seed": 1962,
       "storyCard": "Rehbar-I lifted off from Sonmiani on 7 June 1962. Its sodium-vapour cloud let scientists on the ground watch winds high in the upper atmosphere.",
-      "notes": "The Nike-Cajun vehicle is added with this mission (P1).",
+      "notes": "A flight-only mission: no CubeSat. The rocket is game values in the spirit of the Nike-Cajun, tuned with tools/sim to reach about 130 km for any pitch kick from 1 to 6 degrees.",
+      "scoring": { "success": 60, "science": 0, "budget": 0, "margins": 25, "decisionQuality": 15, "collaboration": 0 },
       "successCriteria": [
         { "id": "apogee", "text": "Reach about 130 km", "metric": "apogeeKm", "threshold": 120 }
       ],

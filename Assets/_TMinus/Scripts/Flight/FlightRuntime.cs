@@ -27,7 +27,8 @@ namespace TMinus.Flight
                 latitudeDeg = site?.latitudeDeg ?? 0,
                 longitudeDeg = site?.longitudeDeg ?? 0,
                 pitchKickDeg = vehicle.pitchKickDeg,
-                autopilot = true
+                autopilot = true,
+                suborbital = mission != null && mission.targetApogeeKm > 0
             };
             return new FlightSim(FlightVehicleFactory.From(rocket, rules), options,
                 avionics ?? new PerfectAvionicsReport(), joints, events);
