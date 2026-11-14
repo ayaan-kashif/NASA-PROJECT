@@ -35,7 +35,8 @@ namespace TMinus.Mission
         {
             double delta = candidate - current;
             string sign = delta > 1e-8 ? "+" : "";
-            string direction = string.IsNullOrEmpty(lowerIsBetter) ? "" : delta == 0 ? " (same)" : (delta < 0) == (lowerIsBetter == "lower") ? " (improved)" : " (worse)";
+            // "lower" = smaller is better (mass, cost, GSD); anything else = bigger is better (margins, images).
+            string direction = Math.Abs(delta) < 1e-8 ? " (same)" : (delta < 0) == (lowerIsBetter == "lower") ? " (improved)" : " (worse)";
             return $"{label}: {current:0.##} → {candidate:0.##}{unit}  ({sign}{delta:0.##}{unit}){direction}";
         }
 

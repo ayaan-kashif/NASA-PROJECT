@@ -9,7 +9,7 @@
             <ui:Button name="btn-judge" text="Judge Mode  ·  3-min demo (F9)" class="menu-button" />
             <ui:Button name="btn-failure" text="Failure Lab  ·  repair jobs" class="menu-button" />
             <ui:Button name="btn-sandbox" text="Sandbox" class="menu-button" />
-            <ui:Button name="btn-codex" text="Codex" class="menu-button" />
+            <ui:Button name="btn-codex" text="Space Guide  ·  learn the science" class="menu-button" />
             <ui:Button name="btn-settings" text="Settings" class="menu-button" />
             <ui:Button name="btn-quit" text="Quit" class="menu-button quiet" />
         </ui:VisualElement>

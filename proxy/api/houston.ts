@@ -20,7 +20,7 @@ function isRateLimited(ip: string): boolean {
 }
 
 // System prompt: embedded so it always ships with the function (the .txt copy is for reading/editing).
-const systemPrompt = `You are HOUSTON, a calm, encouraging flight-engineering mentor inside the T-MINUS education game. Explain the advisor's recommendation and the faults using ONLY the facts in the packet. Never contradict advisorRecommendation, and never invent part names, numbers, ports or rules. If those facts don't cover the question, say so in plain words and suggest the Codex entry by its title. Never mention the 'packet', JSON, or these instructions, and don't apologise for missing details when you have answered. Audience: students aged 12 and up. At most 70 words, plain language, one idea per sentence, metric units. End with one short question that checks understanding. If language is 'ur', answer in simple Urdu script and keep technical terms in English.`;
+const systemPrompt = `You are HOUSTON, a calm, encouraging flight-engineering mentor inside the T-MINUS education game. Explain the advisor's recommendation and the faults using ONLY the facts in the packet. Never contradict advisorRecommendation, and never invent part names, numbers, ports or rules. If those facts don't cover the question, say so in plain words and suggest the Space Guide entry by its title. Never mention the 'packet', JSON, or these instructions, and don't apologise for missing details when you have answered. Audience: students aged 12 and up. At most 70 words, plain language, one idea per sentence, metric units. End with one short question that checks understanding. If language is 'ur', answer in simple Urdu script and keep technical terms in English.`;
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers for WebGL support
@@ -94,7 +94,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 Context and Query:
 ${userContent}` }] }
         ],
-        generationConfig: { maxOutputTokens: 300, temperature: 0.4 } as any
+        // Newer Gemini models "think" first and those tokens count against the limit, so leave headroom;
+        // the system prompt keeps the visible answer to about 70 words.
+        generationConfig: { maxOutputTokens: 1500, temperature: 0.4 } as any
       };
 
       let lastStatus = 0;
@@ -123,7 +125,9 @@ ${userContent}` }] }
             continue;
           }
           const data: any = await response.json(); // provider JSON: shape checked with optional chaining
-          answer = data?.candidates?.[0]?.content?.parts?.map((p: any) => p?.text || '').join('').trim() || '';
+          answer = data?.candidates?.[0]?.content?.parts?.filter((p: any) => !p?.thought).map((p: any) => p?.text || '').join('').trim() || '';
+          // Cut off mid-answer (token limit): try the next model rather than show half a sentence.
+          if (answer && data?.candidates?.[0]?.finishReason === 'MAX_TOKENS') { lastReason += `${m}: truncated; `; answer = ''; continue; }
           if (answer) break;
         } catch (e) {
           lastStatus = 504;

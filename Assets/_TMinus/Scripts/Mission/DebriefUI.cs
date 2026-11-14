@@ -95,8 +95,11 @@ namespace TMinus.Mission
         { var b = new Button(action) { text = text }; b.AddToClassList("debrief-button"); parent.Add(b); }
         void SaveCode()
         {
-            GUIUtility.systemCopyBuffer = DesignCode.Encode(DesignCode.FromState(GameState.Instance));
-            _status.text = "Design code copied to clipboard.";
+            string code = DesignCode.Encode(DesignCode.FromState(GameState.Instance));
+            GUIUtility.systemCopyBuffer = code;
+            // Browsers block clipboard writes from the game, so show the code to select and copy there.
+            _status.text = Application.platform == RuntimePlatform.WebGLPlayer ? "Your design code (select and copy): " + code : "Design code copied to clipboard.";
+            _status.selection.isSelectable = true; _status.style.whiteSpace = WhiteSpace.Normal;
         }
         void ShowLeaderboard()
         {

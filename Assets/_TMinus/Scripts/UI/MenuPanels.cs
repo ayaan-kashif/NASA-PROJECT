@@ -32,7 +32,7 @@ namespace TMinus.UI
         public static void ShowCodex(VisualElement root)
         {
             var data = GameState.Instance?.Data;
-            Overlay(root, "CODEX", out var body);
+            Overlay(root, "SPACE GUIDE", out var body);
             var entries = data?.Codex.OrderBy(c => c.title).ToList() ?? new List<CodexEntry>();
             var search = new TextField { label = "Search" }; search.AddToClassList("codex-search"); body.Add(search);
             var count = new Label(); count.AddToClassList("muted"); body.Add(count);

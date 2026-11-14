@@ -31,7 +31,8 @@
       ],
       "randomEvents": [
         { "id": "ev_solar_storm", "day": 12, "type": "solar_storm", "effect": "computer_reboot", "value": 1, "codexId": "data_budget" },
-        { "id": "ev_ground_outage", "day": 20, "type": "ground_outage", "effect": "no_downlink", "value": 1, "codexId": "downlink" }
+        { "id": "ev_ground_outage", "day": 20, "type": "ground_outage", "effect": "no_downlink", "value": 1, "codexId": "downlink" },
+        { "id": "ev_battery_ageing", "day": 25, "type": "battery_ageing", "effect": "capacity_loss", "value": 10, "codexId": "battery_dod" }
       ],
       "scoring": { "success": 40, "science": 25, "budget": 10, "margins": 10, "decisionQuality": 10, "collaboration": 5 },
       "rewardImages": [

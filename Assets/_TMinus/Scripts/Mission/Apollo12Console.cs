@@ -120,7 +120,7 @@ namespace TMinus.Mission
             var done = new VisualElement(); done.AddToClassList("job-card"); body.Add(done);
             done.Add(new Label($"JOB DEBRIEF · {run.Score(job.rewardPoints)} / {job.rewardPoints} pts · {run.Wrong} wrong call{(run.Wrong == 1 ? "" : "s")}{(run.TimedOut ? " · ran out of time" : "")}") { name = "job-title" });
             var lesson = new Label(job.lesson); lesson.AddToClassList("job-note"); done.Add(lesson);
-            var src = new Label("Read more in the Codex: Apollo 12 lightning strike."); src.AddToClassList("muted"); done.Add(src);
+            var src = new Label("Read more in the Space Guide: Apollo 12 lightning strike."); src.AddToClassList("muted"); done.Add(src);
         }
     }
 }

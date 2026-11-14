@@ -205,7 +205,7 @@ namespace TMinus.Assembly
         public void OpenCodex(string codexId)
         {
             var entry = GameState.Instance?.Data.GetCodex(codexId);
-            if (entry == null) { Toast("No codex entry for this part yet."); return; }
+            if (entry == null) { Toast("No Space Guide entry for this part yet."); return; }
             _root.Q<Label>("codex-title").text = entry.title;
             _root.Q<Label>("codex-body").text = entry.longText;
             _root.Q<Label>("codex-source").text = "Source: " + entry.sourceUrl + (entry.needsReview ? "   (being fact-checked)" : "");

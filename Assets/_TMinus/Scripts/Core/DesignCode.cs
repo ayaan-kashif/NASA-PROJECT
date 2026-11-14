@@ -20,6 +20,7 @@ namespace TMinus.Core
     public static class DesignCode
     {
         public const string Prefix = "TM1-";
+        const int MaxJsonChars = 512 * 1024;
 
         public static string Encode(DesignBundle bundle)
         {
@@ -46,7 +47,13 @@ namespace TMinus.Core
                 using (var ms = new MemoryStream(data))
                 using (var gz = new GZipStream(ms, CompressionMode.Decompress))
                 using (var reader = new StreamReader(gz, Encoding.UTF8))
-                    bundle = JsonConvert.DeserializeObject<DesignBundle>(reader.ReadToEnd());
+                {
+                    // A pasted code is untrusted: stop a "zip bomb" from eating memory (real codes are a few kB).
+                    var buf = new char[MaxJsonChars + 1];
+                    int n = reader.ReadBlock(buf, 0, buf.Length);
+                    if (n > MaxJsonChars) { error = "That design code is too large."; return false; }
+                    bundle = JsonConvert.DeserializeObject<DesignBundle>(new string(buf, 0, n));
+                }
                 if (bundle == null) { error = "Empty design code."; return false; }
                 bundle.spacecraft ??= new SpacecraftDesign();
                 bundle.vehicle ??= new VehicleDesign();

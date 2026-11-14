@@ -59,6 +59,8 @@ namespace TMinus.Mission
             sc.rbfPinPulled = padReady;   // pad actions done (pin pulled, Safe/Arm armed)
             v.armed = padReady;
             s.Vehicle = v;
+            // One player covers all four crew roles, exactly as the briefing assigns them.
+            if (s.Crew.Select(c => c.role).Distinct().Count() < 4) s.Crew = PrelaunchChecklist.AssignRoles(new System.Collections.Generic.List<string> { "Player 1" });
             s.Launch = new LaunchRecord();
             s.Flight = new FlightRecord();
         }

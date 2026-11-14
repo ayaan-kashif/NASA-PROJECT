@@ -166,17 +166,9 @@ namespace TMinus.Houston
             var codexIds = new HashSet<string>();
             if (!string.IsNullOrEmpty(rec?.codexId)) codexIds.Add(rec.codexId);
 
-            // Search for matching codex entries from the question
-            if (data != null)
-            {
-                string q = question?.ToLowerInvariant() ?? "";
-                foreach (var entry in data.Codex)
-                {
-                    if (entry.title != null && q.Contains(entry.title.ToLowerInvariant()))
-                        codexIds.Add(entry.id);
-                    if (codexIds.Count >= 5) break;
-                }
-            }
+            // Entries the question is about, best match first
+            foreach (var id in CodexMatcher.Match(question, data, 5))
+                if (codexIds.Count < 5) codexIds.Add(id);
 
             foreach (var cid in codexIds)
             {
@@ -228,7 +220,9 @@ namespace TMinus.Houston
                 foreach (var f in faults)
                     sb.Append(f.why).Append(',');
             }
-            return sb.ToString().GetHashCode().ToString("X8");
+            // Language is part of the key: the same question in Urdu must not return the cached English answer.
+            sb.Append('|').Append(GameState.Instance?.Settings.language ?? "en");
+            return sb.ToString();
         }
 
         // ------------------------------------------------------------------ fallback
@@ -239,11 +233,11 @@ namespace TMinus.Houston
             if (data == null) return rec?.text ?? "I'm here to help. Ask me about any part or step.";
 
             // Try to match question to a codex entry
-            string q = question?.ToLowerInvariant() ?? "";
-            foreach (var entry in data.Codex)
+            var best = CodexMatcher.Match(question, data, 1);
+            if (best.Count > 0)
             {
-                if (entry.title != null && q.Contains(entry.title.ToLowerInvariant()))
-                    return entry.shortText ?? entry.longText ?? rec?.text ?? "";
+                var entry = data.GetCodex(best[0]);
+                if (entry != null) return entry.shortText ?? entry.longText ?? rec?.text ?? "";
             }
 
             // Try rec's codex id
@@ -270,7 +264,7 @@ namespace TMinus.Houston
 
             var op = req.SendWebRequest();
             while (!op.isDone)
-                await Task.Yield();
+                await Awaitable.NextFrameAsync();   // main-thread wait that also works in WebGL
 
             if (req.result != UnityWebRequest.Result.Success)
             {

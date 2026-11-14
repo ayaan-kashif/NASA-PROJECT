@@ -43,7 +43,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 - *Apollo 12, 1969:* you are EECOM after the lightning strikes. Make the right calls in 20 seconds ("SCE to AUX", then reset the fuel cells). Every wrong call is explained.
 
 **Main menu extras:**
-- **Codex:** 28 searchable science topics, each with its source.
+- **Space Guide:** 28 searchable science topics, each with its source.
 - **Settings:** HOUSTON on, hints only or off; HOUSTON answers in Urdu; volume; fullscreen.
 - **Sandbox:** open any workshop directly.
 
@@ -60,7 +60,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 ## Technology
 
 - Unity 6000.6.8f1 with URP, C#, UI Toolkit, the new Input System and Newtonsoft JSON. No paid assets.
-- **Data-driven:** parts, rockets, bolt patterns, missions, rules and the Codex live in JSON under `Assets/_TMinus/Resources/Data/`.
+- **Data-driven:** parts, rockets, bolt patterns, missions, rules and the Space Guide (codex.json) live in JSON under `Assets/_TMinus/Resources/Data/`.
 - **Flight physics:** a pure C#, double-precision, fixed-step solver. It flies in a 2D plane around a round, rotating Earth. Unity only displays the result.
 - **Tests:** EditMode tests live in `Assets/_TMinus/Tests/EditMode/`. Run them in Window → General → Test Runner.
 - **Scene builders:** every scene is built by an idempotent menu command under **Tools → T-Minus**.
@@ -77,7 +77,7 @@ Press **F9** anywhere, or choose **Judge Mode** in the main menu. It runs the wh
 - **Saturn V:**
   - Stage data cites the [NASA Saturn V News Reference](https://www.nasa.gov/wp-content/uploads/2023/04/saturnvnewsreference.pdf).
   - The model is a procedural representation.
-- **Rehbar-I:** the history is in the in-game Codex. Verify it against a mission-specific source before public submission.
+- **Rehbar-I:** the history is in the in-game Space Guide. Verify it against a mission-specific source before public submission.
 
 ## Credits and AI use
 

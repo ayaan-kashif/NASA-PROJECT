@@ -35,7 +35,10 @@ namespace TMinus.Mission
         { max = Math.Max(0, max); fraction = Math.Max(0, Math.Min(1, fraction)); s.breakdown.Add(new ScoreLine { id = id, label = label, maximum = max, points = Math.Round(max * fraction, 1) }); }
         static void BuildFixes(MissionScore s, GameState state, OpsReport ops, SpacecraftReport budget)
         {
-            if (!state.Flight.deployed) s.fixes.Add("Restore the deployment path: check the separation pyro cable, fairing release and dispenser.");
+            // The real cause first: a broken joint is not a deployment-wiring problem.
+            bool joint = state.Flight.failureCode == "joint_failure";
+            if (joint) s.fixes.Add("Torque every bolt in the joint's star pattern and verify the joint integrity before launch.");
+            else if (!state.Flight.deployed) s.fixes.Add("Restore the deployment path: check the separation pyro cable, fairing release and dispenser.");
             if (ops.powerFailureCause == "rbf_pin") s.fixes.Add("Pull the remove-before-flight pin at the pad before launch.");
             if (ops.powerFailureCause == "deployment_switch") s.fixes.Add("Wire the deployment switch inline between the battery and EPS.");
             foreach (var issue in budget.issues)
@@ -43,8 +46,8 @@ namespace TMinus.Mission
                 if (s.fixes.Count >= 3) break;
                 if (!s.fixes.Any(x => x.IndexOf(issue.code, StringComparison.OrdinalIgnoreCase) >= 0)) s.fixes.Add(issue.message);
             }
-            if (ops.imagesDownlinked < 20 && s.fixes.Count < 3) s.fixes.Add("Increase downlink capacity or image quality/power margin so more usable images reach the ground.");
-            if (state.Flight.failureCode == "joint_failure" && s.fixes.Count < 3) s.fixes.Add("Torque every bolt in the joint's star pattern and verify the joint integrity before launch.");
+            double goal = state.Data.GetMission(state.CurrentMissionId)?.successCriteria.FirstOrDefault(c => c.metric == "imagesDownlinked")?.threshold ?? 20;
+            if (!joint && state.Flight.deployed && ops.imagesDownlinked < goal && s.fixes.Count < 3) s.fixes.Add("Increase downlink capacity or image quality/power margin so more usable images reach the ground.");
             while (s.fixes.Count > 3) s.fixes.RemoveAt(s.fixes.Count - 1);
         }
         public static int StarsForScore(double score) => score >= 85 ? 3 : score >= 60 ? 2 : score >= 35 ? 1 : 0;

@@ -38,15 +38,10 @@ namespace TMinus.Mission
             }
 
             var events = (mission?.randomEvents ?? new System.Collections.Generic.List<RandomEventDef>()).OrderBy(e => e.day).ToList();
-            // Deterministic battery ageing is part of the FloodWatch seed when no event is authored in the data.
-            if (mission != null && mission.seed == 1962 && events.All(e => e.type != "battery_ageing"))
-                events.Add(new RandomEventDef { id = "ev_battery_ageing", day = Math.Max(1, mission.durationDays - 5), type = "battery_ageing", value = 10, codexId = "battery_dod" });
-            events = events.OrderBy(e => e.day).ToList();
             int days = Math.Max(1, mission?.durationDays ?? 30);
             double soc = 1, stored = 0, down = 0, capacity = Math.Max(0, budget.batteryWh);
             int taken = 0, sent = 0, eventIndex = 0, aliveDays = 0;
             double period = Math.Max(1, budget.periodMin), eclipse = Math.Max(0, budget.eclipseMin);
-            // SpacecraftBudget.generationW is already averaged across sunlit and eclipse portions.
             // SpacecraftBudget.generationW is already averaged across sunlit and eclipse portions.
             double orbitPowerWh = NetOrbitEnergyWh(budget.generationW, budget.consumptionW, period);
             int orbitsPerDay = OrbitsPerDay(period);
@@ -59,7 +54,7 @@ namespace TMinus.Mission
                     if (ev.type == "solar_storm") reboot = true;
                     if (ev.type == "ground_outage") outage = true;
                     if (ev.type == "battery_ageing") capacity *= Math.Max(0, 1 - (ev.value <= 1 ? ev.value : ev.value / 100.0));
-                    string msg = ev.type == "solar_storm" ? "Solar storm rebooted the flight computer; one science day was lost." : ev.type == "ground_outage" ? "Ground station outage prevented today's downlink." : "Battery ageing reduced usable capacity by 10%.";
+                    string msg = ev.type == "solar_storm" ? "Solar storm rebooted the flight computer; one science day was lost." : ev.type == "ground_outage" ? "Ground station outage prevented today's downlink." : $"Battery ageing reduced usable capacity by {(ev.value <= 1 ? ev.value * 100 : ev.value):0.#}%.";
                     report.failures.Add(msg);
                     state.Events.AddAt(state.Flight.flightTimeS + day * 86400, "operations", ev.type, msg, ev.codexId ?? ev.id, Severity.Warning);
                 }
@@ -81,7 +76,8 @@ namespace TMinus.Mission
                     {
                         double sentToday = Math.Min(stored, contactMB);
                         stored -= sentToday; down += sentToday;
-                        sent += budget.imageMB > 0 ? (int)(sentToday / budget.imageMB) : 0;
+                        // Whole images from the running total: a slow link still finishes an image over several days.
+                        sent = budget.imageMB > 0 ? (int)Math.Floor(down / budget.imageMB + 1e-9) : 0;
                     }
                     if (report.powered) aliveDays++;
                     if (soc <= 0.001) { report.powered = false; report.failures.Add("Battery depleted: the spacecraft stopped collecting science and radioing home."); state.Events.AddAt(state.Flight.flightTimeS + day * 86400, "operations", "battery_depleted", "Battery depleted; spacecraft went silent.", "battery_dod", Severity.Fault); }
