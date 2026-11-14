@@ -42,6 +42,7 @@ namespace TMinus.Mission
             else if (!state.Flight.deployed) s.fixes.Add("Restore the deployment path: check the separation pyro cable, fairing release and dispenser.");
             if (ops.powerFailureCause == "rbf_pin") s.fixes.Add("Pull the remove-before-flight pin at the pad before launch.");
             if (ops.powerFailureCause == "deployment_switch") s.fixes.Add("Wire the deployment switch inline between the battery and EPS.");
+            if (ops.wiringIssues.Count > 0 && s.fixes.Count < 3) s.fixes.Add("Fix the CubeSat wiring (Integration Bay > Wire): " + ops.wiringIssues[0]);
             foreach (var issue in budget.issues)
             {
                 if (s.fixes.Count >= 3) break;

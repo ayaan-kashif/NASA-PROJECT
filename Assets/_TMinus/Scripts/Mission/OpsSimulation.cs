@@ -37,13 +37,34 @@ namespace TMinus.Mission
                 state.Events.AddAt(state.Flight.flightTimeS, "operations", "satellite_no_power", report.failures[0], report.powerFailureCause, Severity.Fault);
             }
 
+            // Wiring faults in the CubeSat change what it can do in orbit (audit A-01).
+            var fx = OpsWiring.Evaluate(PrelaunchChecklist.From(state));
+            if (report.powered)
+            {
+                double firstDay = state.Flight.flightTimeS + 86400;
+                if (fx.Dead)
+                {
+                    report.powered = false;
+                    report.powerFailureCause = "wiring";
+                    report.failures.Add(fx.DeadMessage);
+                    state.Events.AddAt(state.Flight.flightTimeS, "operations", "satellite_wiring_dead", fx.DeadMessage, fx.DeadCause, Severity.Fault);
+                }
+                else
+                {
+                    if (fx.NoSolar) state.Events.AddAt(firstDay, "operations", "wiring_no_solar", fx.SolarMessage, fx.SolarCause, Severity.Fault);
+                    if (fx.NoDownlink) state.Events.AddAt(firstDay, "operations", "wiring_no_downlink", fx.DownlinkMessage, fx.DownlinkCause, Severity.Fault);
+                    if (fx.NoImaging) state.Events.AddAt(firstDay, "operations", "wiring_no_imaging", fx.ImagingMessage, fx.ImagingCause, Severity.Fault);
+                }
+                foreach (var m in fx.Messages) { report.wiringIssues.Add(m); if (!fx.Dead) report.failures.Add(m); }
+            }
+
             var events = (mission?.randomEvents ?? new System.Collections.Generic.List<RandomEventDef>()).OrderBy(e => e.day).ToList();
             int days = Math.Max(1, mission?.durationDays ?? 30);
             double soc = 1, stored = 0, down = 0, capacity = Math.Max(0, budget.batteryWh);
             int taken = 0, sent = 0, eventIndex = 0, aliveDays = 0;
             double period = Math.Max(1, budget.periodMin), eclipse = Math.Max(0, budget.eclipseMin);
             // SpacecraftBudget.generationW is already averaged across sunlit and eclipse portions.
-            double orbitPowerWh = NetOrbitEnergyWh(budget.generationW, budget.consumptionW, period);
+            double orbitPowerWh = NetOrbitEnergyWh(fx.NoSolar ? 0 : budget.generationW, budget.consumptionW, period);
             int orbitsPerDay = OrbitsPerDay(period);
             for (int day = 1; day <= days; day++)
             {
@@ -64,13 +85,13 @@ namespace TMinus.Mission
                     {
                         soc = StepStateOfCharge(soc, orbitPowerWh, capacity);
                     }
-                    if (CanImage(true, reboot, soc, budget.pointingQuality))
+                    if (!fx.NoImaging && CanImage(true, reboot, soc, budget.pointingQuality))
                     {
                         int count = Math.Max(0, mission?.imagesPerPass ?? 3);
                         double each = Math.Max(0, budget.imageMB);
                         for (int i = 0; i < count; i++) if (stored + each <= Math.Min(StorageLimitMB, budget.storageMB)) { stored += each; taken++; }
                     }
-                    double rate = state.Data.GetPart(budget.radioId)?.Spec("dataRateKbps") ?? 0;
+                    double rate = fx.NoDownlink ? 0 : state.Data.GetPart(budget.radioId)?.Spec("dataRateKbps") ?? 0;
                     double contactMB = rate * (mission?.groundContactsPerDay ?? 4) * (mission?.contactMinutes ?? 8) * 60 / 8 / 1000;
                     if (!outage && soc > 0.05)
                     {

@@ -16,6 +16,8 @@ namespace TMinus.Mission
         public string powerFailureCause;
         public readonly List<OpsPoint> timeline = new List<OpsPoint>();
         public readonly List<string> failures = new List<string>();
+        /// <summary>Plain-language effects of CubeSat wiring faults (no downlink, no images, no solar power, dead on deployment).</summary>
+        public readonly List<string> wiringIssues = new List<string>();
         public string rewardCredit, rewardTitle, rewardPlaceholder;
     }
     [Serializable]

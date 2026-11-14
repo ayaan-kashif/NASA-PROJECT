@@ -1,3 +1,4 @@
+using System.Linq;
 using NUnit.Framework;
 using TMinus.Mission;
 
@@ -27,6 +28,51 @@ namespace TMinus.Tests
             Assert.IsFalse(OpsSimulation.CanImage(true, false, 0.4, 1));
             Assert.IsFalse(OpsSimulation.CanImage(true, true, 0.9, 1));
             Assert.IsFalse(OpsSimulation.CanImage(true, false, 0.9, 0));
+        }
+
+        [Test] public void PerfectCubeSatHasNoWiringEffects()
+        {
+            var fx = OpsWiring.Evaluate(ChecklistTests.Perfect());
+            Assert.IsFalse(fx.Any, string.Join(" | ", fx.Messages));
+        }
+
+        [Test] public void MissingAntennaCableSilencesTheRadio()
+        {
+            var input = ChecklistTests.Perfect();
+            input.Spacecraft.cables.RemoveAll(c => c.fromPort == "radio_sband/RF");
+            var fx = OpsWiring.Evaluate(input);
+            Assert.IsTrue(fx.NoDownlink, "No RF cable means nothing reaches the ground.");
+            Assert.IsFalse(fx.NoImaging);
+            Assert.IsFalse(fx.Dead);
+            Assert.IsTrue(fx.DownlinkCause == "radio_sband/RF" || fx.DownlinkCause == "ant_patch/RF", fx.DownlinkCause);
+        }
+
+        [Test] public void MissingCameraDataCableMeansNoImages()
+        {
+            var input = ChecklistTests.Perfect();
+            input.Spacecraft.cables.RemoveAll(c => c.fromPort == "cam_wide/DATA");
+            var fx = OpsWiring.Evaluate(input);
+            Assert.IsTrue(fx.NoImaging);
+            Assert.IsFalse(fx.NoDownlink);
+            Assert.AreEqual("cam_wide/DATA", fx.ImagingCause);
+        }
+
+        [Test] public void MissingSolarCableMeansNoGeneration()
+        {
+            var input = ChecklistTests.Perfect();
+            input.Spacecraft.cables.RemoveAll(c => c.fromPort == "solar_body/SOLAR_OUT_1");
+            var fx = OpsWiring.Evaluate(input);
+            Assert.IsTrue(fx.NoSolar);
+            Assert.IsFalse(fx.Dead);
+        }
+
+        [Test] public void ReversedPowerPlugKillsTheSatelliteOnDeployment()
+        {
+            var input = ChecklistTests.Perfect();
+            input.Spacecraft.cables.First(c => c.fromPort == "eps/PWR_OUT_1").reversed = true;
+            var fx = OpsWiring.Evaluate(input);
+            Assert.IsTrue(fx.Dead);
+            Assert.IsNotNull(fx.DeadCause);
         }
 
         [TestCase(0, 0)] [TestCase(35, 1)] [TestCase(60, 2)] [TestCase(85, 3)] [TestCase(100, 3)]
