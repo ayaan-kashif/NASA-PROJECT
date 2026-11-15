@@ -1,3 +1,4 @@
+using TMinus.Core;
 using UnityEngine;
 
 namespace TMinus.Flight
@@ -52,6 +53,7 @@ namespace TMinus.Flight
                 _sky.SetFloat("_Exposure", Mathf.Lerp(0.7f, 1.25f, k));
             }
             if (_atmo != null && _sun != null) _atmo.SetVector("_SunDir", -_sun.transform.forward);
+            SceneLook.SetPadWeight(1f - (float)(altitudeM / 3000.0));
         }
     }
 }

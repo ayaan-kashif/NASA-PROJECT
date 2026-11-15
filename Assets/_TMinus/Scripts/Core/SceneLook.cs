@@ -12,7 +12,13 @@ namespace TMinus.Core
     /// </summary>
     public static class SceneLook
     {
-        static GameObject _volume;
+        static GameObject _volume, _padVolume;
+
+        /// <summary>0 = no launch-site grade (high up), 1 = full warm grade (on the pad).</summary>
+        public static void SetPadWeight(float w)
+        {
+            if (_padVolume != null) _padVolume.GetComponent<Volume>().weight = Mathf.Clamp01(w);
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Hook()
@@ -52,6 +58,16 @@ namespace TMinus.Core
                 _volume = new GameObject("[Look Volume]");
                 var v = _volume.AddComponent<Volume>();
                 v.isGlobal = true; v.priority = 10; v.sharedProfile = profile;
+            }
+            // Launch site: a warm sunrise grade that fades out with altitude (FlightSky sets the weight each frame).
+            if (_padVolume != null) Object.Destroy(_padVolume);
+            _padVolume = null;
+            var pad = flight ? Resources.Load<VolumeProfile>("Looks/Look_Pad") : null;
+            if (pad != null)
+            {
+                _padVolume = new GameObject("[Pad Grade]");
+                var pv = _padVolume.AddComponent<Volume>();
+                pv.isGlobal = true; pv.priority = 11; pv.weight = 1; pv.sharedProfile = pad;
             }
 
             // If this device can't run URP's post-processing shader (seen in some browsers), drawing with it on

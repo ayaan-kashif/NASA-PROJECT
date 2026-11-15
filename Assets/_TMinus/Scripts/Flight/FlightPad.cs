@@ -16,6 +16,7 @@ namespace TMinus.Flight
         const float LandRadius = 15000f;
 
         public Transform Root { get; private set; }
+        Renderer _beacon;
         Vec2d _pad0;
         double _omega;
         float _baseY;
@@ -41,13 +42,35 @@ namespace TMinus.Flight
             Box(p.Root, "WaterTank", new Vector3(14, 10, 14), new Vector3(-90, 27, -40), new Color(0.9f, 0.9f, 0.88f));
             Box(p.Root, "Hangar", new Vector3(60, 25, 40), new Vector3(140, 12.5f, -380), new Color(0.8f, 0.81f, 0.83f));
             Box(p.Root, "HangarDoor", new Vector3(40, 18, 0.5f), new Vector3(140, 9, -359.7f), new Color(0.35f, 0.38f, 0.45f));
+            p._beacon = Beacon(p.Root, new Vector3(28, 36.5f, 10));
             Box(p.Root, "Blockhouse", new Vector3(18, 6, 12), new Vector3(-120, 3, 160), new Color(0.7f, 0.7f, 0.68f));
             return p;
+        }
+
+        /// <summary>A red warning light on top of the tower: it blinks once a second (emissive, so it glows under bloom).</summary>
+        static Renderer Beacon(Transform parent, Vector3 pos)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            go.name = "PadBeacon";
+            Object.Destroy(go.GetComponent<Collider>());
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = pos; go.transform.localScale = Vector3.one * 0.9f;
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard")) { name = "PadBeaconMat", color = new Color(0.9f, 0.1f, 0.08f) };
+            mat.EnableKeyword("_EMISSION");
+            mat.SetColor("_EmissionColor", new Color(1f, 0.1f, 0.08f));
+            var r = go.GetComponent<Renderer>();
+            r.sharedMaterial = mat;
+            return r;
         }
 
         /// <summary>Place the site relative to the rocket (which stays at the origin) and hide it once we are high up.</summary>
         public void Sync(Vec2d rocketPos, double time, double altitudeM, Quaternion toUnity)
         {
+            if (_beacon != null)
+            {
+                float blink = Time.time % 1f < 0.25f ? 1f : 0.08f;   // on for a quarter second, then dark
+                _beacon.sharedMaterial.SetColor("_EmissionColor", new Color(1f, 0.1f, 0.08f) * (4f * blink));
+            }
             bool show = altitudeM < MaxAltitudeM;
             if (Root.gameObject.activeSelf != show) Root.gameObject.SetActive(show);
             if (!show) return;

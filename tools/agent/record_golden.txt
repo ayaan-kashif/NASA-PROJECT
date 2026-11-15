@@ -12,9 +12,7 @@ call TMinus.Core.VideoHooks.Stop x
 call TMinus.Core.SceneFlow.Load IntegrationBay
 wait 8
 call TMinus.Core.VideoHooks.Start take3_bay
-call TMinus.Spacecraft.BayDebug.InstallDefault x
 wait 8
-call TMinus.Spacecraft.BayDebug.WireDefault x
 wait 12
 call TMinus.Core.VideoHooks.Stop x
 call TMinus.Core.SceneFlow.Load VAB

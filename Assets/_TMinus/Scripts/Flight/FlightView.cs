@@ -24,6 +24,7 @@ namespace TMinus.Flight
         FlightPad _pad;
         MeshRenderer _earthSphere;
         FlightSky _sky;
+        LiftoffSmoke _smoke;
         ParticleSystem _exhaust;
         // Sim plane (x, y) -> Unity, chosen in Build so the launch pad's "up" is exactly Unity +Y.
         // (A fixed sim +X -> +Y left the pad tilted, so the orbit camera saw the rocket lying sideways.)
@@ -52,6 +53,7 @@ namespace TMinus.Flight
             foreach (var p in _rocket.Parts) foreach (var c in p.GetComponentsInChildren<Collider>()) Destroy(c);
             _exhaust = MakeExhaust();
             _pad = FlightPad.Build(transform, startPos, _omega, LowestAttachedY());
+            _smoke = new LiftoffSmoke(transform);
             Sync(startPos, new Vec2d(), 0, 0, 0);
         }
 
@@ -118,6 +120,7 @@ namespace TMinus.Flight
             bool low = altitudeM < FlightPad.MaxAltitudeM;
             _pad?.Sync(pos, time, altitudeM, _toUnity);
             _sky?.Sync(altitudeM);
+            _smoke?.Sync((float)altitudeM, (float)thrustFraction);
             if (_earthSphere != null) _earthSphere.enabled = !low;
             RenderSettings.fog = low;
             if (low)

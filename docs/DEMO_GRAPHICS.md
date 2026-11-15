@@ -80,3 +80,10 @@ the same. Shadows are a little softer, which is not visible at normal play dista
 - Not done: the Show-me-why and Watch-the-failure-again takes (they need clicks, not hooks), the 30-second highlight cut
   (no video tool in this project to join takes), and the Bay take still reports two wiring faults at the end (eps_2 not
   fully connected), so review take3 before using it.
+
+## Art pass, final (2026-11-15)
+
+- **Done:** a cool clean-room grade for the Bays (`Look_Bay`); light VAB fog; a warm sunrise grade on the launch pad (`Look_Pad`) that fades out with altitude (`SceneLook.SetPadWeight` driven by `FlightSky`); a grey smoke puff from the flame trench for the first 1.5 km of ascent (`Flight/LiftoffSmoke.cs`, about 40 puffs a second, capped at 160 particles); a red warning beacon on the tower that blinks once a second (`FlightPad`).
+- **Not done:** glowing LEDs and screens inside the CubeSat models (the models are simple shapes; the glow would need the Blender models first).
+- **Exe at 1080p with Demo Live, with the new effects:** Integration Bay 47 - 51 fps, VAB 58, Flight 59, debrief 59, main menu 60. All above the 30 fps target.
+- **Takes:** take3_bay and take6_flight were re-recorded with this build. take3 no longer adds a duplicate EPS (the demo build already holds the satellite). The takes were recorded at the Demo Video preset.

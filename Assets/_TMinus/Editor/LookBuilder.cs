@@ -60,12 +60,22 @@ namespace TMinus.EditorTools
             flame.SetFloat("_ZWrite", 0); flame.SetOverrideTag("RenderType", "Transparent");
             flame.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); flame.renderQueue = (int)RenderQueue.Transparent;
 
+            // Launch-pad smoke: soft grey puffs, normal (not additive) blending.
+            var smoke = Mat("Smoke", "Universal Render Pipeline/Particles/Unlit");
+            smoke.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Tex}/T_Glow.png"));
+            smoke.SetFloat("_Surface", 1); smoke.SetFloat("_Blend", 0);
+            smoke.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha); smoke.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+            smoke.SetFloat("_ZWrite", 0); smoke.SetOverrideTag("RenderType", "Transparent");
+            smoke.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); smoke.renderQueue = (int)RenderQueue.Transparent;
+
             var ground = Mat("Ground", "Universal Render Pipeline/Lit");
             Textures(ground, "Ground", Vector2.one, 0.7f, 0.12f, 0f);
 
             Profile("Look_Interior", contrast: 14, saturation: 8, exposure: 0.15f, bloom: 0.55f, vignette: 0.24f, temperature: -4);
             Profile("Look_Flight", contrast: 10, saturation: 14, exposure: 0f, bloom: 0.9f, vignette: 0.16f, temperature: 0);
             // Integration Bay and Avionics Bay: a cool, clean product-photo grade (the bench reads as a clean room).
+            // Launch site: warm sunrise light (the pad is in the morning sun, the sky a little hazier).
+            Profile("Look_Pad", contrast: 8, saturation: 12, exposure: 0.05f, bloom: 0.7f, vignette: 0.12f, temperature: 16);
             Profile("Look_Bay", contrast: 12, saturation: 4, exposure: 0.1f, bloom: 0.45f, vignette: 0.18f, temperature: -10);
 
             // The PC quality level's pipeline asset (there is no project-wide default asset here).

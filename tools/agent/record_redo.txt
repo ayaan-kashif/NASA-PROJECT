@@ -1,0 +1,15 @@
+scene Assets/_TMinus/Scenes/MainMenu.unity
+wait 3
+call TMinus.Mission.BriefingDebug.Demo perfect-ready
+call TMinus.Core.SceneFlow.Load IntegrationBay
+wait 8
+call TMinus.Core.VideoHooks.Start take3_bay
+wait 25
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load Flight
+wait 8
+call TMinus.Core.VideoHooks.Start take6_flight
+call TMinus.Flight.FlightDebug.Launch 3
+wait 45
+call TMinus.Core.VideoHooks.Stop x
+stop
