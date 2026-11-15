@@ -1,0 +1,43 @@
+scene Assets/_TMinus/Scenes/MainMenu.unity
+wait 4
+call TMinus.Core.VideoHooks.Start take1_menu
+wait 15
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Mission.BriefingDebug.Demo perfect-ready
+call TMinus.Core.SceneFlow.Load MissionBriefing
+wait 8
+call TMinus.Core.VideoHooks.Start take2_briefing
+wait 15
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load IntegrationBay
+wait 8
+call TMinus.Core.VideoHooks.Start take3_bay
+call TMinus.Spacecraft.BayDebug.InstallDefault x
+wait 8
+call TMinus.Spacecraft.BayDebug.WireDefault x
+wait 12
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load VAB
+wait 8
+call TMinus.Core.VideoHooks.Start take4_vab
+call TMinus.Assembly.VabDebug.BuildAll x
+wait 20
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load MissionBriefing
+wait 8
+call TMinus.Core.VideoHooks.Start take5_checklist
+call TMinus.Mission.BriefingDebug.Checklist x
+wait 15
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load Flight
+wait 8
+call TMinus.Core.VideoHooks.Start take6_flight
+call TMinus.Flight.FlightDebug.Launch 3
+wait 45
+call TMinus.Core.VideoHooks.Stop x
+call TMinus.Core.SceneFlow.Load Debrief
+wait 8
+call TMinus.Core.VideoHooks.Start take7_debrief
+wait 15
+call TMinus.Core.VideoHooks.Stop x
+stop

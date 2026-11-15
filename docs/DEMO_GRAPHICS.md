@@ -69,3 +69,14 @@ the same. Shadows are a little softer, which is not visible at normal play dista
 - **Demo Video timing:** the preset exists but has not been measured.
 - **Blender models for the stages and the gantry:** not started.
 - **The exe measurement was with the probe on (development build), so it is a little slower than the real release build.**
+
+## Demo video (recorded 2026-11-15)
+
+- Unity Recorder 5.1.8 (`com.unity.recorder`) is in `Packages/manifest.json`. Recording uses `Editor/DemoRecorder.cs`
+  (MP4, 1920x1080, 30 fps, High bitrate, Game view) and is driven by `tools/agent/record_golden.txt` through `Core/VideoHooks.cs`.
+- Takes in `Builds/DemoVideo/` (not in git): take1_menu (15 s), take2_briefing (15 s), take3_bay (25 s: install and wire),
+  take4_vab (20 s: BuildAll), take5_checklist (15 s), take6_flight (45 s: launch and ascent), take7_debrief (15 s).
+- Checked: each file is 1920x1080 with the right length (headers read directly). The frames were not reviewed by eye.
+- Not done: the Show-me-why and Watch-the-failure-again takes (they need clicks, not hooks), the 30-second highlight cut
+  (no video tool in this project to join takes), and the Bay take still reports two wiring faults at the end (eps_2 not
+  fully connected), so review take3 before using it.
